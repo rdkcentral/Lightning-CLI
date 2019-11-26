@@ -19,7 +19,7 @@ program
 program
   .command('build')
   .description(
-    ['👷‍♂️', ' '.repeat(2), 'Build a standalone Lightning App (to run in a webbrowser)'].join('')
+    ['👷‍♂️', ' '.repeat(3), 'Build a standalone Lightning App (to run in a webbrowser)'].join('')
   )
   .action(() => {
     buildAction()
