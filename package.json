@@ -23,7 +23,6 @@
   "license": "Apache-2",
   "dependencies": {
     "commander": "^4.0.1",
-    "execa": "^3.4.0",
     "fs-extra": "^8.1.0",
     "inquirer": "^7.0.0",
     "replace-in-file": "^4.2.0"

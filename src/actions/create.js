@@ -2,7 +2,6 @@ const inquirer = require('inquirer')
 const fs = require('fs-extra')
 const path = require('path')
 const replaceInFile = require('replace-in-file')
-const execa = require('execa')
 
 module.exports = () => {
   inquirer
@@ -56,9 +55,15 @@ module.exports = () => {
         to: appName,
       })
 
-      execa('npm', ['install'], { cwd: targetDir }).then(() => {
-        execa('npm', ['start'], { cwd: targetDir })
-      })
+      console.log(' ')
+      console.log(' ')
+      console.log('===============================================')
+      console.log('⚡️ Your Lightning App Blueprint is created!! ⚡️')
+      console.log('===============================================')
+      console.log(' ')
+      console.log('Go to the directory ' + targetDir)
+      console.log('And run `npm install` and then `npm start`')
+      console.log('================================================')
     })
 }
 
