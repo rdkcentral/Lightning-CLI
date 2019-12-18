@@ -22,9 +22,12 @@
   "author": "Michiel van der Geest <m.van.der.geest@metrological.com>",
   "license": "Apache-2",
   "dependencies": {
+    "chalk": "^3.0.0",
     "commander": "^4.0.1",
+    "execa": "^3.4.0",
     "fs-extra": "^8.1.0",
     "inquirer": "^7.0.0",
+    "ora": "^4.0.3",
     "replace-in-file": "^4.2.0"
   },
   "devDependencies": {

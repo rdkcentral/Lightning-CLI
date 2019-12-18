@@ -1,13 +1,7 @@
 {
   "name": "{$appId}",
   "description": "{$appName}",
-  "scripts": {
-    "build": "npm explore wpe-lightning-sdk -- npm --baseDir=$(pwd) run build",
-    "start": "npm explore wpe-lightning-sdk -- npm --baseDir=$(pwd) run start",
-    "dev": "npm explore wpe-lightning-sdk -- npm --baseDir=$(pwd) run dev"
-  },
   "dependencies": {
-    "localCookies": "github:WebPlatformForEmbedded/localCookie#1.0.0",
     "wpe-lightning-sdk": "git+https://github.com/WebPlatformForEmbedded/Lightning-SDK.git#next"
   }
 }
