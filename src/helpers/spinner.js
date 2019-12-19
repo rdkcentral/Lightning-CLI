@@ -10,7 +10,6 @@ module.exports = {
   },
   succeed(msg) {
     spinner.succeed(msg)
-    console.log(' ')
   },
   fail(msg) {
     spinner.fail(msg)

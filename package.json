@@ -22,20 +22,30 @@
   "author": "Michiel van der Geest <m.van.der.geest@metrological.com>",
   "license": "Apache-2",
   "dependencies": {
+    "@babel/core": "^7.7.7",
+    "@babel/plugin-transform-parameters": "^7.7.7",
+    "@babel/plugin-transform-spread": "^7.7.4",
+    "@babel/preset-env": "^7.7.7",
     "chalk": "^3.0.0",
     "commander": "^4.0.1",
+    "core-js": "^2.6.11",
     "execa": "^3.4.0",
     "fs-extra": "^8.1.0",
     "inquirer": "^7.0.0",
     "ora": "^4.0.3",
-    "replace-in-file": "^4.2.0"
+    "replace-in-file": "^4.2.0",
+    "rollup": "^1.27.13",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "shelljs": "^0.8.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.7.4",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.7.1",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-prettier": "^3.1.1",
+    "http-server": "^0.12.0",
     "husky": "^3.1.0",
     "lint-staged": "^9.4.3",
     "prettier": "^1.19.1"
