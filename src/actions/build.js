@@ -151,7 +151,7 @@ const bundleApp = (inputOptions, outputOptions) =>
 
 module.exports = (clear = false) => {
   const targetDir = process.cwd() + '/dist'
-  sequence([
+  return sequence([
     () => clear && removeFolder(targetDir),
     () => ensureFolderExists(targetDir),
     () => clear && copySupportFiles(targetDir),
