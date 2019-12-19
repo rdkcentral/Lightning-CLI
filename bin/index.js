@@ -7,7 +7,7 @@ const uploadAction = require('../src/actions/upload')
 
 program
   .version(`Lightning-CLI ${require('../package').version}`)
-  .usage('lightning <command> [options]')
+  .usage('lightning-cli <command> [options]')
 
 program
   .command('create')
@@ -19,10 +19,10 @@ program
 program
   .command('build')
   .description(
-    ['👷‍♂️', ' '.repeat(3), 'Build a standalone Lightning App (to run in a webbrowser)'].join('')
+    ['👷‍♂️', ' '.repeat(3), 'Build a standalone Lightning App (to run in a web browser)'].join('')
   )
   .action(() => {
-    buildAction()
+    buildAction(true)
   })
 
 program

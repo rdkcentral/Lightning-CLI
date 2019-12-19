@@ -32,12 +32,12 @@ const copySupportFiles = folder => {
 
 const copyStaticFolder = folder => {
   spinner.start('Copying static assets to "' + folder.split('/').pop() + '"')
-  shell.cp('-r', './src/static', './dist')
+  shell.cp('-r', './static', './dist')
   spinner.succeed()
 }
 
 const copySettings = folder => {
-  const file = './src/copySettings.json'
+  const file = './settings.json'
   if (fs.existsSync(file)) {
     spinner.start('Copying settings.json "' + folder.split('/').pop() + '"')
     shell.cp(file, './dist')
