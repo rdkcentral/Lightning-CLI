@@ -4,6 +4,7 @@ const createAction = require('../src/actions/create')
 const buildAction = require('../src/actions/build')
 const releaseAction = require('../src/actions/release')
 const uploadAction = require('../src/actions/upload')
+const serveAction = require('../src/actions/serve')
 
 program
   .version(`Lightning-CLI ${require('../package').version}`)
@@ -23,6 +24,15 @@ program
   )
   .action(() => {
     buildAction(true)
+  })
+
+program
+  .command('serve')
+  .description(
+    ['', ' '.repeat(3), 'Start a local webserver and run a Lightning App in a web browser'].join('')
+  )
+  .action(() => {
+    serveAction()
   })
 
 program
