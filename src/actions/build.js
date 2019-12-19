@@ -109,7 +109,7 @@ const bundleEs5App = (folder, metadata) => {
             },
           ],
         ],
-        plugins: ['@babel/plugin-transform-spread', '@babel/plugin-transform-parameters'],
+        // plugins: ['@babel/plugin-transform-spread', '@babel/plugin-transform-parameters'],
       }),
     ],
   }
