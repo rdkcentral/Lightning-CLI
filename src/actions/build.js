@@ -1,9 +1,7 @@
 const shell = require('shelljs')
 const fs = require('fs')
-const rollup = require('rollup')
-const babel = require('rollup-plugin-babel')
-const resolve = require('rollup-plugin-node-resolve')
-const commonjs = require('rollup-plugin-commonjs')
+const execa = require('execa')
+const path = require('path')
 
 const sequence = require('../helpers/sequence')
 const spinner = require('../helpers/spinner')
@@ -64,18 +62,16 @@ const readMetadata = () => {
 const bundleEs6App = (folder, metadata) => {
   spinner.start('Building ES6 appBundle and saving to "' + folder.split('/').pop() + '"')
 
-  const inputOptions = {
-    input: './src/index.js',
-    plugins: [resolve({ mainFields: ['main', 'browser'] }), commonjs(), babel()],
-  }
-
-  const outputOptions = {
-    format: 'iife',
-    name: 'APP_' + metadata.identifier.replace(/\./g, '_').replace(/-/, '_'),
-    file: folder + '/appBundle.js',
-  }
-
-  return bundleApp(inputOptions, outputOptions)
+  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), [
+    '-c',
+    path.join(__dirname, '../configs/rollup.es6.config.js'),
+    '--input',
+    path.join(process.cwd(), 'src/index.js'),
+    '--file',
+    path.join(folder, 'appBundle.js'),
+    '--name',
+    'APP_' + metadata.identifier.replace(/\./g, '_').replace(/-/, '_'),
+  ])
     .then(() => {
       spinner.succeed()
       return metadata
@@ -89,38 +85,16 @@ const bundleEs6App = (folder, metadata) => {
 const bundleEs5App = (folder, metadata) => {
   spinner.start('Building ES5 appBundle and saving to "' + folder.split('/').pop() + '"')
 
-  const inputOptions = {
-    input: './src/index.js',
-    plugins: [
-      resolve({ mainFields: ['main', 'browser'] }),
-      commonjs(),
-      babel({
-        presets: [
-          [
-            '@babel/env',
-            {
-              targets: {
-                chrome: '44',
-              },
-              spec: true,
-              debug: false,
-              useBuiltIns: 'usage',
-              corejs: '^2.6.11',
-            },
-          ],
-        ],
-        // plugins: ['@babel/plugin-transform-spread', '@babel/plugin-transform-parameters'],
-      }),
-    ],
-  }
-
-  const outputOptions = {
-    format: 'iife',
-    name: 'APP_' + metadata.identifier.replace(/\./g, '_').replace(/-/, '_'),
-    file: folder + '/appBundle.es5.js',
-  }
-
-  return bundleApp(inputOptions, outputOptions)
+  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), [
+    '-c',
+    path.join(__dirname, '../configs/rollup.es5.config.js'),
+    '--input',
+    path.join(process.cwd(), 'src/index.js'),
+    '--file',
+    path.join(folder, 'appBundle.es5.js'),
+    '--name',
+    'APP_' + metadata.identifier.replace(/\./g, '_').replace(/-/, '_'),
+  ])
     .then(() => {
       spinner.succeed()
       return metadata
@@ -130,24 +104,6 @@ const bundleEs5App = (folder, metadata) => {
       exit()
     })
 }
-
-const bundleApp = (inputOptions, outputOptions) =>
-  new Promise((resolve, reject) => {
-    return rollup
-      .rollup(inputOptions)
-      .then(bundle => {
-        return bundle
-          .generate(outputOptions)
-          .then(() => {
-            bundle
-              .write(outputOptions)
-              .then(resolve)
-              .catch(reject)
-          })
-          .catch(reject)
-      })
-      .catch(reject)
-  })
 
 module.exports = (clear = false) => {
   const targetDir = process.cwd() + '/dist'
