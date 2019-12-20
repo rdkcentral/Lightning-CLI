@@ -7,6 +7,7 @@ const uploadAction = require('../src/actions/upload')
 const serveAction = require('../src/actions/serve')
 const watchAction = require('../src/actions/watch')
 const devAction = require('../src/actions/dev')
+const docsAction = require('../src/actions/docs')
 
 program
   .version(`Lightning-CLI ${require('../package').version}`)
@@ -52,11 +53,18 @@ program
     [
       '👨‍💻',
       ' '.repeat(3),
-      'Build a standalone Lightning App, start a local webserver and watch for changes ',
+      'Build a standalone Lightning App, start a local webserver and watch for changes',
     ].join('')
   )
   .action(() => {
     devAction()
+  })
+
+program
+  .command('docs')
+  .description(['📖', ' '.repeat(3), 'Open the documentation'].join(''))
+  .action(() => {
+    docsAction()
   })
 
 program
