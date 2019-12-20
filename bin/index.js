@@ -32,7 +32,9 @@ program
 program
   .command('serve')
   .description(
-    ['', ' '.repeat(3), 'Start a local webserver and run a Lightning App in a web browser'].join('')
+    ['🖥', ' '.repeat(3), 'Start a local webserver and run a Lightning App in a web browser'].join(
+      ''
+    )
   )
   .action(() => {
     serveAction()
