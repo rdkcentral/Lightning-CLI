@@ -29,5 +29,6 @@ module.exports = {
   ],
   output: {
     format: 'iife',
+    sourcemap: true,
   },
 }

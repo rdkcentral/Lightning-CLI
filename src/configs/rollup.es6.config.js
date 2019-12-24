@@ -6,5 +6,6 @@ module.exports = {
   plugins: [resolve({ mainFields: ['main', 'browser'] }), commonjs(), babel()],
   output: {
     format: 'iife',
+    sourcemap: true,
   },
 }

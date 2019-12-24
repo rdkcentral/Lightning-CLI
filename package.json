@@ -1,4 +1,6 @@
 {
+
+  "author": "Michiel van der Geest <m.van.der.geest@metrological.com>",
   "name": "lightning-cli",
   "version": "1.0.0",
   "description": "",
