@@ -163,9 +163,17 @@ const npmInstall = cwd => {
 }
 
 const gitInit = cwd => {
-  spinner.start('Initializing GIT repositor')
+  spinner.start('Initializing empty GIT repository')
+  let msg
   return execa('git', ['init'], { cwd })
-    .then(({ stdout }) => spinner.succeed(stdout))
+    .then(({ stdout }) => (msg = stdout))
+    .then(() => {
+      return fs.copyFileSync(
+        path.join(__dirname, '../../fixtures/git/.gitignore'),
+        path.join(cwd, '.gitignore')
+      )
+    })
+    .then(() => spinner.succeed(msg))
     .catch(e => spinner.fail(e))
 }
 
