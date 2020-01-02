@@ -20,24 +20,28 @@ const ensureFolderExists = folder => {
 
 const copySupportFiles = folder => {
   spinner.start('Copying support files to "' + folder.split('/').pop() + '"')
-  shell.cp('./node_modules/wpe-lightning/dist/lightning.js', './dist')
-  shell.cp('./node_modules/wpe-lightning/devtools/lightning-inspect.js', './dist')
-  shell.cp('./node_modules/wpe-lightning-sdk/support/startApp.js', './dist')
-  shell.cp('./node_modules/wpe-lightning-sdk/support/index.html', './dist')
+  shell.cp('./node_modules/wpe-lightning/dist/lightning.js', folder)
+  shell.cp('./node_modules/wpe-lightning/devtools/lightning-inspect.js', folder)
+  shell.cp('./node_modules/wpe-lightning-sdk/support/startApp.js', folder)
+  shell.cp('./node_modules/wpe-lightning-sdk/support/index.html', folder)
   spinner.succeed()
 }
 
 const copyStaticFolder = folder => {
   spinner.start('Copying static assets to "' + folder.split('/').pop() + '"')
-  shell.cp('-r', './static', './dist')
+  shell.cp('-r', './static', folder)
   spinner.succeed()
+}
+
+const copySrcFolder = folder => {
+  shell.cp('-r', './src', folder)
 }
 
 const copySettings = folder => {
   const file = './settings.json'
   if (fs.existsSync(file)) {
     spinner.start('Copying settings.json "' + folder.split('/').pop() + '"')
-    shell.cp(file, './dist')
+    shell.cp(file, folder)
     spinner.succeed()
   }
 }
@@ -46,7 +50,7 @@ const copyMetadata = folder => {
   const file = './metadata.json'
   if (fs.existsSync(file)) {
     spinner.start('Copying metadata.json "' + folder.split('/').pop() + '"')
-    shell.cp(file, './dist')
+    shell.cp(file, folder)
     spinner.succeed()
   }
 }
@@ -109,6 +113,7 @@ module.exports = {
   ensureFolderExists,
   copySupportFiles,
   copyStaticFolder,
+  copySrcFolder,
   copySettings,
   copyMetadata,
   readMetadata,
