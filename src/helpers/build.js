@@ -73,7 +73,7 @@ const bundleEs6App = (folder, metadata) => {
     '--file',
     path.join(folder, 'appBundle.js'),
     '--name',
-    'APP_' + metadata.identifier.replace(/\./g, '_').replace(/-/, '_'),
+    'APP_' + metadata.identifier.replace(/\./g, '_').replace(/-/g, '_'),
   ])
     .then(() => {
       spinner.succeed()
@@ -96,7 +96,7 @@ const bundleEs5App = (folder, metadata) => {
     '--file',
     path.join(folder, 'appBundle.es5.js'),
     '--name',
-    'APP_' + metadata.identifier.replace(/\./g, '_').replace(/-/, '_'),
+    'APP_' + metadata.identifier.replace(/\./g, '_').replace(/-/g, '_'),
   ])
     .then(() => {
       spinner.succeed()
