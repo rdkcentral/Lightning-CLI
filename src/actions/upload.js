@@ -54,8 +54,13 @@ const upload = (packageData, user) => {
     .post('https://api.metrological.com/api/' + user.type + '/app-store/upload-lightning', form, {
       headers,
     })
-    .then(() => {
-      spinner.succeed()
+    .then(({ data }) => {
+      // errors also return a 200 status reponse, so we intercept errors here manually
+      if (data.error) {
+        exit(UPLOAD_ERRORS[data.error] || data.error)
+      } else {
+        spinner.succeed()
+      }
     })
     .catch(err => {
       exit(UPLOAD_ERRORS[err] || err)
