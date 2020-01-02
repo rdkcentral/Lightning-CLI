@@ -75,5 +75,6 @@ module.exports = () => {
     apiKey => login(apiKey).then(usr => ((user = usr), (usr.apiKey = apiKey))),
     () => releaseAction(),
     packageData => upload(packageData, user),
+    () => console.log('Succesfully uploaded!!'),
   ])
 }
