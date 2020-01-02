@@ -13,7 +13,7 @@ npm install -g WebPlatformForEmbedded/Lightning-CLI
 Usage:
 
 ```bash
-lightning-cli <command> [options]
+lng <command> [options]
 ```
 
 ##  Commands
@@ -23,7 +23,7 @@ lightning-cli <command> [options]
 Display an overview of all available commands
 
 ```bash
-lightning-cli
+lng
 ```
 
 ### Create
@@ -31,7 +31,7 @@ lightning-cli
 Create a new Lightning App from scratch
 
 ```bash
-lightning-cli create
+lng create
 ```
 
 ### Build
@@ -39,7 +39,7 @@ lightning-cli create
 Build a standalone Lightning App
 
 ```bash
-lightning-cli build
+lng build
 ```
 
 _Run this command in the root of the Lightning App you want to build_
@@ -50,7 +50,7 @@ _Run this command in the root of the Lightning App you want to build_
 Serve a built Lightning App in a webbrowser
 
 ```bash
-lightning-cli serve
+lng serve
 ```
 
 _Run this command in the root of the Lightning App you want to serve_
@@ -61,7 +61,7 @@ _Run this command in the root of the Lightning App you want to serve_
 Watch the `src` folder for changes and rebuild the Lightning App upon every change
 
 ```bash
-lightning-cli watch
+lng watch
 ```
 
 _Run this command in the root of the Lightning App you want to watch_
@@ -72,7 +72,7 @@ _Run this command in the root of the Lightning App you want to watch_
 Spins up a local server to serve a Lightning App and watches for changes
 
 ```bash
-lightning-cli dev
+lng dev
 ```
 
 _Run this command in the root of the Lightning App you want to serve and watch_
@@ -83,7 +83,7 @@ _Run this command in the root of the Lightning App you want to serve and watch_
 Open the Lightning SDK documentation of the App you're developing
 
 ```bash
-lightning-cli dev
+lng dev
 ```
 
 _Run this command in the root of the Lightning App for which you want to see the documentation_
@@ -94,7 +94,7 @@ _Run this command in the root of the Lightning App for which you want to see the
 Create a release package of a Lightning App
 
 ```bash
-lightning-cli release
+lng release
 ```
 
 _Run this command in the root of the Lightning App you want to release_
@@ -105,7 +105,7 @@ _Run this command in the root of the Lightning App you want to release_
 Upload a release package of a Lightning App to the Metrological Back Office
 
 ```bash
-lightning-cli upload
+lng upload
 ```
 
 _Run this command in the root of the Lightning App you want to upload_

@@ -5,7 +5,8 @@
   "version": "1.0.0",
   "description": "",
   "bin": {
-    "lightning-cli": "./bin/index.js"
+    "lightning": "./bin/index.js",
+    "lng": "./bin/index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
