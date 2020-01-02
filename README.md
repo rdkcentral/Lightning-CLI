@@ -2,8 +2,6 @@
 
 ## Tooling for Lightning development
 
-_Work in Progress_
-
 ## Getting Started
 
 Install the Lightning-CLI _globally_ on your system
@@ -82,7 +80,7 @@ _Run this command in the root of the Lightning App you want to serve and watch_
 
 ### Docs
 
-Open the SDK documentation of the App you're developing
+Open the Lightning SDK documentation of the App you're developing
 
 ```bash
 lightning-cli dev
@@ -92,8 +90,6 @@ _Run this command in the root of the Lightning App for which you want to see the
 
 
 ### Release
-
-**Todo**
 
 Create a release package of a Lightning App
 
@@ -105,8 +101,6 @@ _Run this command in the root of the Lightning App you want to release_
 
 
 ### Upload
-
-**Todo**
 
 Upload a release package of a Lightning App to the Metrological Back Office
 
