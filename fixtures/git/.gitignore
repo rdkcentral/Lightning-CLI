@@ -2,3 +2,5 @@ node_modules
 .DS_store
 .idea
 dist
+releases
+.tmp
