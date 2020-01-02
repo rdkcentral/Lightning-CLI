@@ -1,6 +1,6 @@
 {
-
   "author": "Michiel van der Geest <m.van.der.geest@metrological.com>",
+  "license": "Apache-2",
   "name": "lightning-cli",
   "version": "1.0.0",
   "description": "",
@@ -21,8 +21,6 @@
       "pre-commit": "lint-staged"
     }
   },
-  "author": "Michiel van der Geest <m.van.der.geest@metrological.com>",
-  "license": "Apache-2",
   "dependencies": {
     "@babel/core": "^7.7.7",
     "@babel/plugin-transform-parameters": "^7.7.7",
@@ -42,6 +40,7 @@
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "shelljs": "^0.8.3",
+    "targz": "^1.0.1",
     "watch": "^1.0.2"
   },
   "devDependencies": {
