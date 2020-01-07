@@ -1,5 +1,6 @@
 const watch = require('./watch')
 const serve = require('./serve')
+
 module.exports = () => {
   watch(serve, () => {
     // fixme: reload webbrowser automatically

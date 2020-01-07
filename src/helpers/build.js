@@ -62,6 +62,13 @@ const readMetadata = () => {
   })
 }
 
+const readSettings = () => {
+  return new Promise(resolve => {
+    const settings = fs.readFileSync('./settings.json', 'utf8')
+    resolve(JSON.parse(settings))
+  })
+}
+
 const bundleEs6App = (folder, metadata) => {
   spinner.start('Building ES6 appBundle and saving to "' + folder.split('/').pop() + '"')
 
@@ -117,6 +124,7 @@ module.exports = {
   copySettings,
   copyMetadata,
   readMetadata,
+  readSettings,
   bundleEs6App,
   bundleEs5App,
 }

@@ -17,7 +17,22 @@ module.exports = (initCallback, watchCallback) => {
       if (typeof f == 'object' && prev === null && curr === null) {
         build(true).then(initCallback && initCallback)
       } else {
-        build().then(watchCallback && watchCallback) // fixme: pass an object with what to build exactly ...
+        // pass the 'type of change' based on the file that was changes
+        let change
+        if (/^src\//g.test(f)) {
+          change = 'src'
+        }
+        if (/^static\//g.test(f)) {
+          change = 'static'
+        }
+        if (f === 'metadata.json') {
+          change = 'metadata'
+        }
+        if (f === 'settings.json') {
+          change = 'settings'
+        }
+
+        build(false, change).then(watchCallback && watchCallback) // fixme: pass an object with what to build exactly ...
       }
     }
   )
