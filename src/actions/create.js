@@ -203,8 +203,8 @@ const done = config => {
       chalk.grey('$') +
       chalk.yellow(' cd ' + chalk.underline(config.targetDir.split('/').pop()))
   )
-  console.log('   ' + chalk.grey('$') + chalk.yellow(' lightning-cli build'))
-  console.log('   ' + chalk.grey('$') + chalk.yellow(' lightning-cli serve'))
+  console.log('   ' + chalk.grey('$') + chalk.yellow(' lng build'))
+  console.log('   ' + chalk.grey('$') + chalk.yellow(' lng serve'))
   console.log(' ')
 
   return config
