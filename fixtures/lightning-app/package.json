@@ -2,6 +2,6 @@
   "name": "{$appId}",
   "description": "{$appName}",
   "dependencies": {
-    "wpe-lightning-sdk": "git+https://github.com/WebPlatformForEmbedded/Lightning-SDK.git#next"
+    "wpe-lightning-sdk": "git+https://github.com/WebPlatformForEmbedded/Lightning-SDK.git#feature/es5-support"
   }
 }

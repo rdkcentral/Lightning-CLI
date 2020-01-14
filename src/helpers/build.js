@@ -21,9 +21,17 @@ const ensureFolderExists = folder => {
 const copySupportFiles = folder => {
   spinner.start('Copying support files to "' + folder.split('/').pop() + '"')
   shell.cp('./node_modules/wpe-lightning/dist/lightning.js', folder)
+  // lightning es5 bundle in dist didn't exist in earlier versions (< 1.3.1)
+  if (fs.existsSync('./node_modules/wpe-lightning/dist/lightning.es5.js')) {
+    shell.cp('./node_modules/wpe-lightning/dist/lightning.es5.js', folder)
+  }
   shell.cp('./node_modules/wpe-lightning/devtools/lightning-inspect.js', folder)
   shell.cp('./node_modules/wpe-lightning-sdk/support/startApp.js', folder)
   shell.cp('./node_modules/wpe-lightning-sdk/support/index.html', folder)
+  // polyfills didn't exist in all versions of the SDK
+  if (fs.existsSync('./node_modules/wpe-lightning-sdk/support/polyfills')) {
+    shell.cp('-r', './node_modules/wpe-lightning-sdk/support/polyfills', folder)
+  }
   spinner.succeed()
 }
 
