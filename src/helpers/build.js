@@ -20,18 +20,29 @@ const ensureFolderExists = folder => {
 
 const copySupportFiles = folder => {
   spinner.start('Copying support files to "' + folder.split('/').pop() + '"')
-  shell.cp('./node_modules/wpe-lightning/dist/lightning.js', folder)
-  // lightning es5 bundle in dist didn't exist in earlier versions (< 1.3.1)
-  if (fs.existsSync('./node_modules/wpe-lightning/dist/lightning.es5.js')) {
-    shell.cp('./node_modules/wpe-lightning/dist/lightning.es5.js', folder)
+
+  // see if project is "old" style (i.e. has no lib folder in support)
+  // TODO: this whole block could be removed at one point assuming all projects are updated
+  if (!fs.existsSync('./node_modules/wpe-lightning-sdk/support/lib')) {
+    console.log('')
+    console.log('')
+    console.log(
+      '⚠️  You are using an older version of the Lightning SDk. Please consider upgrading to the latest version.  ⚠️'
+    )
+    console.log('')
+    shell.cp('./node_modules/wpe-lightning/dist/lightning.js', folder)
+    // lightning es5 bundle in dist didn't exist in earlier versions (< 1.3.1)
+    if (fs.existsSync('./node_modules/wpe-lightning/dist/lightning.es5.js')) {
+      shell.cp('./node_modules/wpe-lightning/dist/lightning.es5.js', folder)
+    }
+    shell.cp('./node_modules/wpe-lightning/devtools/lightning-inspect.js', folder)
+    // lightning es5 inspector in devtools didn't exist in earlier versions (< 1.3.1)
+    if (fs.existsSync('./node_modules/wpe-lightning/devtools/lightning-inspect.es5.js')) {
+      shell.cp('./node_modules/wpe-lightning/devtools/lightning-inspect.es5.js', folder)
+    }
   }
-  shell.cp('./node_modules/wpe-lightning/devtools/lightning-inspect.js', folder)
-  shell.cp('./node_modules/wpe-lightning-sdk/support/startApp.js', folder)
-  shell.cp('./node_modules/wpe-lightning-sdk/support/index.html', folder)
-  // polyfills didn't exist in all versions of the SDK
-  if (fs.existsSync('./node_modules/wpe-lightning-sdk/support/polyfills')) {
-    shell.cp('-r', './node_modules/wpe-lightning-sdk/support/polyfills', folder)
-  }
+  // simply copy everything in the support folder
+  shell.cp('-r', './node_modules/wpe-lightning-sdk/support/*', folder)
   spinner.succeed()
 }
 
