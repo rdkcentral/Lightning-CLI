@@ -1,7 +1,7 @@
 {
   "author": "Michiel van der Geest <m.van.der.geest@metrological.com>",
   "license": "Apache-2",
-  "name": "wpe-lightning-sdk",
+  "name": "wpe-lightning-cli",
   "version": "1.1.0",
   "description": "",
   "bin": {
