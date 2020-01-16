@@ -83,7 +83,7 @@ _Run this command in the root of the Lightning App you want to serve and watch_
 Open the Lightning SDK documentation of the App you're developing
 
 ```bash
-lng dev
+lng docs
 ```
 
 _Run this command in the root of the Lightning App for which you want to see the documentation_
