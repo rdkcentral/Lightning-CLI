@@ -8,6 +8,7 @@ const serveAction = require('../src/actions/serve')
 const watchAction = require('../src/actions/watch')
 const devAction = require('../src/actions/dev')
 const docsAction = require('../src/actions/docs')
+const upToDate = require('../src/helpers/uptodate')
 
 program
   .version(`Lightning-CLI ${require('../package').version}`)
@@ -17,7 +18,7 @@ program
   .command('create')
   .description(['✨', ' '.repeat(3), 'Create a new Lightning App'].join(''))
   .action(() => {
-    createAction()
+    upToDate().then(createAction)
   })
 
 program
@@ -73,14 +74,14 @@ program
   .command('release')
   .description(['📦', ' '.repeat(3), 'Build a release package of a Lightning App'].join(''))
   .action(() => {
-    releaseAction()
+    upToDate().then(releaseAction)
   })
 
 program
   .command('upload')
   .description(['🚀', ' '.repeat(3), 'Upload release package to Metrological Back Office'].join(''))
   .action(() => {
-    uploadAction()
+    upToDate().then(uploadAction)
   })
 
 program.parse(process.argv)
