@@ -34,7 +34,11 @@ const fetchLatestVersion = () => {
   })
 }
 
-const upToDate = () => {
+const upToDate = (skip = false) => {
+  if (skip === true) {
+    return Promise.resolve()
+  }
+
   spinner.start('Verifying if your installation of Lightning-CLI is up to date.')
   return fetchLatestVersion()
     .then(latestVersion => {

@@ -10,6 +10,8 @@ const devAction = require('../src/actions/dev')
 const docsAction = require('../src/actions/docs')
 const upToDate = require('../src/helpers/uptodate')
 
+const updateCheck = (force = null) => upToDate(force === null ? Math.random() < 0.8 : !force)
+
 program
   .version(`Lightning-CLI ${require('../package').version}`)
   .usage('lightning-cli <command> [options]')
@@ -18,7 +20,7 @@ program
   .command('create')
   .description(['✨', ' '.repeat(3), 'Create a new Lightning App'].join(''))
   .action(() => {
-    upToDate().then(createAction)
+    updateCheck(true).then(createAction)
   })
 
 program
@@ -27,7 +29,7 @@ program
     ['👷‍♂️', ' '.repeat(3), 'Build a standalone Lightning App (to run in a web browser)'].join('')
   )
   .action(() => {
-    buildAction(true)
+    updateCheck().then(() => buildAction(true))
   })
 
 program
@@ -38,7 +40,7 @@ program
     )
   )
   .action(() => {
-    serveAction()
+    updateCheck().then(serveAction)
   })
 
 program
@@ -47,7 +49,7 @@ program
     ['👀', ' '.repeat(3), 'Watch the for file changes and automatically rebuild the app'].join('')
   )
   .action(() => {
-    watchAction()
+    updateCheck().then(watchAction)
   })
 
 program
@@ -60,28 +62,28 @@ program
     ].join('')
   )
   .action(() => {
-    devAction()
+    updateCheck().then(devAction)
   })
 
 program
   .command('docs')
   .description(['📖', ' '.repeat(3), 'Open the documentation'].join(''))
   .action(() => {
-    docsAction()
+    updateCheck().then(docsAction)
   })
 
 program
   .command('release')
   .description(['📦', ' '.repeat(3), 'Build a release package of a Lightning App'].join(''))
   .action(() => {
-    upToDate().then(releaseAction)
+    updateCheck(true).then(releaseAction)
   })
 
 program
   .command('upload')
   .description(['🚀', ' '.repeat(3), 'Upload release package to Metrological Back Office'].join(''))
   .action(() => {
-    upToDate().then(uploadAction)
+    updateCheck(true).then(uploadAction)
   })
 
 program.parse(process.argv)
