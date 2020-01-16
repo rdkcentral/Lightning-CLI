@@ -35,21 +35,27 @@ const fetchLatestVersion = () => {
 }
 
 const upToDate = () => {
+  spinner.start('Verifying if your installation of Lightning-CLI is up to date.')
   return fetchLatestVersion()
     .then(latestVersion => {
       const diff = semver.diff(latestVersion, packageJson.version)
       if (diff === 'major' || diff === 'minor') {
-        spinner.start('Your installation of Lightning-CLI is out of date. Attempting to update.')
+        spinner.fail()
+        spinner.start(
+          'Attempting to update Lightning-CLI to the latest version (' + latestVersion + ')'
+        )
         return execa('npm', ['update', '-g', 'WebPlatformForEmbedded/Lightning-CLI'])
           .then(() => {
             spinner.succeed()
             console.log(' ')
           })
           .catch(e => {
+            spinner.fail()
             console.log(e)
             exit()
           })
       } else {
+        spinner.succeed()
         return Promise.resolve()
       }
     })
