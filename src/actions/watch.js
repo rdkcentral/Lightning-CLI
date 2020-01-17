@@ -19,10 +19,10 @@ module.exports = (initCallback, watchCallback) => {
       } else {
         // pass the 'type of change' based on the file that was changes
         let change
-        if (/^src\//g.test(f)) {
+        if (/^src/g.test(f)) {
           change = 'src'
         }
-        if (/^static\//g.test(f)) {
+        if (/^static/g.test()) {
           change = 'static'
         }
         if (f === 'metadata.json') {
@@ -32,7 +32,7 @@ module.exports = (initCallback, watchCallback) => {
           change = 'settings'
         }
 
-        build(false, change).then(watchCallback && watchCallback) // fixme: pass an object with what to build exactly ...
+        build(false, change).then(watchCallback && watchCallback)
       }
     }
   )
