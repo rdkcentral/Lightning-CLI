@@ -26,6 +26,7 @@ const copySupportFiles = folder => {
   if (!fs.existsSync('./node_modules/wpe-lightning-sdk/support/lib')) {
     console.log('')
     console.log('')
+    // fixme: add example npm command to upgrade to latest SDK
     console.log(
       '⚠️  You are using an older version of the Lightning SDK. Please consider upgrading to the latest version.  ⚠️'
     )
