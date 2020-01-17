@@ -55,6 +55,12 @@ const upToDate = (skip = false) => {
           .catch(e => {
             spinner.fail()
             console.log(e)
+            console.log(' ')
+            console.log(' ')
+            console.log(
+              'Please update Lightning-CLI manually by running: npm install -g WebPlatformForEmbedded/Lightning-CLI'
+            )
+            console.log(' ')
             exit()
           })
       } else {
