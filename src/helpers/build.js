@@ -27,7 +27,7 @@ const copySupportFiles = folder => {
     console.log('')
     console.log('')
     console.log(
-      '⚠️  You are using an older version of the Lightning SDk. Please consider upgrading to the latest version.  ⚠️'
+      '⚠️  You are using an older version of the Lightning SDK. Please consider upgrading to the latest version.  ⚠️'
     )
     console.log('')
     shell.cp('./node_modules/wpe-lightning/dist/lightning.js', folder)
