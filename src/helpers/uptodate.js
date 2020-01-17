@@ -42,8 +42,7 @@ const upToDate = (skip = false) => {
   spinner.start('Verifying if your installation of Lightning-CLI is up to date.')
   return fetchLatestVersion()
     .then(latestVersion => {
-      const diff = semver.diff(latestVersion, packageJson.version)
-      if (diff === 'major' || diff === 'minor') {
+      if (semver.lt(packageJson.version, latestVersion)) {
         spinner.fail()
         spinner.start(
           'Attempting to update Lightning-CLI to the latest version (' + latestVersion + ')'
