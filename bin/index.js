@@ -67,7 +67,7 @@ program
 
 program
   .command('docs')
-  .description(['📖', ' '.repeat(3), 'Open the documentation'].join(''))
+  .description(['📖', ' '.repeat(3), 'Open the Lightning-SDK documentation'].join(''))
   .action(() => {
     updateCheck().then(docsAction)
   })
