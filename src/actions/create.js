@@ -28,7 +28,7 @@ const askAppFolder = appId =>
   sequence([
     () =>
       ask(
-        'In what folder (relative) do you want to create the new App? (leave empty to create in current working dir)',
+        'In what (relative) folder do you want to create the new App? (leave empty to create in current working dir)',
         appId
       ),
     appFolder => validateAppFolder(appFolder),
