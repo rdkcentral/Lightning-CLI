@@ -2,9 +2,13 @@ const execa = require('execa')
 const path = require('path')
 
 module.exports = () => {
-  execa(path.join(__dirname, '../..', 'node_modules/.bin/http-server'), [
+  const subprocess = execa(path.join(__dirname, '../..', 'node_modules/.bin/http-server'), [
     './dist',
     '-o',
     '-c-1',
-  ]).stdout.pipe(process.stdout)
+  ])
+
+  subprocess.stdout.pipe(process.stdout)
+
+  return subprocess
 }
