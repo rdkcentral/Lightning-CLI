@@ -31,7 +31,7 @@ module.exports = (initCallback, watchCallback) => {
         if (/^src/g.test(f)) {
           change = 'src'
         }
-        if (/^static/g.test()) {
+        if (/^static/g.test(f)) {
           change = 'static'
         }
         if (f === 'metadata.json') {
