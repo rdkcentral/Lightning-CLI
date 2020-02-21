@@ -109,3 +109,12 @@ lng upload
 ```
 
 _Run this command in the root of the Lightning App you want to upload_
+
+## Contributing
+
+If you want to contribute to the Lightning-CLI, please consider the following:
+
+- the **master** branch is the latest stable release
+- the **dev** branch is used for upcoming releases
+- all development should be done in dedicated *topic branches* (from latest `dev`-branch)
+- please send in your PR against the `dev`-branch
