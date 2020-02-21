@@ -107,8 +107,8 @@ const bundleEs6App = (folder, metadata) => {
       return metadata
     })
     .catch(e => {
-      console.log(e)
-      exit()
+      console.log(e.stderr)
+      throw Error(e)
     })
 }
 

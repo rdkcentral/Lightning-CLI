@@ -36,6 +36,7 @@
     "fs-extra": "^8.1.0",
     "http-server": "^0.12.0",
     "inquirer": "^7.0.0",
+    "is-online": "^8.2.1",
     "ora": "^4.0.3",
     "replace-in-file": "^4.2.0",
     "rollup": "^1.27.13",

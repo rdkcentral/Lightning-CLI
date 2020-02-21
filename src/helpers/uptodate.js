@@ -1,10 +1,12 @@
 const https = require('https')
 const semver = require('semver')
 const execa = require('execa')
+const isOnline = require('is-online')
 
 const spinner = require('./spinner.js')
 const exit = require('./exit.js')
 const packageJson = require('../../package.json')
+const ask = require('../helpers/ask')
 
 const fetchLatestVersion = () => {
   let url =
@@ -34,11 +36,34 @@ const fetchLatestVersion = () => {
   })
 }
 
-const upToDate = (skip = false) => {
+const upToDate = async (skip = false) => {
   if (skip === true) {
-    return Promise.resolve()
+    return true
   }
+  spinner.start('Testing internet connection..')
 
+  const isOnline = await testConnection()
+  if (!isOnline) {
+    spinner.fail()
+    console.log('Not able to check for CLI update due to no connection')
+
+    const answer = await ask('Do you want to continue', null, 'list', ['Yes', 'No'])
+    if (answer === 'Yes') {
+      return true
+    }
+
+    exit()
+  } else {
+    spinner.succeed()
+    return checkForUpdate()
+  }
+}
+
+const testConnection = async () => {
+  return await isOnline()
+}
+
+const checkForUpdate = () => {
   spinner.start('Verifying if your installation of Lightning-CLI is up to date.')
   return fetchLatestVersion()
     .then(latestVersion => {

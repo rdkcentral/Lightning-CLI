@@ -24,6 +24,16 @@ const askAppId = () =>
     appId => validateAppId(appId),
   ])
 
+const askAppFolder = appId =>
+  sequence([
+    () =>
+      ask(
+        'In what (relative) folder do you want to create the new App? (leave empty to create in current working dir)',
+        appId
+      ),
+    appFolder => validateAppFolder(appFolder),
+  ])
+
 const askESlint = () =>
   ask('Do you want to enable ESlint?', null, 'list', ['Yes', 'No']).then(
     // map yes to true and no to false
@@ -47,6 +57,7 @@ const askConfig = () => {
   return sequence([
     () => askAppName().then(appName => (config.appName = appName)),
     () => askAppId().then(appId => (config.appId = appId)),
+    () => askAppFolder(config.appId).then(folder => (config.appFolder = folder)),
     () => askESlint().then(eslint => (config.eslint = eslint)),
     () => config,
   ])
@@ -80,12 +91,17 @@ const validateAppName = appName => {
   return appName
 }
 
+const validateAppFolder = folder => {
+  // todo: validate if folder is correct path / doesn't exist etc.
+  return folder
+}
+
 /******* Actions *******/
 
 const copyLightningFixtures = config => {
   return new Promise(resolve => {
-    const targetDir = path.join(process.cwd(), config.appId)
-    if (fs.pathExistsSync(targetDir)) {
+    const targetDir = path.join(process.cwd(), config.appFolder || '')
+    if (config.appFolder && fs.pathExistsSync(targetDir)) {
       exit('The target directory ' + targetDir + ' already exists')
     }
 
@@ -198,11 +214,8 @@ const done = config => {
 
   console.log('👉  Get started with the following commands:')
   console.log(' ')
-  console.log(
-    '   ' +
-      chalk.grey('$') +
-      chalk.yellow(' cd ' + chalk.underline(config.targetDir.split('/').pop()))
-  )
+  config.appFolder &&
+    console.log('   ' + chalk.grey('$') + chalk.yellow(' cd ' + chalk.underline(config.appFolder)))
   console.log('   ' + chalk.grey('$') + chalk.yellow(' lng build'))
   console.log('   ' + chalk.grey('$') + chalk.yellow(' lng serve'))
   console.log(' ')

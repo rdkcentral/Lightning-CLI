@@ -1,7 +1,10 @@
 const build = require('./build')
 const watch = require('watch')
+const exit = require('../helpers/exit')
 
 const regexp = /^(?!src|static|settings\.json|metadata\.json)(.+)$/
+
+let initCallbackProcess
 
 module.exports = (initCallback, watchCallback) => {
   return watch.watchTree(
@@ -15,14 +18,20 @@ module.exports = (initCallback, watchCallback) => {
     },
     (f, curr, prev) => {
       if (typeof f == 'object' && prev === null && curr === null) {
-        build(true).then(initCallback && initCallback)
+        build(true)
+          .then(() => {
+            initCallbackProcess = initCallback && initCallback()
+          })
+          .catch(() => {
+            exit()
+          })
       } else {
         // pass the 'type of change' based on the file that was changes
         let change
         if (/^src/g.test(f)) {
           change = 'src'
         }
-        if (/^static/g.test()) {
+        if (/^static/g.test(f)) {
           change = 'static'
         }
         if (f === 'metadata.json') {
@@ -32,7 +41,12 @@ module.exports = (initCallback, watchCallback) => {
           change = 'settings'
         }
 
-        build(false, change).then(watchCallback && watchCallback)
+        build(false, change)
+          .then(watchCallback && watchCallback)
+          .catch(() => {
+            initCallbackProcess.cancel()
+            exit()
+          })
       }
     }
   )
