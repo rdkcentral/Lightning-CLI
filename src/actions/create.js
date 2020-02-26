@@ -107,6 +107,11 @@ const copyLightningFixtures = config => {
 
     fs.copySync(path.join(__dirname, '../../fixtures/lightning-app'), targetDir)
 
+    fs.copyFileSync(
+      path.join(__dirname, '../../fixtures/vscode/app.code-workspace'),
+      path.join(targetDir, '' + config.appName + '.code-workspace' )
+    )
+
     resolve(targetDir)
   })
 }
