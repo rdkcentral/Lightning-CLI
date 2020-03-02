@@ -20,7 +20,7 @@ program
   .command('create')
   .description(['✨', ' '.repeat(3), 'Create a new Lightning App'].join(''))
   .action(() => {
-    updateCheck(true).then(createAction)
+    updateCheck(true).then(() => createAction())
   })
 
 program
@@ -40,7 +40,7 @@ program
     )
   )
   .action(() => {
-    updateCheck().then(serveAction)
+    updateCheck().then(() => serveAction())
   })
 
 program
@@ -49,7 +49,7 @@ program
     ['👀', ' '.repeat(3), 'Watch the for file changes and automatically rebuild the app'].join('')
   )
   .action(() => {
-    updateCheck().then(watchAction)
+    updateCheck().then(() => watchAction())
   })
 
 program
@@ -62,28 +62,28 @@ program
     ].join('')
   )
   .action(() => {
-    updateCheck().then(devAction)
+    updateCheck().then(() => devAction())
   })
 
 program
   .command('docs')
   .description(['📖', ' '.repeat(3), 'Open the Lightning-SDK documentation'].join(''))
   .action(() => {
-    updateCheck().then(docsAction)
+    updateCheck().then(() => docsAction())
   })
 
 program
   .command('release')
   .description(['📦', ' '.repeat(3), 'Build a release package of a Lightning App'].join(''))
   .action(() => {
-    updateCheck(true).then(releaseAction)
+    updateCheck(true).then(() => releaseAction())
   })
 
 program
   .command('upload')
   .description(['🚀', ' '.repeat(3), 'Upload release package to Metrological Back Office'].join(''))
   .action(() => {
-    updateCheck(true).then(uploadAction)
+    updateCheck(true).then(() => uploadAction())
   })
 
 program.parse(process.argv)
