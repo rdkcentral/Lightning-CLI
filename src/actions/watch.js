@@ -7,6 +7,7 @@ const regexp = /^(?!src|static|settings\.json|metadata\.json)(.+)$/
 let initCallbackProcess
 
 module.exports = (initCallback, watchCallback) => {
+  let busy = false
   return watch.watchTree(
     './',
     {
@@ -17,6 +18,10 @@ module.exports = (initCallback, watchCallback) => {
       ignoreDirectoryPattern: /node_modules|\.git|dist/,
     },
     (f, curr, prev) => {
+      // prevent initiating another build when already busy
+      if (busy === true) {
+        return
+      }
       if (typeof f == 'object' && prev === null && curr === null) {
         build(true)
           .then(() => {
@@ -26,6 +31,8 @@ module.exports = (initCallback, watchCallback) => {
             exit()
           })
       } else {
+        busy = true
+
         // pass the 'type of change' based on the file that was changes
         let change
         if (/^src/g.test(f)) {
@@ -42,10 +49,14 @@ module.exports = (initCallback, watchCallback) => {
         }
 
         build(false, change)
-          .then(watchCallback && watchCallback)
+          .then(result => {
+            busy = false
+            watchCallback && watchCallback()
+          })
           .catch(() => {
-            initCallbackProcess.cancel()
-            exit()
+            busy = false
+            // next line would stop the server, but we want to keep it running (may e should be configurable?)
+            // initCallbackProcess && initCallbackProcess.cancel()
           })
       }
     }
