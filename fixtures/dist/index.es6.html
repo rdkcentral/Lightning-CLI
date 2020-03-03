@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <style>
+            html {height: 100%; width: 100%;}
+            *,body {margin:0; padding:0;}
+            canvas { position: absolute; z-index: 2; }
+            body { background: black; width: 100%; height: 100%;}
+        </style>
+    </head>
+    <body>
+        <script src="./js/lightning.js"></script>
+        <script src="./js/appBundle.js"></script>
+
+        <script>
+            const appSettings = {
+                stage: {
+                    clearColor: '0x00000000',
+                    useImageWorker: true
+                },
+            }
+
+            const platformSettings = {
+                path: './static',
+            }
+
+            const appData = {}
+
+            const app = APP(appSettings, platformSettings, appData)
+            document.body.appendChild(app.stage.getCanvas())
+
+        </script>
+    </body>
+</html>

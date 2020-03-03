@@ -4,7 +4,6 @@ const execa = require('execa')
 const path = require('path')
 
 const spinner = require('../helpers/spinner')
-const exit = require('../helpers/exit')
 
 const removeFolder = folder => {
   spinner.start('Removing "' + folder.split('/').pop() + '" folder')
@@ -89,10 +88,10 @@ const readSettings = () => {
   })
 }
 
-const bundleEs6App = (folder, metadata) => {
+const bundleEs6App = (folder, metadata, options = {}) => {
   spinner.start('Building ES6 appBundle and saving to "' + folder.split('/').pop() + '"')
 
-  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), [
+  const args = [
     '-c',
     path.join(__dirname, '../configs/rollup.es6.config.js'),
     '--input',
@@ -100,8 +99,14 @@ const bundleEs6App = (folder, metadata) => {
     '--file',
     path.join(folder, 'appBundle.js'),
     '--name',
-    'APP_' + metadata.identifier.replace(/\./g, '_').replace(/-/g, '_'),
-  ])
+    ['APP', metadata.identifier && metadata.identifier.replace(/\./g, '_').replace(/-/g, '_')]
+      .filter(val => val)
+      .join('_'),
+  ]
+
+  if (options.sourcemaps === false) args.push('--no-sourcemap')
+
+  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), args)
     .then(() => {
       spinner.succeed()
       return metadata
@@ -113,10 +118,10 @@ const bundleEs6App = (folder, metadata) => {
     })
 }
 
-const bundleEs5App = (folder, metadata) => {
+const bundleEs5App = (folder, metadata, options = {}) => {
   spinner.start('Building ES5 appBundle and saving to "' + folder.split('/').pop() + '"')
 
-  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), [
+  const args = [
     '-c',
     path.join(__dirname, '../configs/rollup.es5.config.js'),
     '--input',
@@ -124,8 +129,14 @@ const bundleEs5App = (folder, metadata) => {
     '--file',
     path.join(folder, 'appBundle.es5.js'),
     '--name',
-    'APP_' + metadata.identifier.replace(/\./g, '_').replace(/-/g, '_'),
-  ])
+    ['APP', metadata.identifier && metadata.identifier.replace(/\./g, '_').replace(/-/g, '_')]
+      .filter(val => val)
+      .join('_'),
+  ]
+
+  if (options.sourcemaps === false) args.push('--no-sourcemap')
+
+  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), args)
     .then(() => {
       spinner.succeed()
       return metadata
