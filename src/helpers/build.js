@@ -107,6 +107,7 @@ const bundleEs6App = (folder, metadata) => {
       return metadata
     })
     .catch(e => {
+      spinner.fail('Error while creating ES6 bundle (see log)')
       console.log(e.stderr)
       throw Error(e)
     })
@@ -130,8 +131,9 @@ const bundleEs5App = (folder, metadata) => {
       return metadata
     })
     .catch(e => {
-      console.log(e)
-      exit()
+      spinner.fail('Error while creating ES5 bundle (see log)')
+      console.log(e.stderr)
+      throw Error(e)
     })
 }
 
