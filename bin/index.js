@@ -89,7 +89,7 @@ program
     updateCheck(true).then(uploadAction)
   })
 
-program.on('command:*', function() {
+program.on('command:*', () => {
   const suggestion = didYouMean(
     program.args[0] || '',
     program.commands.map(command => command._name)
