@@ -31,6 +31,13 @@ const setupDistFolder = (folder, type) => {
     )
     return true
   }
+  if (type === 'spark') {
+    shell.cp(
+      path.join(__dirname, '../../fixtures/dist/index.spark'),
+      path.join(folder, 'index.spark')
+    )
+    return true
+  }
 }
 
 module.exports = {

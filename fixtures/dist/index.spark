@@ -1,0 +1,29 @@
+{
+    "frameworkType": "sparkGL",
+    "applicationURL": "init.js",
+    "frameworks": [
+        {
+            "url": "src/lightning-web.js",
+            "md5": "529c31bf034bea7dd62ede3176203a17"
+        },
+        {
+            "url": "spark/SparkPlatform.js",
+            "md5": "4d585ca38061ac42c690a716ac6bd886"
+        },
+        {
+            "url": "spark/fetch.js",
+            "md5": "cfa8e62f4999477ad14503aec70f5780"
+        },
+        {
+            "url": "src/thunderJS.js",
+            "md5": "518db002bbe6440817a2b221e0d190c4"
+        },
+        {
+            "url": "src/ux.js",
+            "md5": "7898679510c9442d2ef93f4d7a610018"
+        },
+        {
+            "url": "js/appBundle.spark.js"
+        }
+    ]
+}
