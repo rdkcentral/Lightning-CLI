@@ -13,7 +13,7 @@ const upToDate = require('../src/helpers/uptodate')
 const updateCheck = (force = null) => upToDate(force === null ? Math.random() < 0.8 : !force)
 
 program
-  .version(`Lightning-CLI ${require('../package').version}`)
+  .version('Lightning-CLI ' + require('../package').version)
   .usage('lightning-cli <command> [options]')
 
 program
@@ -60,7 +60,7 @@ program
     [
       '👨‍💻',
       ' '.repeat(3),
-      'Build a local Lightning App, start a local webserver and watch for changes',
+      'Build a local Lightning App, start a local webserver, run a built Lightning App in a web browser and watch for changes',
     ].join('')
   )
   .action(() => {
@@ -91,7 +91,7 @@ program
     [
       '🚀',
       ' '.repeat(3),
-      'Upload the Lightning App to the Metrological Back Office to be published in the App Store',
+      'Upload the Lightning App to the Metrological Back Office to be published in an App Store',
     ].join('')
   )
   .action(() => {
