@@ -14,6 +14,7 @@ module.exports = () => {
   let type
   let distDir
   return sequence([
+    () => buildHelpers.ensureCorrectGitIgnore(),
     () => askDistType().then(val => (type = val.toLowerCase())),
     () => {
       distDir = path.join(baseDistDir, type)

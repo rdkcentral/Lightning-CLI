@@ -182,6 +182,27 @@ const bundleSparkApp = (folder, metadata, options = {}) => {
   })
 }
 
+const ensureCorrectGitIgnore = () => {
+  return new Promise(resolve => {
+    const filename = path.join(process.cwd(), '.gitignore')
+    try {
+      const gitIgnoreEntries = fs.readFileSync(filename, 'utf8').split('\n')
+      const missingEntries = ['dist', 'releases', '.tmp', 'build'].filter(
+        entry => gitIgnoreEntries.indexOf(entry) === -1
+      )
+
+      if (missingEntries.length) {
+        fs.appendFileSync(filename, missingEntries.join('\n') + '\n')
+      }
+
+      resolve()
+    } catch (e) {
+      // no .gitignore file, so let's just move on
+      resolve()
+    }
+  })
+}
+
 const ensureCorrectSparkSDKInstalled = () => {
   return new Promise((resolve, reject) => {
     Promise.all([packageVersion('wpe-lightning-sdk'), packageVersion('lightning-sdk-spark')])
@@ -222,4 +243,5 @@ module.exports = {
   bundleEs6App,
   bundleEs5App,
   bundleSparkApp,
+  ensureCorrectGitIgnore,
 }

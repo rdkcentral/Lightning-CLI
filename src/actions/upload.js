@@ -7,6 +7,7 @@ const sequence = require('../helpers/sequence')
 const ask = require('../helpers/ask')
 const spinner = require('../helpers/spinner')
 const exit = require('../helpers/exit')
+const buildHelpers = require('../helpers/build')
 
 const UPLOAD_ERRORS = {
   version_already_exists: 'The current version of your app already exists',
@@ -70,6 +71,7 @@ const upload = (packageData, user) => {
 module.exports = () => {
   let user
   return sequence([
+    () => buildHelpers.ensureCorrectGitIgnore(),
     // todo: save API key locally for future use and set it as default answer
     () => ask('Please provide your API key'),
     apiKey => login(apiKey).then(usr => ((user = usr), (usr.apiKey = apiKey))),
