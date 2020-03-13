@@ -4,6 +4,8 @@ const URLSearchParams = require('url').URLSearchParams
 
 const location = new URL(global.__dirname)
 
+location.search = new URLSearchParams(global.sparkQueryParams)
+
 // eslint-disable-next-line no-unused-vars
 class Event extends String {}
 
@@ -38,14 +40,19 @@ const window = new Proxy(
   new (class SparkWindow extends EventTarget {
     constructor() {
       super()
+      this.enableSparkGL1080 =
+        global.sparkscene.capabilities &&
+        global.sparkscene.capabilities.sparkgl &&
+        global.sparkscene.capabilities.sparkgl.supports1080 &&
+        location.searchParams.has('enableSparkGL1080')
     }
 
     get innerWidth() {
-      return global.sparkscene.w
+      return this.enableSparkGL1080 ? 1920 : global.sparkscene.w
     }
 
     get innerHeight() {
-      return global.sparkscene.h
+      return this.enableSparkGL1080 ? 1080 : global.sparkscene.h
     }
 
     get location() {
