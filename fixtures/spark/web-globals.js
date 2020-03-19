@@ -2,9 +2,23 @@ const URL = require('url').URL
 // eslint-disable-next-line no-unused-vars
 const URLSearchParams = require('url').URLSearchParams
 
-const location = new URL(global.__dirname)
+const location = new Proxy(new URL(global.__dirname), {})
 
 location.search = new URLSearchParams(global.sparkQueryParams)
+
+if (global.sparkHash) {
+  location.hash = global.sparkHash
+}
+
+location.handler = {
+  get: (obj, prop) => obj[prop],
+  set: (obj, prop, value) => {
+    obj[prop] = value
+    if (prop === 'hash') {
+      window.dispatchEvent(new Event('hashchange'))
+    }
+  },
+}
 
 // eslint-disable-next-line no-unused-vars
 class Event extends String {}
@@ -32,7 +46,11 @@ const relative2absolute = url => {
 
 const globalsHandler = {
   get: function(obj, prop) {
-    return prop in obj ? obj[prop] : prop in global ? global[prop] : eval(prop)
+    return prop in obj
+      ? obj[prop]
+      : prop in global
+      ? global[prop]
+      : eval(`typeof ${prop} !== 'undefined' ? ${prop} : undefined`)
   },
 }
 
@@ -103,6 +121,20 @@ const document = new Proxy(
     }
 
     getElementById() {
+      return null
+    }
+
+    querySelector(selectors) {
+      let found = selectors.match(/script\[src\*?=["'](.*)["']]/i)
+      if (found) {
+        let src = found[1]
+        if (global.bootstrap) {
+          if (global.bootstrap.applicationURL.indexOf(src) !== -1) {
+            return { getAttribute: attributeName => global.bootstrap[attributeName] }
+          }
+        }
+      }
+      console.warn(`document.querySelector(${selectors}) isn't supported`)
       return null
     }
   })(),
