@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 const program = require('commander')
+const didYouMean = require('didyoumean2').default
+const chalk = require('chalk')
+
 const createAction = require('../src/actions/create')
 const buildAction = require('../src/actions/build')
 const releaseAction = require('../src/actions/release')
@@ -20,7 +23,7 @@ program
   .command('create')
   .description(['✨', ' '.repeat(3), 'Create a new Lightning App'].join(''))
   .action(() => {
-    updateCheck(true).then(createAction)
+    updateCheck(true).then(() => createAction())
   })
 
 program
@@ -40,7 +43,7 @@ program
     )
   )
   .action(() => {
-    updateCheck().then(serveAction)
+    updateCheck().then(() => serveAction())
   })
 
 program
@@ -49,7 +52,7 @@ program
     ['👀', ' '.repeat(3), 'Watch the for file changes and automatically rebuild the app'].join('')
   )
   .action(() => {
-    updateCheck().then(watchAction)
+    updateCheck().then(() => watchAction())
   })
 
 program
@@ -62,29 +65,45 @@ program
     ].join('')
   )
   .action(() => {
-    updateCheck().then(devAction)
+    updateCheck().then(() => devAction())
   })
 
 program
   .command('docs')
   .description(['📖', ' '.repeat(3), 'Open the Lightning-SDK documentation'].join(''))
   .action(() => {
-    updateCheck().then(docsAction)
+    updateCheck().then(() => docsAction())
   })
 
 program
   .command('release')
   .description(['📦', ' '.repeat(3), 'Build a release package of a Lightning App'].join(''))
   .action(() => {
-    updateCheck(true).then(releaseAction)
+    updateCheck(true).then(() => releaseAction())
   })
 
 program
   .command('upload')
   .description(['🚀', ' '.repeat(3), 'Upload release package to Metrological Back Office'].join(''))
   .action(() => {
-    updateCheck(true).then(uploadAction)
+    updateCheck(true).then(() => uploadAction())
   })
+
+program.on('command:*', () => {
+  const suggestion = didYouMean(
+    program.args[0] || '',
+    program.commands.map(command => command._name)
+  )
+
+  console.log("Sorry, that command doesn't seems to exist ...")
+  console.log('')
+  if (suggestion) {
+    console.log('Perhaps you meant: ' + chalk.yellow('lng ' + suggestion) + '?')
+    console.log('')
+  }
+  console.log('Use ' + chalk.yellow('lng -h') + ' to see a full list of available commands')
+  process.exit(1)
+})
 
 program.parse(process.argv)
 
