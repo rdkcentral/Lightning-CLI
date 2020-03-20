@@ -44,12 +44,17 @@ const relative2absolute = url => {
 }
 
 const globalsHandler = {
-  get: function(obj, prop) {
+  get: (obj, prop) => {
     return prop in obj
       ? obj[prop]
       : prop in global
       ? global[prop]
       : eval(`typeof ${prop} !== 'undefined' ? ${prop} : undefined`)
+  },
+  set: (obj, prop, value) => {
+    if (eval(`typeof ${prop} !== 'undefined'`)) eval(`${prop} = value`)
+    else obj[prop] = value
+    return true
   },
 }
 
