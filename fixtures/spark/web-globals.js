@@ -2,23 +2,22 @@ const URL = require('url').URL
 // eslint-disable-next-line no-unused-vars
 const URLSearchParams = require('url').URLSearchParams
 
-const location = new Proxy(new URL(global.__dirname), {})
-
-location.search = new URLSearchParams(global.sparkQueryParams)
-
-if (global.sparkHash) {
-  location.hash = global.sparkHash
-}
-
-location.handler = {
-  get: (obj, prop) => obj[prop],
-  set: (obj, prop, value) => {
-    obj[prop] = value
-    if (prop === 'hash') {
-      window.dispatchEvent(new Event('hashchange'))
-    }
-  },
-}
+const location = new Proxy(
+  (() => {
+    let _url = new URL(global.__dirname)
+    _url.search = new URLSearchParams(global.sparkQueryParams)
+    if (global.sparkHash) _url.hash = global.sparkHash
+    return _url
+  })(),
+  {
+    get: (obj, prop) => obj[prop],
+    set: (obj, prop, value) => {
+      obj[prop] = value
+      if (prop === 'hash') window.dispatchEvent(new Event('hashchange'))
+      return true
+    },
+  }
+)
 
 // eslint-disable-next-line no-unused-vars
 class Event extends String {}
