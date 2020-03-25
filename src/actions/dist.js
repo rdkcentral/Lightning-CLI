@@ -24,6 +24,7 @@ module.exports = () => {
         return sequence([
           () => buildHelpers.ensureFolderExists(distDir),
           () => buildHelpers.ensureFolderExists(path.join(distDir, 'js')),
+          () => type === 'spark' && distHelpers.ensureSparkShimsInstalled(),
           () => distHelpers.setupDistFolder(distDir, type),
         ])
       }
