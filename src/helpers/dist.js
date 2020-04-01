@@ -36,10 +36,15 @@ const setupDistFolder = (folder, type) => {
     )
     return true
   }
-  if (type === 'spark') {
+  if (type === 'lightning++') {
     shell.cp(
       path.join(process.cwd(), './node_modules/wpe-lightning/dist/lightning.js'),
       path.join(folder, 'js', 'lightning.js')
+    )
+
+    shell.cp(
+      path.join(__dirname, '../../fixtures/dist/index.es6.html'),
+      path.join(folder, 'index.html')
     )
 
     shell.cp(
