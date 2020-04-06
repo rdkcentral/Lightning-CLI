@@ -8,6 +8,8 @@ module.exports = {
     alias({
       entries: {
         'wpe-lightning': path.join(__dirname, '../alias/wpe-lightning.js'),
+        '@': path.resolve(process.cwd(), 'src/'),
+        '~': path.resolve(process.cwd(), 'node_modules/'),
       },
     }),
     resolve({ mainFields: ['main', 'browser'] }),

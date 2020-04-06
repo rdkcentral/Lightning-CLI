@@ -10,10 +10,14 @@ const alias = require('@rollup/plugin-alias')
 module.exports = {
   plugins: [
     alias({
-      'wpe-lightning': path.join(__dirname, '../alias/wpe-lightning.js'),
+      entries: {
+        'wpe-lightning': path.join(__dirname, '../alias/wpe-lightning.js'),
+        '@': path.resolve(process.cwd(), 'src/'),
+        '~': path.resolve(process.cwd(), 'node_modules/'),
+      },
     }),
     resolve({ mainFields: ['main', 'browser'] }),
-    commonjs(),
+    commonjs({ sourceMap: false }),
     babel({
       presets: [
         [
