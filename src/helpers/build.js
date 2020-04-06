@@ -4,7 +4,6 @@ const execa = require('execa')
 const path = require('path')
 
 const spinner = require('../helpers/spinner')
-const exit = require('../helpers/exit')
 
 const removeFolder = folder => {
   spinner.start('Removing "' + folder.split('/').pop() + '" folder')
