@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 const program = require('commander')
+const didYouMean = require('didyoumean2').default
+const chalk = require('chalk')
+
 const createAction = require('../src/actions/create')
 const buildAction = require('../src/actions/build')
 const distAction = require('../src/actions/dist')
@@ -97,6 +100,22 @@ program
   .action(() => {
     updateCheck(true).then(() => uploadAction())
   })
+
+program.on('command:*', () => {
+  const suggestion = didYouMean(
+    program.args[0] || '',
+    program.commands.map(command => command._name)
+  )
+
+  console.log("Sorry, that command doesn't seems to exist ...")
+  console.log('')
+  if (suggestion) {
+    console.log('Perhaps you meant: ' + chalk.yellow('lng ' + suggestion) + '?')
+    console.log('')
+  }
+  console.log('Use ' + chalk.yellow('lng -h') + ' to see a full list of available commands')
+  process.exit(1)
+})
 
 program.parse(process.argv)
 
