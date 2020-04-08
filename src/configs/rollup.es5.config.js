@@ -16,7 +16,7 @@ module.exports = {
         '~': path.resolve(process.cwd(), 'node_modules/'),
       },
     }),
-    resolve({ mainFields: ['main', 'browser'] }),
+    resolve({ mainFields: ['module', 'main', 'browser'] }),
     commonjs({ sourceMap: false }),
     babel({
       presets: [
