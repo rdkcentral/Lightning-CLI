@@ -5,7 +5,6 @@ const crypto = require('crypto')
 const execa = require('execa')
 
 const spinner = require('./spinner')
-const packageVersion = require('./packageVersion')
 
 const setupDistFolder = (folder, type) => {
   if (type === 'es6') {
@@ -43,11 +42,6 @@ const setupDistFolder = (folder, type) => {
     )
 
     shell.cp(
-      path.join(__dirname, '../../fixtures/dist/index.es6.html'),
-      path.join(folder, 'index.html')
-    )
-
-    shell.cp(
       path.join(process.cwd(), './node_modules/lightning-spark-shims/web-globals.js'),
       path.join(folder, 'js', 'web-globals.js')
     )
@@ -73,25 +67,22 @@ const setupDistFolder = (folder, type) => {
 
 const ensureSparkShimsInstalled = () => {
   return new Promise((resolve, reject) => {
-    packageVersion('lightning-spark-shims')
-      .then(version => {
-        if (version) {
-          resolve()
-        } else {
-          spinner.start('Installing Lightning-Spark-Shims')
-          return execa('npm', ['install', '--no-save', 'github:pxscene/Lightning-Spark-Shims'])
-            .then(() => {
-              spinner.succeed()
-              resolve()
-            })
-            .catch(e => {
-              console.log(e)
-              spinner.fail()
-              reject(e)
-            })
-        }
+    try {
+      require(path.join(process.cwd(), 'node_modules', 'lightning-spark-shims', 'package.json'))
+      resolve()
+      return
+    } catch (ignore) {
+      // not installed
+    }
+    spinner.start('Installing Lightning-Spark-Shims')
+    return execa('npm', ['install', '--no-save', 'github:pxscene/Lightning-Spark-Shims'])
+      .then(() => {
+        spinner.succeed()
+        resolve()
       })
       .catch(e => {
+        console.log(e)
+        spinner.fail()
         reject(e)
       })
   })

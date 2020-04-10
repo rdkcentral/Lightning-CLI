@@ -37,7 +37,7 @@ module.exports = () => {
     () => buildHelpers.removeFolder(path.join(distDir, 'static')),
     () => buildHelpers.copyStaticFolder(distDir),
     () =>
-      (type === 'es6' || type === 'lightning++') &&
+      type === 'es6' &&
       buildHelpers.bundleEs6App(path.join(distDir, 'js'), {}, { sourcemaps: false }),
     () =>
       type === 'es5' &&
