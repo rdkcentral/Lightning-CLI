@@ -6,11 +6,7 @@ const distHelpers = require('../helpers/dist')
 const ask = require('../helpers/ask')
 
 const askDistType = () =>
-  ask('What type of distributable do you want to create?', null, 'list', [
-    'Es6',
-    'Es5',
-    'Lightning++',
-  ])
+  ask('What type of distributable do you want to create?', null, 'list', ['Es6', 'Es5', 'Spark'])
 
 module.exports = () => {
   const baseDistDir = path.join(process.cwd(), 'dist')
@@ -28,7 +24,7 @@ module.exports = () => {
         return sequence([
           () => buildHelpers.ensureFolderExists(distDir),
           () => buildHelpers.ensureFolderExists(path.join(distDir, 'js')),
-          () => type === 'lightning++' && distHelpers.ensureSparkShimsInstalled(),
+          () => type === 'spark' && distHelpers.ensureSparkShimsInstalled(),
           () => distHelpers.setupDistFolder(distDir, type),
         ])
       }
@@ -43,7 +39,7 @@ module.exports = () => {
       type === 'es5' &&
       buildHelpers.bundleEs5App(path.join(distDir, 'js'), {}, { sourcemaps: false }),
     () =>
-      type === 'lightning++' &&
+      type === 'spark' &&
       buildHelpers.bundleSparkApp(path.join(distDir, 'js'), {}, { sourcemaps: false }),
   ])
 }
