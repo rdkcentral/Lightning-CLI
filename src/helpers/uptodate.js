@@ -19,7 +19,7 @@ const fetchLatestVersion = () => {
     : false
 
   return new Promise((resolve, reject) => {
-    if (!url) reject('Unknown Git branch')
+    if (!url) reject('Skipping auto update.')
     https
       .get(url, res => {
         let body = ''
@@ -108,12 +108,20 @@ const checkForUpdate = () => {
 }
 
 const getGitBranch = () => {
-  const gitHead = path.join(__dirname, '../../.git/HEAD')
-  if (fs.existsSync(gitHead)) {
-    const match = /ref: refs\/heads\/([^\n]+)/.exec(fs.readFileSync(gitHead).toString())
-    return match ? match[1] : false
-  } else {
+  // if a git folder exists, we are probably working of a clone,
+  // so likely we don't want to do any auto updates
+  const gitFolder = path.join(__dirname, '../../.git')
+  if (fs.existsSync(gitFolder)) {
     return false
+  }
+  // otherwise base on the package.json
+  else {
+    const packageJson = require(path.join(__dirname, '../../package.json'))
+    if (packageJson._requested && 'gitCommittish' in packageJson._requested) {
+      return packageJson._requested.gitCommittish || 'master' // gitCommittish is null for master
+    } else {
+      return false
+    }
   }
 }
 
