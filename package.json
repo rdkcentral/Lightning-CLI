@@ -2,7 +2,7 @@
   "author": "Michiel van der Geest <m.van.der.geest@metrological.com>",
   "license": "Apache-2",
   "name": "wpe-lightning-cli",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "",
   "bin": {
     "lightning": "./bin/index.js",
