@@ -1,3 +1,4 @@
+const path = require('path')
 const babel = require('rollup-plugin-babel')
 const resolve = require('rollup-plugin-node-resolve')
 const commonjs = require('rollup-plugin-commonjs')
@@ -10,6 +11,7 @@ module.exports = {
   plugins: [
     alias({
       entries: {
+        'wpe-lightning': path.join(__dirname, '../alias/wpe-lightning.js'),
         'wpe-lightning-sdk': 'lightning-sdk-spark',
       },
     }),

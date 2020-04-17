@@ -3,7 +3,7 @@ const path = require('path')
 
 module.exports = () => {
   const subprocess = execa(path.join(__dirname, '../..', 'node_modules/.bin/http-server'), [
-    './build',
+    './dist',
     '-o',
     '-c-1',
   ])
