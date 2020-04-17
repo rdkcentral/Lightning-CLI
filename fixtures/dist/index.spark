@@ -9,6 +9,9 @@
             "url": "js/lightning.js"
         },
         {
+            "url": "js/spark-platform.js"
+        },
+        {
             "url": "js/appBundle.spark.js"
         }
     ]

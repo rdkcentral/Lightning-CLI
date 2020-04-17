@@ -46,12 +46,18 @@ const setupDistFolder = (folder, type) => {
       path.join(folder, 'js', 'web-globals.js')
     )
 
+    shell.cp(
+      path.join(process.cwd(), './node_modules/lightning-spark-shims/spark-platform.js'),
+      path.join(folder, 'js', 'spark-platform.js')
+    )
+
     shell.cp(path.join(__dirname, '../../fixtures/spark/index.js'), path.join(folder, 'index.js'))
 
     const index = path.join(folder, 'index.spark')
     shell.cp(path.join(__dirname, '../../fixtures/dist/index.spark'), index)
 
     const json = JSON.parse(fs.readFileSync(index, 'utf8'))
+
     json.frameworks.forEach(f => {
       if (f.url.indexOf('appBundle') === -1) {
         f.md5 = crypto
@@ -60,7 +66,9 @@ const setupDistFolder = (folder, type) => {
           .digest('hex')
       }
     })
+
     fs.writeFileSync(index, JSON.stringify(json, null, 4))
+
     return true
   }
 }
@@ -70,21 +78,23 @@ const ensureSparkShimsInstalled = () => {
     try {
       require(path.join(process.cwd(), 'node_modules', 'lightning-spark-shims', 'package.json'))
       resolve()
-      return
-    } catch (ignore) {
-      // not installed
+    } catch (e) {
+      spinner.start('Installing Lightning-Spark-Shims')
+      // return execa('npm', ['install', '--no-save', 'github:pxscene/Lightning-Spark-Shims'])
+      return execa('npm', [
+        'install',
+        '--no-save',
+        'github:michielvandergeest/Lightning-Spark-Shims#include-spark-platform', // temporary, until PR is merged into pxscene repo
+      ])
+        .then(() => {
+          spinner.succeed()
+          resolve()
+        })
+        .catch(e => {
+          spinner.fail()
+          reject(e)
+        })
     }
-    spinner.start('Installing Lightning-Spark-Shims')
-    return execa('npm', ['install', '--no-save', 'github:pxscene/Lightning-Spark-Shims'])
-      .then(() => {
-        spinner.succeed()
-        resolve()
-      })
-      .catch(e => {
-        console.log(e)
-        spinner.fail()
-        reject(e)
-      })
   })
 }
 

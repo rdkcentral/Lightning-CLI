@@ -151,35 +151,33 @@ const bundleEs5App = (folder, metadata, options = {}) => {
 }
 
 const bundleSparkApp = (folder, metadata, options = {}) => {
-  ensureCorrectSparkSDKInstalled().then(() => {
-    spinner.start('Building Spark appBundle and saving to "' + folder.split('/').pop() + '"')
+  spinner.start('Building Spark appBundle and saving to "' + folder.split('/').pop() + '"')
 
-    const args = [
-      '-c',
-      path.join(__dirname, '../configs/rollup.spark.config.js'),
-      '--input',
-      path.join(process.cwd(), 'src/index.js'),
-      '--file',
-      path.join(folder, 'appBundle.spark.js'),
-      '--name',
-      ['APP', metadata.identifier && metadata.identifier.replace(/\./g, '_').replace(/-/g, '_')]
-        .filter(val => val)
-        .join('_'),
-    ]
+  const args = [
+    '-c',
+    path.join(__dirname, '../configs/rollup.es6.config.js'),
+    '--input',
+    path.join(process.cwd(), 'src/index.js'),
+    '--file',
+    path.join(folder, 'appBundle.spark.js'),
+    '--name',
+    ['APP', metadata.identifier && metadata.identifier.replace(/\./g, '_').replace(/-/g, '_')]
+      .filter(val => val)
+      .join('_'),
+  ]
 
-    if (options.sourcemaps === false) args.push('--no-sourcemap')
+  if (options.sourcemaps === false) args.push('--no-sourcemap')
 
-    return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), args)
-      .then(() => {
-        spinner.succeed()
-        return metadata
-      })
-      .catch(e => {
-        spinner.fail('Error while creating Spark bundle (see log)')
-        console.log(e.stderr)
-        throw Error(e)
-      })
-  })
+  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), args)
+    .then(() => {
+      spinner.succeed()
+      return metadata
+    })
+    .catch(e => {
+      spinner.fail('Error while creating Spark bundle (see log)')
+      console.log(e.stderr)
+      throw Error(e)
+    })
 }
 
 const ensureCorrectGitIgnore = () => {
@@ -200,33 +198,6 @@ const ensureCorrectGitIgnore = () => {
       // no .gitignore file, so let's just move on
       resolve()
     }
-  })
-}
-
-const ensureCorrectSparkSDKInstalled = () => {
-  return new Promise((resolve, reject) => {
-    Promise.all([packageVersion('wpe-lightning-sdk'), packageVersion('lightning-sdk-spark')])
-      .then(versions => {
-        if (semver.satisfies(versions[1], versions[0])) {
-          resolve()
-        } else {
-          spinner.start('Installing Lightning-SDK-Spark (' + versions[0] + ')')
-          // todo install the correct version
-          return execa('npm', ['install', '--no-save', 'github:pxscene/Lightning-SDK-Spark']) // #' + versions[0]
-            .then(() => {
-              spinner.succeed()
-              resolve()
-            })
-            .catch(e => {
-              console.log(e)
-              spinner.fail()
-              reject(e)
-            })
-        }
-      })
-      .catch(e => {
-        reject(e)
-      })
   })
 }
 
