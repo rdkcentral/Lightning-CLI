@@ -79,13 +79,23 @@ program
 
 program
   .command('dist')
+  .option('--es5', 'Build standalone ES5 version of the App')
+  .option('--es6', 'Build standalone ES6 version of the App')
+  .option('--spark', 'Build standalone Spark version of the App')
   .description(
     ['🌎', ' '.repeat(3), 'Create a standalone, distributable version of the Lightning App'].join(
       ''
     )
   )
-  .action(() => {
-    updateCheck().then(() => distAction())
+  .action(options => {
+    const input = options.opts()
+    const defaultTypes = ['es5', 'es6', 'spark']
+
+    const selectedTypes = Object.keys(input)
+      .map(type => input[type] === true && type.toLocaleLowerCase())
+      .filter(val => !!val)
+
+    updateCheck().then(() => distAction(selectedTypes.length ? selectedTypes : defaultTypes))
   })
 
 program
