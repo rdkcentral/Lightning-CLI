@@ -2,10 +2,8 @@ const shell = require('shelljs')
 const fs = require('fs')
 const execa = require('execa')
 const path = require('path')
-const semver = require('semver')
 
 const spinner = require('./spinner')
-const packageVersion = require('./packageVersion')
 
 const removeFolder = folder => {
   spinner.start('Removing "' + folder.split('/').pop() + '" folder')
