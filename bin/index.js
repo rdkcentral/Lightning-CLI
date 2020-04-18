@@ -89,7 +89,7 @@ program
   )
   .action(options => {
     const input = options.opts()
-    const defaultTypes = ['es5', 'es6', 'spark']
+    const defaultTypes = ['es6']
 
     const selectedTypes = Object.keys(input)
       .map(type => input[type] === true && type.toLocaleLowerCase())
