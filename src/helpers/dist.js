@@ -80,12 +80,7 @@ const ensureSparkShimsInstalled = () => {
       resolve()
     } catch (e) {
       spinner.start('Installing Lightning-Spark-Shims')
-      // return execa('npm', ['install', '--no-save', 'github:pxscene/Lightning-Spark-Shims'])
-      return execa('npm', [
-        'install',
-        '--no-save',
-        'github:michielvandergeest/Lightning-Spark-Shims#include-spark-platform', // temporary, until PR is merged into pxscene repo
-      ])
+      return execa('npm', ['install', '--no-save', 'github:pxscene/Lightning-Spark-Shims'])
         .then(() => {
           spinner.succeed()
           resolve()
