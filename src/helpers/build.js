@@ -148,36 +148,6 @@ const bundleEs5App = (folder, metadata, options = {}) => {
     })
 }
 
-const bundleSparkApp = (folder, metadata, options = {}) => {
-  spinner.start('Building Spark appBundle and saving to "' + folder.split('/').pop() + '"')
-
-  const args = [
-    '-c',
-    path.join(__dirname, '../configs/rollup.es6.config.js'),
-    '--input',
-    path.join(process.cwd(), 'src/index.js'),
-    '--file',
-    path.join(folder, 'appBundle.spark.js'),
-    '--name',
-    ['APP', metadata.identifier && metadata.identifier.replace(/\./g, '_').replace(/-/g, '_')]
-      .filter(val => val)
-      .join('_'),
-  ]
-
-  if (options.sourcemaps === false) args.push('--no-sourcemap')
-
-  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), args)
-    .then(() => {
-      spinner.succeed()
-      return metadata
-    })
-    .catch(e => {
-      spinner.fail('Error while creating Spark bundle (see log)')
-      console.log(e.stderr)
-      throw Error(e)
-    })
-}
-
 const ensureCorrectGitIgnore = () => {
   return new Promise(resolve => {
     const filename = path.join(process.cwd(), '.gitignore')
@@ -211,6 +181,5 @@ module.exports = {
   readSettings,
   bundleEs6App,
   bundleEs5App,
-  bundleSparkApp,
   ensureCorrectGitIgnore,
 }

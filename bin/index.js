@@ -81,7 +81,6 @@ program
   .command('dist')
   .option('--es5', 'Build standalone ES5 version of the App')
   .option('--es6', 'Build standalone ES6 version of the App')
-  .option('--spark', 'Build standalone Spark version of the App')
   .description(
     ['🌎', ' '.repeat(3), 'Create a standalone, distributable version of the Lightning App'].join(
       ''

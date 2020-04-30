@@ -35,70 +35,8 @@ const setupDistFolder = (folder, type) => {
     )
     return true
   }
-  if (type === 'spark') {
-    shell.cp(
-      path.join(process.cwd(), './node_modules/wpe-lightning/dist/lightning.js'),
-      path.join(folder, 'js', 'lightning.js')
-    )
-
-    shell.cp(
-      path.join(process.cwd(), './node_modules/lightning-spark-shims/web-globals.js'),
-      path.join(folder, 'js', 'web-globals.js')
-    )
-
-    shell.cp(
-      path.join(process.cwd(), './node_modules/lightning-spark-shims/spark-platform.js'),
-      path.join(folder, 'js', 'spark-platform.js')
-    )
-
-    shell.cp(path.join(__dirname, '../../fixtures/spark/index.js'), path.join(folder, 'index.js'))
-
-    const index = path.join(folder, 'index.spark')
-    shell.cp(path.join(__dirname, '../../fixtures/dist/index.spark'), index)
-
-    const json = JSON.parse(fs.readFileSync(index, 'utf8'))
-
-    json.frameworks.forEach(f => {
-      if (f.url.indexOf('appBundle') === -1) {
-        f.md5 = crypto
-          .createHash('md5')
-          .update(fs.readFileSync(path.join(folder, f.url)))
-          .digest('hex')
-      }
-    })
-
-    fs.writeFileSync(index, JSON.stringify(json, null, 4))
-
-    return true
-  }
-}
-
-const ensureSparkShimsInstalled = () => {
-  return new Promise((resolve, reject) => {
-    try {
-      require(path.join(process.cwd(), 'node_modules', 'lightning-spark-shims', 'package.json'))
-      resolve()
-    } catch (e) {
-      spinner.start('Installing Lightning-Spark-Shims')
-      // return execa('npm', ['install', '--no-save', 'github:pxscene/Lightning-Spark-Shims'])
-      return execa('npm', [
-        'install',
-        '--no-save',
-        'github:michielvandergeest/Lightning-Spark-Shims#include-spark-platform', // temporary, until PR is merged into pxscene repo
-      ])
-        .then(() => {
-          spinner.succeed()
-          resolve()
-        })
-        .catch(e => {
-          spinner.fail()
-          reject(e)
-        })
-    }
-  })
 }
 
 module.exports = {
   setupDistFolder,
-  ensureSparkShimsInstalled,
 }

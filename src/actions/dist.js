@@ -19,7 +19,6 @@ module.exports = types => {
           return sequence([
             () => buildHelpers.ensureFolderExists(distDir),
             () => buildHelpers.ensureFolderExists(path.join(distDir, 'js')),
-            () => type === 'spark' && distHelpers.ensureSparkShimsInstalled(),
             () => distHelpers.setupDistFolder(distDir, type),
           ])
         }
@@ -33,9 +32,6 @@ module.exports = types => {
       () =>
         type === 'es5' &&
         buildHelpers.bundleEs5App(path.join(distDir, 'js'), {}, { sourcemaps: false }),
-      () =>
-        type === 'spark' &&
-        buildHelpers.bundleSparkApp(path.join(distDir, 'js'), {}, { sourcemaps: false }),
     ])
   }
 
