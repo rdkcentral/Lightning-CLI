@@ -158,7 +158,7 @@ const ensureCorrectGitIgnore = () => {
       )
 
       if (missingEntries.length) {
-        fs.appendFileSync(filename, missingEntries.join('\n') + '\n')
+        fs.appendFileSync(filename, '\n' + missingEntries.join('\n') + '\n')
       }
 
       resolve()
