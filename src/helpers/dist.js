@@ -1,10 +1,6 @@
 const fs = require('fs')
 const path = require('path')
 const shell = require('shelljs')
-const crypto = require('crypto')
-const execa = require('execa')
-
-const spinner = require('./spinner')
 
 const setupDistFolder = (folder, type) => {
   if (type === 'es6') {
