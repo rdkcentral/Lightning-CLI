@@ -10,6 +10,7 @@ module.exports = types => {
   const dist = type => {
     let distDir
     return sequence([
+      () => distHelpers.moveOldDistFolderToBuildFolder(),
       () => buildHelpers.ensureCorrectGitIgnore(),
       () => {
         distDir = path.join(baseDistDir, type)
