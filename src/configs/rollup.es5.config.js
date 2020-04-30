@@ -28,7 +28,7 @@ module.exports = {
             },
             spec: true,
             debug: false,
-            useBuiltIns: 'usage',
+            useBuiltIns: 'entry',
             corejs: '^2.6.11',
           },
         ],
