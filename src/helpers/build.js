@@ -136,6 +136,14 @@ const bundleEs5App = (folder, metadata) => {
     })
 }
 
+const getEnvAppVars = parsed =>
+  Object.keys(parsed)
+    .filter(key => key.startsWith('APP_'))
+    .reduce((env, key) => {
+      env[key] = parsed[key]
+      return env
+    }, {})
+
 module.exports = {
   removeFolder,
   ensureFolderExists,
@@ -148,4 +156,5 @@ module.exports = {
   readSettings,
   bundleEs6App,
   bundleEs5App,
+  getEnvAppVars,
 }

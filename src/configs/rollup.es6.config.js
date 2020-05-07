@@ -3,6 +3,10 @@ const resolve = require('rollup-plugin-node-resolve')
 const commonjs = require('rollup-plugin-commonjs')
 const alias = require('@rollup/plugin-alias')
 const injectProcessEnv = require('rollup-plugin-inject-process-env')
+const buildHelpers = require(path.join(__dirname, '../helpers/build'))
+const dotenv = require('dotenv').config()
+
+console.log(dotenv.parsed)
 
 module.exports = {
   plugins: [
@@ -15,7 +19,10 @@ module.exports = {
     }),
     resolve({ mainFields: ['module', 'main', 'browser'] }),
     commonjs({ sourceMap: false }),
-    injectProcessEnv(process.env),
+    injectProcessEnv({
+      NODE_ENV: process.env.NODE_ENV,
+      ...buildHelpers.getEnvAppVars(dotenv.parsed),
+    }),
   ],
   output: {
     format: 'iife',

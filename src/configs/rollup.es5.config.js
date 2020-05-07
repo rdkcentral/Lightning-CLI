@@ -7,6 +7,8 @@ const babelPluginTransFormSpread = require('@babel/plugin-transform-spread')
 const babelPluginTransFormParameters = require('@babel/plugin-transform-parameters')
 const alias = require('@rollup/plugin-alias')
 const injectProcessEnv = require('rollup-plugin-inject-process-env')
+const buildHelpers = require(path.join(__dirname, '../helpers/build'))
+const dotenv = require('dotenv').config()
 
 module.exports = {
   plugins: [
@@ -19,7 +21,10 @@ module.exports = {
     }),
     resolve({ mainFields: ['module', 'main', 'browser'] }),
     commonjs({ sourceMap: false }),
-    injectProcessEnv(process.env),
+    injectProcessEnv({
+      NODE_ENV: process.env.NODE_ENV,
+      ...buildHelpers.getEnvAppVars(dotenv.parsed),
+    }),
     babel({
       presets: [
         [
