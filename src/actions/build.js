@@ -26,6 +26,7 @@ module.exports = (clear = false, change = null) => {
   let metadata
   let settings
   return sequence([
+    () => clear && buildHelpers.ensureCorrectSdkDependency(),
     () => clear && buildHelpers.removeFolder(targetDir),
     () => buildHelpers.ensureFolderExists(targetDir),
     () => clear && buildHelpers.copySupportFiles(targetDir),
