@@ -171,7 +171,7 @@ const ensureCorrectSdkDependency = () => {
   ) {
     let lockedDependency
     // if already has a hash, use that one (e.g. from a specific branch)
-    if (packageJson.dependencies['wpe-lightning-sdk'].indexOf('#')) {
+    if (packageJson.dependencies['wpe-lightning-sdk'].indexOf('#') > -1) {
       lockedDependency = packageJson.dependencies['wpe-lightning-sdk']
     }
     // otherwise attempt to get the locked dependency from package-lock
