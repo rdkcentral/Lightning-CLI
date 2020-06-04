@@ -21,6 +21,7 @@ const shell = require('shelljs')
 const fs = require('fs')
 const execa = require('execa')
 const path = require('path')
+const chalk = require('chalk')
 
 const spinner = require('./spinner')
 
@@ -188,6 +189,67 @@ const ensureCorrectGitIgnore = () => {
   })
 }
 
+const ensureCorrectSdkDependency = () => {
+  const packageJsonPath = path.join(process.cwd(), 'package.json')
+  if (!fs.existsSync(packageJsonPath)) return true
+  const packageJson = require(packageJsonPath)
+  // check if package.json has old WebPlatformForEmbedded sdk dependency
+  if (
+    packageJson &&
+    packageJson.dependencies &&
+    Object.keys(packageJson.dependencies).indexOf('wpe-lightning-sdk') > -1 &&
+    packageJson.dependencies['wpe-lightning-sdk']
+      .toLowerCase()
+      .indexOf('webplatformforembedded/lightning-sdk') > -1
+  ) {
+    let lockedDependency
+    // if already has a hash, use that one (e.g. from a specific branch)
+    if (packageJson.dependencies['wpe-lightning-sdk'].indexOf('#') > -1) {
+      lockedDependency = packageJson.dependencies['wpe-lightning-sdk']
+    }
+    // otherwise attempt to get the locked dependency from package-lock
+    else {
+      const packageLockJsonPath = path.join(process.cwd(), 'package-lock.json')
+      if (!fs.existsSync(packageLockJsonPath)) return true
+      const packageLockJson = require(packageLockJsonPath)
+      // get the locked version from package-lock
+      if (
+        packageLockJson &&
+        packageLockJson.dependencies &&
+        Object.keys(packageLockJson.dependencies).indexOf('wpe-lightning-sdk') > -1
+      ) {
+        lockedDependency = packageLockJson.dependencies['wpe-lightning-sdk'].version
+      }
+    }
+
+    if (lockedDependency) {
+      // replace WebPlatformForEmbedded organization with rdkcentral organization (and keep locked hash)
+      lockedDependency = lockedDependency.replace(/WebPlatformForEmbedded/gi, 'rdkcentral')
+      if (lockedDependency) {
+        spinner.start(
+          'Moving SDK dependency from WebPlatformForEmbedded organization to RDKcentral organization'
+        )
+        // install the new dependency
+        return execa('npm', ['install', lockedDependency])
+          .then(() => {
+            spinner.succeed()
+          })
+          .catch(e => {
+            spinner.fail()
+            console.log(chalk.red('Unable to automatically move the SDK dependency'))
+            console.log(
+              'Please run ' +
+                chalk.yellow('npm install ' + lockedDependency) +
+                ' manually to continue'
+            )
+            console.log(' ')
+            throw Error(e)
+          })
+      }
+    }
+  }
+}
+
 module.exports = {
   removeFolder,
   ensureFolderExists,
@@ -201,4 +263,5 @@ module.exports = {
   bundleEs6App,
   bundleEs5App,
   ensureCorrectGitIgnore,
+  ensureCorrectSdkDependency,
 }
