@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const shell = require('shelljs')
+const replaceInFile = require('replace-in-file')
 
 const setupDistFolder = (folder, type) => {
   if (type === 'es6') {
@@ -13,7 +14,6 @@ const setupDistFolder = (folder, type) => {
       path.join(__dirname, '../../fixtures/dist/index.es6.html'),
       path.join(folder, 'index.html')
     )
-    return true
   }
   if (type === 'es5') {
     const lightningFile = path.join(
@@ -29,8 +29,35 @@ const setupDistFolder = (folder, type) => {
       path.join(__dirname, '../../fixtures/dist/index.es5.html'),
       path.join(folder, 'index.html')
     )
-    return true
   }
+
+  const settingsJsonFile = path.join(process.cwd(), 'settings.json')
+
+  const settings = fs.existsSync(settingsJsonFile)
+    ? JSON.parse(fs.readFileSync(settingsJsonFile, 'utf8'))
+    : {
+        appSettings: {
+          stage: {
+            clearColor: '0x00000000',
+            useImageWorker: true,
+          },
+        },
+        platformSettings: {
+          path: './static',
+        },
+      }
+
+  replaceInFile.sync({
+    files: folder + '/*',
+    from: /\{\$APPSETTINGS\}/g,
+    to: JSON.stringify(settings.appSettings, null, 2),
+  })
+
+  replaceInFile.sync({
+    files: folder + '/*',
+    from: /\{\$PLATFORMSETTINGS\}/g,
+    to: JSON.stringify(settings.platformSettings, null, 2),
+  })
 }
 
 const moveOldDistFolderToBuildFolder = () => {
