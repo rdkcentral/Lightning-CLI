@@ -7,7 +7,7 @@
 Install the Lightning-CLI _globally_ on your system
 
 ```bash
-npm install -g WebPlatformForEmbedded/Lightning-CLI
+npm install -g rdkcentral/Lightning-CLI
 ```
 
 Usage:
@@ -42,7 +42,7 @@ Build a standalone Lightning App
 lng build
 ```
 
-_Run this command in the root of the Lightning App you want to build_
+_Run this command in the root folder of the Lightning App you want to build_
 
 
 ### Serve
@@ -53,7 +53,7 @@ Serve a built Lightning App in a webbrowser
 lng serve
 ```
 
-_Run this command in the root of the Lightning App you want to serve_
+_Run this command in the root folder of the Lightning App you want to serve_
 
 
 ### Watch
@@ -64,7 +64,7 @@ Watch the `src` folder for changes and rebuild the Lightning App upon every chan
 lng watch
 ```
 
-_Run this command in the root of the Lightning App you want to watch_
+_Run this command in the root folder of the Lightning App you want to watch_
 
 
 ### Dev
@@ -75,7 +75,7 @@ Spins up a local server to serve a Lightning App and watches for changes
 lng dev
 ```
 
-_Run this command in the root of the Lightning App you want to serve and watch_
+_Run this command in the root folder of the Lightning App you want to serve and watch_
 
 
 ### Docs
@@ -86,18 +86,7 @@ Open the Lightning SDK documentation of the App you're developing
 lng docs
 ```
 
-_Run this command in the root of the Lightning App for which you want to see the documentation_
-
-
-### Release
-
-Create a release package of a Lightning App
-
-```bash
-lng release
-```
-
-_Run this command in the root of the Lightning App you want to release_
+_Run this command in the root folder of the Lightning App for which you want to see the documentation_
 
 
 ### Upload
@@ -108,7 +97,21 @@ Upload a release package of a Lightning App to the Metrological Back Office
 lng upload
 ```
 
-_Run this command in the root of the Lightning App you want to upload_
+_Run this command in the root folder of the Lightning App you want to upload_
+
+### Dist
+
+Create a distributable, standalone version of your App that can either be run locally or uploaded to a webserver.
+
+```bash
+lng dist
+```
+
+_Run this command in the root folder of the Lightning App for which you want to create a distributable version_
+
+The first time you run this command it will generate the necessary folder structure and files, and it will copy the settings from `settings.json` into the `index.html`. Once created it's safe to make your own customizations to `index.html`.
+
+By default the `lng dist` command generates an _ES6_ compatible App. Optionally you can generate an _ES5_ version of the App, by passing `--es5` as an option (`lng dist --es5`).
 
 ## Contributing
 
