@@ -28,6 +28,7 @@
     "@babel/plugin-transform-spread": "^7.7.4",
     "@babel/preset-env": "^7.7.7",
     "@rollup/plugin-alias": "^3.0.1",
+    "@rollup/plugin-json": "^4.1.0",
     "axios": "^0.19.0",
     "chalk": "^3.0.0",
     "commander": "^4.0.1",
