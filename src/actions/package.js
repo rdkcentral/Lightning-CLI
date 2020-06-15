@@ -24,7 +24,7 @@ const targz = require('targz')
 const spinner = require('../helpers/spinner')
 const exit = require('../helpers/exit')
 
-const pack = (distDir, releasesDir, metadata) => {
+const pack = (buildDir, releasesDir, metadata) => {
   const filename = [metadata.identifier, metadata.version, 'tgz'].join('.').replace(/\s/g, '_')
   const target = path.join(releasesDir, filename)
 
@@ -32,7 +32,7 @@ const pack = (distDir, releasesDir, metadata) => {
     'Creating release package "' + filename + '" in "' + releasesDir.split('/').pop() + '" folder'
   )
 
-  return tar(distDir, target)
+  return tar(buildDir, target)
     .then(() => {
       spinner.succeed()
       return target

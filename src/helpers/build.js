@@ -23,7 +23,7 @@ const execa = require('execa')
 const path = require('path')
 const chalk = require('chalk')
 
-const spinner = require('../helpers/spinner')
+const spinner = require('./spinner')
 
 const removeFolder = folder => {
   spinner.start('Removing "' + folder.split('/').pop() + '" folder')
@@ -108,10 +108,10 @@ const readSettings = () => {
   })
 }
 
-const bundleEs6App = (folder, metadata) => {
+const bundleEs6App = (folder, metadata, options = {}) => {
   spinner.start('Building ES6 appBundle and saving to "' + folder.split('/').pop() + '"')
 
-  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), [
+  const args = [
     '-c',
     path.join(__dirname, '../configs/rollup.es6.config.js'),
     '--input',
@@ -119,8 +119,14 @@ const bundleEs6App = (folder, metadata) => {
     '--file',
     path.join(folder, 'appBundle.js'),
     '--name',
-    'APP_' + metadata.identifier.replace(/\./g, '_').replace(/-/g, '_'),
-  ])
+    ['APP', metadata.identifier && metadata.identifier.replace(/\./g, '_').replace(/-/g, '_')]
+      .filter(val => val)
+      .join('_'),
+  ]
+
+  if (options.sourcemaps === false) args.push('--no-sourcemap')
+
+  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), args)
     .then(() => {
       spinner.succeed()
       return metadata
@@ -132,10 +138,10 @@ const bundleEs6App = (folder, metadata) => {
     })
 }
 
-const bundleEs5App = (folder, metadata) => {
+const bundleEs5App = (folder, metadata, options = {}) => {
   spinner.start('Building ES5 appBundle and saving to "' + folder.split('/').pop() + '"')
 
-  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), [
+  const args = [
     '-c',
     path.join(__dirname, '../configs/rollup.es5.config.js'),
     '--input',
@@ -143,8 +149,14 @@ const bundleEs5App = (folder, metadata) => {
     '--file',
     path.join(folder, 'appBundle.es5.js'),
     '--name',
-    'APP_' + metadata.identifier.replace(/\./g, '_').replace(/-/g, '_'),
-  ])
+    ['APP', metadata.identifier && metadata.identifier.replace(/\./g, '_').replace(/-/g, '_')]
+      .filter(val => val)
+      .join('_'),
+  ]
+
+  if (options.sourcemaps === false) args.push('--no-sourcemap')
+
+  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), args)
     .then(() => {
       spinner.succeed()
       return metadata
@@ -154,6 +166,27 @@ const bundleEs5App = (folder, metadata) => {
       console.log(e.stderr)
       throw Error(e)
     })
+}
+
+const ensureCorrectGitIgnore = () => {
+  return new Promise(resolve => {
+    const filename = path.join(process.cwd(), '.gitignore')
+    try {
+      const gitIgnoreEntries = fs.readFileSync(filename, 'utf8').split('\n')
+      const missingEntries = ['dist', 'releases', '.tmp', 'build'].filter(
+        entry => gitIgnoreEntries.indexOf(entry) === -1
+      )
+
+      if (missingEntries.length) {
+        fs.appendFileSync(filename, '\n' + missingEntries.join('\n') + '\n')
+      }
+
+      resolve()
+    } catch (e) {
+      // no .gitignore file, so let's just move on
+      resolve()
+    }
+  })
 }
 
 const ensureCorrectSdkDependency = () => {
@@ -229,5 +262,6 @@ module.exports = {
   readSettings,
   bundleEs6App,
   bundleEs5App,
+  ensureCorrectGitIgnore,
   ensureCorrectSdkDependency,
 }
