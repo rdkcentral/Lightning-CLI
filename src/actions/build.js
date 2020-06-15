@@ -17,15 +17,18 @@
  * limitations under the License.
  */
 
+const path = require('path')
+
 const sequence = require('../helpers/sequence')
 const buildHelpers = require('../helpers/build')
 
 module.exports = (clear = false, change = null) => {
-  const targetDir = process.cwd() + '/dist'
+  const targetDir = path.join(process.cwd(), 'build')
 
   let metadata
   let settings
   return sequence([
+    () => clear && buildHelpers.ensureCorrectGitIgnore(),
     () => clear && buildHelpers.ensureCorrectSdkDependency(),
     () => clear && buildHelpers.removeFolder(targetDir),
     () => buildHelpers.ensureFolderExists(targetDir),
