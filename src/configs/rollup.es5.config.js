@@ -25,9 +25,11 @@ const babelPresentEnv = require('@babel/preset-env')
 const babelPluginTransFormSpread = require('@babel/plugin-transform-spread')
 const babelPluginTransFormParameters = require('@babel/plugin-transform-parameters')
 const alias = require('@rollup/plugin-alias')
+const json = require('@rollup/plugin-json')
 
 module.exports = {
   plugins: [
+    json(),
     alias({
       entries: {
         'wpe-lightning': path.join(__dirname, '../alias/wpe-lightning.js'),

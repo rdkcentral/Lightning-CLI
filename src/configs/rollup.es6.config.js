@@ -21,9 +21,11 @@ const path = require('path')
 const resolve = require('rollup-plugin-node-resolve')
 const commonjs = require('rollup-plugin-commonjs')
 const alias = require('@rollup/plugin-alias')
+const json = require('@rollup/plugin-json')
 
 module.exports = {
   plugins: [
+    json(),
     alias({
       entries: {
         'wpe-lightning': path.join(__dirname, '../alias/wpe-lightning.js'),
