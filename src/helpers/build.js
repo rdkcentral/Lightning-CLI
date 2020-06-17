@@ -24,7 +24,6 @@ const path = require('path')
 const chalk = require('chalk')
 
 const spinner = require('./spinner')
-const { node } = require('execa')
 
 const removeFolder = folder => {
   spinner.start('Removing "' + folder.split('/').pop() + '" folder')
