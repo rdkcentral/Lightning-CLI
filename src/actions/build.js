@@ -30,6 +30,7 @@ module.exports = (clear = false, change = null) => {
   return sequence([
     () => clear && buildHelpers.ensureCorrectGitIgnore(),
     () => clear && buildHelpers.ensureCorrectSdkDependency(),
+    () => clear && buildHelpers.verifySdkVersionConsistency(),
     () => clear && buildHelpers.removeFolder(targetDir),
     () => buildHelpers.ensureFolderExists(targetDir),
     () => clear && buildHelpers.copySupportFiles(targetDir),

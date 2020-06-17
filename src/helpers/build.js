@@ -24,6 +24,7 @@ const path = require('path')
 const chalk = require('chalk')
 
 const spinner = require('./spinner')
+const { node } = require('execa')
 
 const removeFolder = folder => {
   spinner.start('Removing "' + folder.split('/').pop() + '" folder')
@@ -250,6 +251,48 @@ const ensureCorrectSdkDependency = () => {
   }
 }
 
+const verifySdkVersionConsistency = () => {
+  return new Promise((resolve, reject) => {
+    const packageLockJsonPath = path.join(process.cwd(), 'package-lock.json')
+    if (!fs.existsSync(packageLockJsonPath)) resolve()
+    const packageLockJson = require(packageLockJsonPath)
+    // get the locked version from package-lock
+    if (
+      packageLockJson &&
+      packageLockJson.dependencies &&
+      Object.keys(packageLockJson.dependencies).indexOf('wpe-lightning-sdk') > -1
+    ) {
+      const nodeModulesPackageJsonPath = path.join(
+        process.cwd(),
+        'node_modules/wpe-lightning-sdk/package.json'
+      )
+
+      if (fs.existsSync(nodeModulesPackageJsonPath)) {
+        const nodeModulesPackageJson = require(nodeModulesPackageJsonPath)
+        if (nodeModulesPackageJson) {
+          if (
+            nodeModulesPackageJson._resolved !==
+            packageLockJson.dependencies['wpe-lightning-sdk'].version
+          ) {
+            reject(
+              chalk.red(
+                'Installed version of wpe-lightning-sdk (in node_modules)\nis not consistent with the locked version in package-lock.json\n\nPlease run `npm install` and try again.'
+              )
+            )
+          }
+        }
+      } else {
+        reject(
+          chalk.red(
+            "Can't find Lightning SDK installed in node_modules... \n\nPlease run `npm install` and try again."
+          )
+        )
+      }
+    }
+    resolve()
+  })
+}
+
 module.exports = {
   removeFolder,
   ensureFolderExists,
@@ -264,4 +307,5 @@ module.exports = {
   bundleEs5App,
   ensureCorrectGitIgnore,
   ensureCorrectSdkDependency,
+  verifySdkVersionConsistency,
 }
