@@ -1,9 +1,29 @@
+/*
+ * If not stated otherwise in this file or this component's LICENSE file the
+ * following copyright and licenses apply:
+ *
+ * Copyright 2020 RDK Management
+ *
+ * Licensed under the Apache License, Version 2.0 (the License);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 const shell = require('shelljs')
 const fs = require('fs')
 const execa = require('execa')
 const path = require('path')
+const chalk = require('chalk')
 
-const spinner = require('../helpers/spinner')
+const spinner = require('./spinner')
 
 const removeFolder = folder => {
   spinner.start('Removing "' + folder.split('/').pop() + '" folder')
@@ -88,10 +108,10 @@ const readSettings = () => {
   })
 }
 
-const bundleEs6App = (folder, metadata) => {
+const bundleEs6App = (folder, metadata, options = {}) => {
   spinner.start('Building ES6 appBundle and saving to "' + folder.split('/').pop() + '"')
 
-  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), [
+  const args = [
     '-c',
     path.join(__dirname, '../configs/rollup.es6.config.js'),
     '--input',
@@ -99,8 +119,14 @@ const bundleEs6App = (folder, metadata) => {
     '--file',
     path.join(folder, 'appBundle.js'),
     '--name',
-    'APP_' + metadata.identifier.replace(/\./g, '_').replace(/-/g, '_'),
-  ])
+    ['APP', metadata.identifier && metadata.identifier.replace(/\./g, '_').replace(/-/g, '_')]
+      .filter(val => val)
+      .join('_'),
+  ]
+
+  if (options.sourcemaps === false) args.push('--no-sourcemap')
+
+  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), args)
     .then(() => {
       spinner.succeed()
       return metadata
@@ -112,10 +138,10 @@ const bundleEs6App = (folder, metadata) => {
     })
 }
 
-const bundleEs5App = (folder, metadata) => {
+const bundleEs5App = (folder, metadata, options = {}) => {
   spinner.start('Building ES5 appBundle and saving to "' + folder.split('/').pop() + '"')
 
-  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), [
+  const args = [
     '-c',
     path.join(__dirname, '../configs/rollup.es5.config.js'),
     '--input',
@@ -123,8 +149,14 @@ const bundleEs5App = (folder, metadata) => {
     '--file',
     path.join(folder, 'appBundle.es5.js'),
     '--name',
-    'APP_' + metadata.identifier.replace(/\./g, '_').replace(/-/g, '_'),
-  ])
+    ['APP', metadata.identifier && metadata.identifier.replace(/\./g, '_').replace(/-/g, '_')]
+      .filter(val => val)
+      .join('_'),
+  ]
+
+  if (options.sourcemaps === false) args.push('--no-sourcemap')
+
+  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), args)
     .then(() => {
       spinner.succeed()
       return metadata
@@ -144,6 +176,88 @@ const getEnvAppVars = parsed =>
       return env
     }, {})
 
+const ensureCorrectGitIgnore = () => {
+  return new Promise(resolve => {
+    const filename = path.join(process.cwd(), '.gitignore')
+    try {
+      const gitIgnoreEntries = fs.readFileSync(filename, 'utf8').split('\n')
+      const missingEntries = ['dist', 'releases', '.tmp', 'build'].filter(
+        entry => gitIgnoreEntries.indexOf(entry) === -1
+      )
+
+      if (missingEntries.length) {
+        fs.appendFileSync(filename, '\n' + missingEntries.join('\n') + '\n')
+      }
+
+      resolve()
+    } catch (e) {
+      // no .gitignore file, so let's just move on
+      resolve()
+    }
+  })
+}
+
+const ensureCorrectSdkDependency = () => {
+  const packageJsonPath = path.join(process.cwd(), 'package.json')
+  if (!fs.existsSync(packageJsonPath)) return true
+  const packageJson = require(packageJsonPath)
+  // check if package.json has old WebPlatformForEmbedded sdk dependency
+  if (
+    packageJson &&
+    packageJson.dependencies &&
+    Object.keys(packageJson.dependencies).indexOf('wpe-lightning-sdk') > -1 &&
+    packageJson.dependencies['wpe-lightning-sdk']
+      .toLowerCase()
+      .indexOf('webplatformforembedded/lightning-sdk') > -1
+  ) {
+    let lockedDependency
+    // if already has a hash, use that one (e.g. from a specific branch)
+    if (packageJson.dependencies['wpe-lightning-sdk'].indexOf('#') > -1) {
+      lockedDependency = packageJson.dependencies['wpe-lightning-sdk']
+    }
+    // otherwise attempt to get the locked dependency from package-lock
+    else {
+      const packageLockJsonPath = path.join(process.cwd(), 'package-lock.json')
+      if (!fs.existsSync(packageLockJsonPath)) return true
+      const packageLockJson = require(packageLockJsonPath)
+      // get the locked version from package-lock
+      if (
+        packageLockJson &&
+        packageLockJson.dependencies &&
+        Object.keys(packageLockJson.dependencies).indexOf('wpe-lightning-sdk') > -1
+      ) {
+        lockedDependency = packageLockJson.dependencies['wpe-lightning-sdk'].version
+      }
+    }
+
+    if (lockedDependency) {
+      // replace WebPlatformForEmbedded organization with rdkcentral organization (and keep locked hash)
+      lockedDependency = lockedDependency.replace(/WebPlatformForEmbedded/gi, 'rdkcentral')
+      if (lockedDependency) {
+        spinner.start(
+          'Moving SDK dependency from WebPlatformForEmbedded organization to RDKcentral organization'
+        )
+        // install the new dependency
+        return execa('npm', ['install', lockedDependency])
+          .then(() => {
+            spinner.succeed()
+          })
+          .catch(e => {
+            spinner.fail()
+            console.log(chalk.red('Unable to automatically move the SDK dependency'))
+            console.log(
+              'Please run ' +
+                chalk.yellow('npm install ' + lockedDependency) +
+                ' manually to continue'
+            )
+            console.log(' ')
+            throw Error(e)
+          })
+      }
+    }
+  }
+}
+
 module.exports = {
   removeFolder,
   ensureFolderExists,
@@ -157,4 +271,6 @@ module.exports = {
   bundleEs6App,
   bundleEs5App,
   getEnvAppVars,
+  ensureCorrectGitIgnore,
+  ensureCorrectSdkDependency,
 }
