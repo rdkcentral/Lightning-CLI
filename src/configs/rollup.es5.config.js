@@ -25,14 +25,24 @@ const babelPresentEnv = require('@babel/preset-env')
 const babelPluginTransFormSpread = require('@babel/plugin-transform-spread')
 const babelPluginTransFormParameters = require('@babel/plugin-transform-parameters')
 const alias = require('@rollup/plugin-alias')
-const injectProcessEnv = require('rollup-plugin-inject-process-env')
+const json = require('@rollup/plugin-json')
+const virtual = require('@rollup/plugin-virtual')
+const inject = require('@rollup/plugin-inject')
 const buildHelpers = require(path.join(__dirname, '../helpers/build'))
 const dotenv = require('dotenv').config()
-const json = require('@rollup/plugin-json')
 
 module.exports = {
   plugins: [
     json(),
+    inject({
+      'process.env': 'processEnv',
+    }),
+    virtual({
+      processEnv: `export default ${JSON.stringify({
+        NODE_ENV: process.env.NODE_ENV,
+        ...buildHelpers.getEnvAppVars(dotenv.parsed),
+      })}`,
+    }),
     alias({
       entries: {
         'wpe-lightning': path.join(__dirname, '../alias/wpe-lightning.js'),
@@ -42,10 +52,6 @@ module.exports = {
     }),
     resolve({ mainFields: ['module', 'main', 'browser'] }),
     commonjs({ sourceMap: false }),
-    injectProcessEnv({
-      NODE_ENV: process.env.NODE_ENV,
-      ...buildHelpers.getEnvAppVars(dotenv.parsed),
-    }),
     babel({
       presets: [
         [
