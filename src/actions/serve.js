@@ -23,7 +23,7 @@ const chalk = require('chalk')
 
 module.exports = () => {
   const args = [
-    './dist',
+    './build',
     process.env.LNG_SERVE_OPEN === 'false' ? false : '-o',
     process.env.LNG_SERVE_CACHE_TIME ? '-c' + process.env.LNG_SERVE_CACHE_TIME : '-c-1',
     process.env.LNG_SERVE_PORT ? '-p' + process.env.LNG_SERVE_PORT : false,
