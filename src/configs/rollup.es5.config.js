@@ -30,6 +30,7 @@ const virtual = require('@rollup/plugin-virtual')
 const inject = require('@rollup/plugin-inject')
 const buildHelpers = require(path.join(__dirname, '../helpers/build'))
 const dotenv = require('dotenv').config()
+const minify = require('rollup-plugin-terser').terser
 
 module.exports = {
   plugins: [
@@ -69,6 +70,7 @@ module.exports = {
       ],
       plugins: [babelPluginTransFormSpread, babelPluginTransFormParameters],
     }),
+    (process.env.LNG_BUILD_MINIFY === 'true' || process.env.NODE_ENV === 'production') && minify(),
   ],
   output: {
     format: 'iife',

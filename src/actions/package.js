@@ -56,8 +56,10 @@ const tar = (src, dest) => {
 }
 
 module.exports = () => {
-  const releasesDir = process.cwd() + '/releases'
-  const tmpDir = process.cwd() + '/.tmp'
+  // set environment to production (to enable minifications)
+  process.env.NODE_ENV = 'production'
+  const releasesDir = path.join(process.cwd(), +'releases')
+  const tmpDir = path.join(process.cwd(), '/.tmp')
   let packageData
   return sequence([
     () => buildHelpers.removeFolder(tmpDir),
@@ -70,7 +72,6 @@ module.exports = () => {
         packageData = metadata
         return metadata
       }),
-    // todo: add production flag
     metadata => buildHelpers.bundleEs6App(tmpDir, metadata),
     metadata => buildHelpers.bundleEs5App(tmpDir, metadata),
     () => buildHelpers.ensureFolderExists(releasesDir),

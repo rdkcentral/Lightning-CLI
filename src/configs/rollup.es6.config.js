@@ -26,6 +26,7 @@ const virtual = require('@rollup/plugin-virtual')
 const inject = require('@rollup/plugin-inject')
 const buildHelpers = require(path.join(__dirname, '../helpers/build'))
 const dotenv = require('dotenv').config()
+const minify = require('rollup-plugin-terser').terser
 
 module.exports = {
   plugins: [
@@ -48,11 +49,12 @@ module.exports = {
     }),
     resolve({ mainFields: ['module', 'main', 'browser'] }),
     commonjs({ sourceMap: false }),
+    (process.env.LNG_BUILD_MINIFY === 'true' || process.env.NODE_ENV === 'production') && minify(),
   ],
   output: {
     format: 'iife',
     sourcemap:
-      process.env.LNG_BUILD_SOURCEMAP === 'undefined'
+      process.env.LNG_BUILD_SOURCEMAP === undefined
         ? true
         : process.env.LNG_BUILD_SOURCEMAP === 'false'
         ? false
