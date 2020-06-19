@@ -63,6 +63,10 @@ const fetchLatestVersion = () => {
 }
 
 const upToDate = async (skip = false) => {
+  if (process.env.LNG_AUTO_UPDATE !== undefined) {
+    skip = process.env.LNG_AUTO_UPDATE === 'false' ? true : false
+    console.log('skip', skip)
+  }
   if (skip === true) {
     return true
   }
