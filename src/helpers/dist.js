@@ -61,11 +61,11 @@ const setupDistFolder = (folder, type) => {
 }
 
 const moveOldDistFolderToBuildFolder = () => {
-  const distFolder = path.join(process.cwd(), 'dist')
+  const distFolder = path.join(process.cwd(), process.env.LNG_DIST_FOLDER || 'dist')
 
   // when dist folder has a metadata.json file we assume it's an old 'built' app
   if (path.join(distFolder, 'metadata.json')) {
-    const buildFolder = path.join(process.cwd(), 'build')
+    const buildFolder = path.join(process.cwd(), process.env.LNG_BUILD_FOLDER || 'build')
     // move to build folder if it doesn't exist yet
     if (!fs.existsSync(buildFolder)) {
       shell.mv(distFolder, buildFolder)

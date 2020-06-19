@@ -181,9 +181,12 @@ const ensureCorrectGitIgnore = () => {
     const filename = path.join(process.cwd(), '.gitignore')
     try {
       const gitIgnoreEntries = fs.readFileSync(filename, 'utf8').split('\n')
-      const missingEntries = ['dist', 'releases', '.tmp', 'build'].filter(
-        entry => gitIgnoreEntries.indexOf(entry) === -1
-      )
+      const missingEntries = [
+        process.env.LNG_BUILD_FOLDER || 'dist',
+        'releases',
+        '.tmp',
+        process.env.LNG_BUILD_FOLDER || 'build',
+      ].filter(entry => gitIgnoreEntries.indexOf(entry) === -1)
 
       if (missingEntries.length) {
         fs.appendFileSync(filename, '\n' + missingEntries.join('\n') + '\n')
