@@ -77,34 +77,47 @@ const copySrcFolder = folder => {
 }
 
 const copySettings = folder => {
-  const file = './settings.json'
+  const file = path.join(process.cwd(), 'settings.json')
   if (fs.existsSync(file)) {
-    spinner.start('Copying settings.json "' + folder.split('/').pop() + '"')
+    spinner.start('Copying settings.json to "' + folder.split('/').pop() + '"')
     shell.cp(file, folder)
     spinner.succeed()
+  } else {
+    spinner.fail()
   }
 }
 
 const copyMetadata = folder => {
-  const file = './metadata.json'
+  const file = path.join(process.cwd(), 'metadata.json')
   if (fs.existsSync(file)) {
-    spinner.start('Copying metadata.json "' + folder.split('/').pop() + '"')
+    spinner.start('Copying metadata.json to "' + folder.split('/').pop() + '"')
     shell.cp(file, folder)
     spinner.succeed()
+  } else {
+    spinner.fail()
   }
 }
 
 const readMetadata = () => {
-  return new Promise(resolve => {
-    const metadata = fs.readFileSync('./metadata.json', 'utf8')
-    resolve(JSON.parse(metadata))
-  })
+  return readJson('metadata.json')
 }
 
 const readSettings = () => {
-  return new Promise(resolve => {
-    const settings = fs.readFileSync('./settings.json', 'utf8')
-    resolve(JSON.parse(settings))
+  return readJson('settings.json')
+}
+
+const readJson = fileName => {
+  return new Promise((resolve, reject) => {
+    const file = path.join(process.cwd(), fileName)
+    if (fs.existsSync(file)) {
+      try {
+        resolve(JSON.parse(fs.readFileSync(file, 'utf8')))
+      } catch (e) {
+        reject(e)
+      }
+    } else {
+      reject('"' + fileName + '" not found')
+    }
   })
 }
 
@@ -261,6 +274,18 @@ const ensureCorrectSdkDependency = () => {
   }
 }
 
+const getAppVersion = () => {
+  return require(path.join(process.cwd(), 'metadata.json')).version
+}
+
+const getSdkVersion = () => {
+  return require(path.join(process.cwd(), 'node_modules/wpe-lightning-sdk/package.json')).version
+}
+
+const getCliVersion = () => {
+  return require(path.join(__dirname, '../../package.json')).version
+}
+
 module.exports = {
   removeFolder,
   ensureFolderExists,
@@ -276,4 +301,7 @@ module.exports = {
   getEnvAppVars,
   ensureCorrectGitIgnore,
   ensureCorrectSdkDependency,
+  getAppVersion,
+  getSdkVersion,
+  getCliVersion,
 }

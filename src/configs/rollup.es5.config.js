@@ -31,6 +31,7 @@ const inject = require('@rollup/plugin-inject')
 const buildHelpers = require(path.join(__dirname, '../helpers/build'))
 const dotenv = require('dotenv').config()
 const minify = require('rollup-plugin-terser').terser
+const license = require('rollup-plugin-license')
 
 module.exports = {
   plugins: [
@@ -71,6 +72,21 @@ module.exports = {
       plugins: [babelPluginTransFormSpread, babelPluginTransFormParameters],
     }),
     (process.env.LNG_BUILD_MINIFY === 'true' || process.env.NODE_ENV === 'production') && minify(),
+    license({
+      banner: {
+        content:
+          'App version: <%= data.appVersion %>\nSDK version: <%= data.sdkVersion %>\nCLI version: <%= data.cliVersion %>\n\nGenerated: <%= data.gmtDate %>',
+        data() {
+          const date = new Date()
+          return {
+            appVersion: buildHelpers.getAppVersion(),
+            sdkVersion: buildHelpers.getSdkVersion(),
+            cliVersion: buildHelpers.getCliVersion(),
+            gmtDate: date.toGMTString(),
+          }
+        },
+      },
+    }),
   ],
   output: {
     format: 'iife',

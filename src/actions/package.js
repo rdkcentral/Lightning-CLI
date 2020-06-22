@@ -56,7 +56,7 @@ const tar = (src, dest) => {
 }
 
 module.exports = () => {
-  // set environment to production (to enable minifications)
+  // set environment to production (to enable minify)
   process.env.NODE_ENV = 'production'
   const releasesDir = path.join(process.cwd(), +'releases')
   const tmpDir = path.join(process.cwd(), '/.tmp')
