@@ -142,7 +142,7 @@ Environment variables can be passed via the command prompt before calling a comm
 NODE_ENV=staging LNG_SERVE_PORT=3333 lng serve
 ```
 
-_This will start a server on `port 3333` and the value `process.env.NODE_ENV` (accesible from within an app) will be set to `staging`_.
+_This will start a server on `port 3333` and the value of `process.env.NODE_ENV` (accesible from within an app) will be set to `staging`_.
 
 It's also possible to specify multiple environment variables in a `.env` file:
 
@@ -163,12 +163,18 @@ APP_API_KEY=mysecretapikey
 
 The following environment variables are available to customize the behavior of the CLI:
 
-- `LNG_SERVE_OPEN` - whether the CLI should open a browser window when running `lng serve` (or `lng dev`). Possible values: `true` or `false`, defaults to `true`
-- `LNG_SERVE_PORT` - on which port the CLI should serve when running `lng serve` (or `lng dev`). Defaults to auto incrementing depending on available ports, starting at `8080`
-- `LNG_BUILD_SOURCEMAP` - instructs the CLI whether / how to generate sourcemaps. Possible values: `true`, `false` or `inline`
-- `LNG_BUILD_FOLDER` - in which folder the built App (using `lng build`) should be generated. Defaults to `build`
-- `LNG_DIST_FOLDER` - in which folder the distributable App (using `lng dist`) should be generated. Defaults to `dist`
-- `LNG_AUTO_UPDATE` - whether or not the Lightning CLI should auto update. Possible values: `true` or `false`, defaults to `true`. **Note**: it's recommended to keep auto updates enabled.
+- `LNG_SERVE_OPEN`<br />
+Whether the CLI should open a browser window when running `lng serve` (or `lng dev`). Possible values: `true` or `false`, defaults to `true`
+- `LNG_SERVE_PORT`<br />
+On which port the CLI should serve when running `lng serve` (or `lng dev`). Defaults to auto incrementing depending on available ports, starting at `8080`
+- `LNG_BUILD_SOURCEMAP`<br />
+Instructs the CLI whether / how to generate sourcemaps. Possible values: `true`, `false` or `inline`
+- `LNG_BUILD_FOLDER`<br />
+In which folder the built App (using `lng build`) should be generated. Defaults to `build`
+- `LNG_DIST_FOLDER`<br />
+In which folder the distributable App (using `lng dist`) should be generated. Defaults to `dist`
+- `LNG_AUTO_UPDATE`<br />
+Whether or not the Lightning CLI should auto update. Possible values: `true` or `false`, defaults to `true`. **Note**: it's recommended to keep auto updates enabled.
 
 ### Custom App environment variables
 
