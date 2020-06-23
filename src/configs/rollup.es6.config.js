@@ -70,7 +70,9 @@ module.exports = {
   output: {
     format: 'iife',
     sourcemap:
-      process.env.LNG_BUILD_SOURCEMAP === undefined
+      process.env.NODE_ENV === 'production'
+        ? true
+        : process.env.LNG_BUILD_SOURCEMAP === undefined
         ? true
         : process.env.LNG_BUILD_SOURCEMAP === 'false'
         ? false

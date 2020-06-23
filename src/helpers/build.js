@@ -181,7 +181,7 @@ const bundleEs5App = (folder, metadata, options = {}) => {
     })
 }
 
-const getEnvAppVars = parsed =>
+const getEnvAppVars = (parsed = {}) =>
   Object.keys(parsed)
     .filter(key => key.startsWith('APP_'))
     .reduce((env, key) => {
