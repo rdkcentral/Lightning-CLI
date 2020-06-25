@@ -33,6 +33,7 @@ module.exports = types => {
       () =>
         type === 'es5' &&
         buildHelpers.bundleEs5App(path.join(distDir, 'js'), {}, { sourcemaps: false }),
+      () => type === 'es5' && buildHelpers.bundlePolyfills(path.join(distDir, 'js')),
     ])
   }
 

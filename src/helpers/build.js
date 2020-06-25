@@ -22,6 +22,7 @@ const fs = require('fs')
 const execa = require('execa')
 const path = require('path')
 const chalk = require('chalk')
+const concat = require('concat')
 
 const spinner = require('./spinner')
 
@@ -168,6 +169,20 @@ const bundleEs5App = (folder, metadata, options = {}) => {
     })
 }
 
+const bundlePolyfills = folder => {
+  spinner.start('Bundling ES5 polyfills and saving to "' + folder.split('/').pop() + '"')
+
+  const pathToPolyfills = path.join(
+    process.cwd(),
+    './node_modules/wpe-lightning-sdk/support/polyfills'
+  )
+  const polyfills = fs.readdirSync(pathToPolyfills).map(file => path.join(pathToPolyfills, file))
+
+  return concat(polyfills, path.join(folder, 'polyfills.js')).then(() => {
+    spinner.succeed()
+  })
+}
+
 const ensureCorrectGitIgnore = () => {
   return new Promise(resolve => {
     const filename = path.join(process.cwd(), '.gitignore')
@@ -264,4 +279,5 @@ module.exports = {
   bundleEs5App,
   ensureCorrectGitIgnore,
   ensureCorrectSdkDependency,
+  bundlePolyfills,
 }
