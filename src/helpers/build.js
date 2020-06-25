@@ -120,9 +120,7 @@ const bundleEs6App = (folder, metadata, options = {}) => {
     '--file',
     path.join(folder, 'appBundle.js'),
     '--name',
-    ['APP', metadata.identifier && metadata.identifier.replace(/\./g, '_').replace(/-/g, '_')]
-      .filter(val => val)
-      .join('_'),
+    makeSafeAppId(metadata),
   ]
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
@@ -150,9 +148,7 @@ const bundleEs5App = (folder, metadata, options = {}) => {
     '--file',
     path.join(folder, 'appBundle.es5.js'),
     '--name',
-    ['APP', metadata.identifier && metadata.identifier.replace(/\./g, '_').replace(/-/g, '_')]
-      .filter(val => val)
-      .join('_'),
+    makeSafeAppId(metadata),
   ]
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
@@ -265,6 +261,11 @@ const ensureCorrectSdkDependency = () => {
   }
 }
 
+const makeSafeAppId = metadata =>
+  ['APP', metadata.identifier && metadata.identifier.replace(/\./g, '_').replace(/-/g, '_')]
+    .filter(val => val)
+    .join('_')
+
 module.exports = {
   removeFolder,
   ensureFolderExists,
@@ -280,4 +281,5 @@ module.exports = {
   ensureCorrectGitIgnore,
   ensureCorrectSdkDependency,
   bundlePolyfills,
+  makeSafeAppId,
 }
