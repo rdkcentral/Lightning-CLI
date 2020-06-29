@@ -2,8 +2,9 @@ const fs = require('fs')
 const path = require('path')
 const shell = require('shelljs')
 const replaceInFile = require('replace-in-file')
+const buildHelpers = require('./build')
 
-const setupDistFolder = (folder, type) => {
+const setupDistFolder = (folder, type, metadata) => {
   if (type === 'es6') {
     shell.cp(
       path.join(process.cwd(), './node_modules/wpe-lightning/dist/lightning.js'),
@@ -57,6 +58,12 @@ const setupDistFolder = (folder, type) => {
     files: folder + '/*',
     from: /\{\$PLATFORMSETTINGS\}/g,
     to: JSON.stringify(settings.platformSettings, null, 2),
+  })
+
+  replaceInFile.sync({
+    files: folder + '/*',
+    from: /\{\$APP_ID\}/g,
+    to: buildHelpers.makeSafeAppId(metadata),
   })
 }
 

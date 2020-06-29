@@ -6,12 +6,15 @@ const distHelpers = require('../helpers/dist')
 
 module.exports = types => {
   const baseDistDir = path.join(process.cwd(), process.env.LNG_DIST_FOLDER || 'dist')
-  console.log('baseDistFolder', baseDistDir)
+
+  let metadata
+
   const dist = type => {
     let distDir
     return sequence([
       () => distHelpers.moveOldDistFolderToBuildFolder(),
       () => buildHelpers.ensureCorrectGitIgnore(),
+      () => buildHelpers.readMetadata().then(result => (metadata = result)),
       () => {
         distDir = path.join(baseDistDir, type)
       },
@@ -20,7 +23,7 @@ module.exports = types => {
           return sequence([
             () => buildHelpers.ensureFolderExists(distDir),
             () => buildHelpers.ensureFolderExists(path.join(distDir, 'js')),
-            () => distHelpers.setupDistFolder(distDir, type),
+            () => distHelpers.setupDistFolder(distDir, type, metadata),
           ])
         }
         return true
@@ -29,10 +32,10 @@ module.exports = types => {
       () => buildHelpers.copyStaticFolder(distDir),
       () =>
         type === 'es6' &&
-        buildHelpers.bundleEs6App(path.join(distDir, 'js'), {}, { sourcemaps: false }),
+        buildHelpers.bundleEs6App(path.join(distDir, 'js'), metadata, { sourcemaps: false }),
       () =>
         type === 'es5' &&
-        buildHelpers.bundleEs5App(path.join(distDir, 'js'), {}, { sourcemaps: false }),
+        buildHelpers.bundleEs5App(path.join(distDir, 'js'), metadata, { sourcemaps: false }),
       () => type === 'es5' && buildHelpers.bundlePolyfills(path.join(distDir, 'js')),
     ])
   }
