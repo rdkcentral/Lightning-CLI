@@ -19,6 +19,9 @@
  * limitations under the License.
  */
 
+// load and parse (optional) .env file with
+require('dotenv').config()
+
 const program = require('commander')
 const didYouMean = require('didyoumean2').default
 const chalk = require('chalk')
@@ -65,7 +68,7 @@ program
     ].join('')
   )
   .action(() => {
-    updateCheck().then(() => serveAction())
+    updateCheck().then(() => serveAction().catch(() => process.exit()))
   })
 
 program

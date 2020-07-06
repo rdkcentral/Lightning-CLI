@@ -22,10 +22,25 @@ const resolve = require('rollup-plugin-node-resolve')
 const commonjs = require('rollup-plugin-commonjs')
 const alias = require('@rollup/plugin-alias')
 const json = require('@rollup/plugin-json')
+const virtual = require('@rollup/plugin-virtual')
+const inject = require('@rollup/plugin-inject')
+const buildHelpers = require(path.join(__dirname, '../helpers/build'))
+const dotenv = require('dotenv').config()
+const minify = require('rollup-plugin-terser').terser
+const license = require('rollup-plugin-license')
 
 module.exports = {
   plugins: [
     json(),
+    inject({
+      'process.env': 'processEnv',
+    }),
+    virtual({
+      processEnv: `export default ${JSON.stringify({
+        NODE_ENV: process.env.NODE_ENV,
+        ...buildHelpers.getEnvAppVars(dotenv.parsed),
+      })}`,
+    }),
     alias({
       entries: {
         'wpe-lightning': path.join(__dirname, '../alias/wpe-lightning.js'),
@@ -35,9 +50,32 @@ module.exports = {
     }),
     resolve({ mainFields: ['module', 'main', 'browser'] }),
     commonjs({ sourceMap: false }),
+    (process.env.LNG_BUILD_MINIFY === 'true' || process.env.NODE_ENV === 'production') && minify(),
+    license({
+      banner: {
+        content:
+          'App version: <%= data.appVersion %>\nSDK version: <%= data.sdkVersion %>\nCLI version: <%= data.cliVersion %>\n\nGenerated: <%= data.gmtDate %>',
+        data() {
+          const date = new Date()
+          return {
+            appVersion: buildHelpers.getAppVersion(),
+            sdkVersion: buildHelpers.getSdkVersion(),
+            cliVersion: buildHelpers.getCliVersion(),
+            gmtDate: date.toGMTString(),
+          }
+        },
+      },
+    }),
   ],
   output: {
     format: 'iife',
-    sourcemap: true,
+    sourcemap:
+      process.env.NODE_ENV === 'production'
+        ? true
+        : process.env.LNG_BUILD_SOURCEMAP === undefined
+        ? true
+        : process.env.LNG_BUILD_SOURCEMAP === 'false'
+        ? false
+        : process.env.LNG_BUILD_SOURCEMAP,
   },
 }

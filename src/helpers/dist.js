@@ -2,8 +2,9 @@ const fs = require('fs')
 const path = require('path')
 const shell = require('shelljs')
 const replaceInFile = require('replace-in-file')
+const buildHelpers = require('./build')
 
-const setupDistFolder = (folder, type) => {
+const setupDistFolder = (folder, type, metadata) => {
   if (type === 'es6') {
     shell.cp(
       path.join(process.cwd(), './node_modules/wpe-lightning/dist/lightning.js'),
@@ -58,14 +59,20 @@ const setupDistFolder = (folder, type) => {
     from: /\{\$PLATFORMSETTINGS\}/g,
     to: JSON.stringify(settings.platformSettings, null, 2),
   })
+
+  replaceInFile.sync({
+    files: folder + '/*',
+    from: /\{\$APP_ID\}/g,
+    to: buildHelpers.makeSafeAppId(metadata),
+  })
 }
 
 const moveOldDistFolderToBuildFolder = () => {
-  const distFolder = path.join(process.cwd(), 'dist')
+  const distFolder = path.join(process.cwd(), process.env.LNG_DIST_FOLDER || 'dist')
 
   // when dist folder has a metadata.json file we assume it's an old 'built' app
   if (path.join(distFolder, 'metadata.json')) {
-    const buildFolder = path.join(process.cwd(), 'build')
+    const buildFolder = path.join(process.cwd(), process.env.LNG_BUILD_FOLDER || 'build')
     // move to build folder if it doesn't exist yet
     if (!fs.existsSync(buildFolder)) {
       shell.mv(distFolder, buildFolder)

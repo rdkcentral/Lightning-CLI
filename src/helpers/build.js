@@ -78,34 +78,47 @@ const copySrcFolder = folder => {
 }
 
 const copySettings = folder => {
-  const file = './settings.json'
+  const file = path.join(process.cwd(), 'settings.json')
   if (fs.existsSync(file)) {
-    spinner.start('Copying settings.json "' + folder.split('/').pop() + '"')
+    spinner.start('Copying settings.json to "' + folder.split('/').pop() + '"')
     shell.cp(file, folder)
     spinner.succeed()
+  } else {
+    spinner.fail()
   }
 }
 
 const copyMetadata = folder => {
-  const file = './metadata.json'
+  const file = path.join(process.cwd(), 'metadata.json')
   if (fs.existsSync(file)) {
-    spinner.start('Copying metadata.json "' + folder.split('/').pop() + '"')
+    spinner.start('Copying metadata.json to "' + folder.split('/').pop() + '"')
     shell.cp(file, folder)
     spinner.succeed()
+  } else {
+    spinner.fail()
   }
 }
 
 const readMetadata = () => {
-  return new Promise(resolve => {
-    const metadata = fs.readFileSync('./metadata.json', 'utf8')
-    resolve(JSON.parse(metadata))
-  })
+  return readJson('metadata.json')
 }
 
 const readSettings = () => {
-  return new Promise(resolve => {
-    const settings = fs.readFileSync('./settings.json', 'utf8')
-    resolve(JSON.parse(settings))
+  return readJson('settings.json')
+}
+
+const readJson = fileName => {
+  return new Promise((resolve, reject) => {
+    const file = path.join(process.cwd(), fileName)
+    if (fs.existsSync(file)) {
+      try {
+        resolve(JSON.parse(fs.readFileSync(file, 'utf8')))
+      } catch (e) {
+        reject(e)
+      }
+    } else {
+      reject('"' + fileName + '" not found')
+    }
   })
 }
 
@@ -120,9 +133,7 @@ const bundleEs6App = (folder, metadata, options = {}) => {
     '--file',
     path.join(folder, 'appBundle.js'),
     '--name',
-    ['APP', metadata.identifier && metadata.identifier.replace(/\./g, '_').replace(/-/g, '_')]
-      .filter(val => val)
-      .join('_'),
+    makeSafeAppId(metadata),
   ]
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
@@ -150,9 +161,7 @@ const bundleEs5App = (folder, metadata, options = {}) => {
     '--file',
     path.join(folder, 'appBundle.es5.js'),
     '--name',
-    ['APP', metadata.identifier && metadata.identifier.replace(/\./g, '_').replace(/-/g, '_')]
-      .filter(val => val)
-      .join('_'),
+    makeSafeAppId(metadata),
   ]
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
@@ -168,6 +177,14 @@ const bundleEs5App = (folder, metadata, options = {}) => {
       throw Error(e)
     })
 }
+
+const getEnvAppVars = (parsed = {}) =>
+  Object.keys(parsed)
+    .filter(key => key.startsWith('APP_'))
+    .reduce((env, key) => {
+      env[key] = parsed[key]
+      return env
+    }, {})
 
 const bundlePolyfills = folder => {
   spinner.start('Bundling ES5 polyfills and saving to "' + folder.split('/').pop() + '"')
@@ -188,9 +205,12 @@ const ensureCorrectGitIgnore = () => {
     const filename = path.join(process.cwd(), '.gitignore')
     try {
       const gitIgnoreEntries = fs.readFileSync(filename, 'utf8').split('\n')
-      const missingEntries = ['dist', 'releases', '.tmp', 'build'].filter(
-        entry => gitIgnoreEntries.indexOf(entry) === -1
-      )
+      const missingEntries = [
+        process.env.LNG_BUILD_FOLDER || 'dist',
+        'releases',
+        '.tmp',
+        process.env.LNG_BUILD_FOLDER || 'build',
+      ].filter(entry => gitIgnoreEntries.indexOf(entry) === -1)
 
       if (missingEntries.length) {
         fs.appendFileSync(filename, '\n' + missingEntries.join('\n') + '\n')
@@ -265,6 +285,22 @@ const ensureCorrectSdkDependency = () => {
   }
 }
 
+const getAppVersion = () => {
+  return require(path.join(process.cwd(), 'metadata.json')).version
+}
+
+const getSdkVersion = () => {
+  return require(path.join(process.cwd(), 'node_modules/wpe-lightning-sdk/package.json')).version
+}
+
+const getCliVersion = () => {
+  return require(path.join(__dirname, '../../package.json')).version
+}
+const makeSafeAppId = metadata =>
+  ['APP', metadata.identifier && metadata.identifier.replace(/\./g, '_').replace(/-/g, '_')]
+    .filter(val => val)
+    .join('_')
+
 module.exports = {
   removeFolder,
   ensureFolderExists,
@@ -277,7 +313,12 @@ module.exports = {
   readSettings,
   bundleEs6App,
   bundleEs5App,
+  getEnvAppVars,
   ensureCorrectGitIgnore,
   ensureCorrectSdkDependency,
+  getAppVersion,
+  getSdkVersion,
+  getCliVersion,
   bundlePolyfills,
+  makeSafeAppId,
 }
