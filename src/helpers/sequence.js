@@ -23,6 +23,6 @@ module.exports = steps => {
       .then(function() {
         return method(...arguments)
       })
-      .catch(Promise.reject)
+      .catch(e => Promise.reject(e))
   }, Promise.resolve(null))
 }

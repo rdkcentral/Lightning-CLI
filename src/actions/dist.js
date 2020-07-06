@@ -5,7 +5,7 @@ const buildHelpers = require('../helpers/build')
 const distHelpers = require('../helpers/dist')
 
 module.exports = types => {
-  const baseDistDir = path.join(process.cwd(), 'dist')
+  const baseDistDir = path.join(process.cwd(), process.env.LNG_DIST_FOLDER || 'dist')
 
   let metadata
 

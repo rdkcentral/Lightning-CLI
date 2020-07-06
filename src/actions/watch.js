@@ -44,7 +44,7 @@ module.exports = (initCallback, watchCallback) => {
       if (typeof f == 'object' && prev === null && curr === null) {
         build(true)
           .then(() => {
-            initCallbackProcess = initCallback && initCallback()
+            initCallbackProcess = initCallback && initCallback().catch(() => process.exit())
           })
           .catch(() => {
             exit()
