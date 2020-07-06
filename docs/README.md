@@ -1,7 +1,7 @@
 # Lightning CLI
 
 The Lightning-CLI is the _Command Line Interface_ tool for a seamles Lightning App Development flow.
-Although it's primarily intended as a _client side_ developer tool, it can also be used server side.
+Although it's primarily intended as a _client side_ developer tool, it can also be used _server side_.
 
 With the Lightning-CLI you can easily _create_ and _build_ Lightning Apps.
 It's also the standard way to _upload_ Lightning Apps to the Metrological AppStore.
