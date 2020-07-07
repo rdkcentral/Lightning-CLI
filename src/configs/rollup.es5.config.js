@@ -71,7 +71,8 @@ module.exports = {
       ],
       plugins: [babelPluginTransFormSpread, babelPluginTransFormParameters],
     }),
-    (process.env.LNG_BUILD_MINIFY === 'true' || process.env.NODE_ENV === 'production') && minify(),
+    (process.env.LNG_BUILD_MINIFY === 'true' || process.env.NODE_ENV === 'production') &&
+      minify({ keep_fnames: true }),
     license({
       banner: {
         content:
