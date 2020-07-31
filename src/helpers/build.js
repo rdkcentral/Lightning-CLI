@@ -23,6 +23,7 @@ const execa = require('execa')
 const path = require('path')
 const chalk = require('chalk')
 const concat = require('concat')
+const os = require('os')
 
 const spinner = require('./spinner')
 
@@ -204,7 +205,7 @@ const ensureCorrectGitIgnore = () => {
   return new Promise(resolve => {
     const filename = path.join(process.cwd(), '.gitignore')
     try {
-      const gitIgnoreEntries = fs.readFileSync(filename, 'utf8').split('\n')
+      const gitIgnoreEntries = fs.readFileSync(filename, 'utf8').split(os.EOL)
       const missingEntries = [
         process.env.LNG_BUILD_FOLDER || 'dist',
         'releases',
@@ -213,7 +214,7 @@ const ensureCorrectGitIgnore = () => {
       ].filter(entry => gitIgnoreEntries.indexOf(entry) === -1)
 
       if (missingEntries.length) {
-        fs.appendFileSync(filename, '\n' + missingEntries.join('\n') + '\n')
+        fs.appendFileSync(filename, os.EOL + missingEntries.join(os.EOL) + os.EOL)
       }
 
       resolve()

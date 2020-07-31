@@ -32,6 +32,7 @@ const buildHelpers = require(path.join(__dirname, '../helpers/build'))
 const dotenv = require('dotenv').config()
 const minify = require('rollup-plugin-terser').terser
 const license = require('rollup-plugin-license')
+const os = require('os')
 
 module.exports = {
   plugins: [
@@ -75,8 +76,13 @@ module.exports = {
       minify({ keep_fnames: true }),
     license({
       banner: {
-        content:
-          'App version: <%= data.appVersion %>\nSDK version: <%= data.sdkVersion %>\nCLI version: <%= data.cliVersion %>\n\nGenerated: <%= data.gmtDate %>',
+        content: [
+          'App version: <%= data.appVersion %>',
+          'SDK version: <%= data.sdkVersion %>',
+          'CLI version: <%= data.cliVersion %>',
+          '',
+          'Generated: <%= data.gmtDate %>',
+        ].join(os.EOL),
         data() {
           const date = new Date()
           return {
