@@ -33,6 +33,7 @@
     "@rollup/plugin-inject": "^4.0.2",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
+    "@rollup/plugin-url": "^5.0.1",
     "@rollup/plugin-virtual": "^2.0.3",
     "axios": "^0.20.0",
     "chalk": "^4.1.0",

@@ -24,6 +24,7 @@ const alias = require('@rollup/plugin-alias')
 const json = require('@rollup/plugin-json')
 const virtual = require('@rollup/plugin-virtual')
 const inject = require('@rollup/plugin-inject')
+const url = require('@rollup/plugin-url')
 const buildHelpers = require(path.join(__dirname, '../helpers/build'))
 const dotenv = require('dotenv').config()
 const minify = require('rollup-plugin-terser').terser
@@ -33,6 +34,11 @@ const os = require('os')
 module.exports = {
   plugins: [
     json(),
+    url({
+      limit: 1,
+      destDir: 'build/static',
+      publicPath: 'static/',
+    }),
     inject({
       'process.env': 'processEnv',
     }),
