@@ -42,7 +42,7 @@ module.exports = (initCallback, watchCallback) => {
         return
       }
       if (typeof f == 'object' && prev === null && curr === null) {
-        build(true)
+        build('dev', true)
           .then(() => {
             initCallbackProcess = initCallback && initCallback().catch(() => process.exit())
           })
@@ -63,11 +63,11 @@ module.exports = (initCallback, watchCallback) => {
         if (f === 'metadata.json') {
           change = 'metadata'
         }
-        if (f === 'settings.json') {
+        if (f === 'settings.json' || f === 'settings.dev.json') {
           change = 'settings'
         }
 
-        build(false, change)
+        build('dev', false, change)
           .then(result => {
             busy = false
             watchCallback && watchCallback()
