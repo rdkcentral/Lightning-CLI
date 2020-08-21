@@ -82,7 +82,7 @@ const copySrcFolder = folder => {
 const copySettings = folder => {
   const file = path.join(process.cwd(), 'settings.json')
   if (fs.existsSync(file)) {
-    spinner.start('Copying settings.json to "' + folder.split('/').pop() + '"')
+    spinner.start('Copying settings JSON file to "' + folder.split('/').pop() + '"')
     shell.cp(file, folder)
     spinner.succeed()
   } else {

@@ -25,11 +25,7 @@ const buildHelpers = require('../helpers/build')
 module.exports = (environment = 'dev', clear = false, change = null) => {
   const targetDir = path.join(process.cwd(), process.env.LNG_BUILD_FOLDER || 'build')
 
-  console.log(`
-------------------------------
-You have choose the environment: ${environment.toUpperCase()}
-------------------------------
-`)
+  console.log(`You have choose the environment: ${environment.toUpperCase()}`)
 
   let metadata
   let settings
