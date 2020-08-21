@@ -50,17 +50,12 @@ program
 
 program
   .command('build')
+  .option('-e <type>', 'Build as type. May use a settings.type.json', 'dev')
   .description(
-    [
-      '👷‍♂️',
-      ' '.repeat(3),
-      'Build a local development version of the Lightning App',
-      'You can use different environments (dev|prod|test)',
-      'every environment will use settings.dev.json|settings.prod.json|settings.test.json config files',
-    ].join('')
+    ['👷‍♂️', ' '.repeat(3), 'Build a local development version of the Lightning App'].join('')
   )
-  .action(() => {
-    updateCheck().then(() => buildAction(true))
+  .action(options => {
+    updateCheck().then(() => buildAction(options.E, true))
   })
 
 program
