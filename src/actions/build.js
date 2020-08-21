@@ -25,6 +25,14 @@ const buildHelpers = require('../helpers/build')
 module.exports = (clear = false, change = null) => {
   const targetDir = path.join(process.cwd(), process.env.LNG_BUILD_FOLDER || 'build')
 
+  var environment = process.argv[process.argv.length - 1]
+
+  console.log(`
+------------------------------
+You have choose the environment: ${environment.toUpperCase()}
+------------------------------
+`)
+
   let metadata
   let settings
   return sequence([
@@ -37,7 +45,7 @@ module.exports = (clear = false, change = null) => {
     () => (clear || change === 'settings') && buildHelpers.copySettings(targetDir),
     () => (clear || change === 'metadata') && buildHelpers.copyMetadata(targetDir),
     () => buildHelpers.readMetadata().then(result => (metadata = result)),
-    () => buildHelpers.readSettings().then(result => (settings = result)),
+    () => buildHelpers.readSettings(environment).then(result => (settings = result)),
     () =>
       (clear || change === 'src') &&
       (settings.platformSettings.esEnv || 'es6') === 'es6' &&

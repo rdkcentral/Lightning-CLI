@@ -41,7 +41,6 @@ const updateCheck = (force = null) => upToDate(force === null ? Math.random() < 
 program
   .version('Lightning-CLI ' + require('../package').version)
   .usage('lightning-cli <command> [options]')
-
 program
   .command('create')
   .description(['✨', ' '.repeat(3), 'Create a new Lightning App'].join(''))
@@ -52,7 +51,13 @@ program
 program
   .command('build')
   .description(
-    ['👷‍♂️', ' '.repeat(3), 'Build a local development version of the Lightning App'].join('')
+    [
+      '👷‍♂️',
+      ' '.repeat(3),
+      'Build a local development version of the Lightning App',
+      'You can use different environments (dev|prod|test)',
+      'every environment will use settings.dev.json|settings.prod.json|settings.test.json config files',
+    ].join('')
   )
   .action(() => {
     updateCheck().then(() => buildAction(true))
