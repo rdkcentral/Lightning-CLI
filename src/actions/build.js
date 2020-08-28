@@ -26,6 +26,7 @@ module.exports = (environment = 'dev', clear = false, change = null) => {
   const targetDir = path.join(process.cwd(), process.env.LNG_BUILD_FOLDER || 'build')
 
   console.log(`You have choose the environment: ${environment}`)
+  const settingsFile = `settings.${environment}.json`
 
   let metadata
   let settings
@@ -36,7 +37,7 @@ module.exports = (environment = 'dev', clear = false, change = null) => {
     () => buildHelpers.ensureFolderExists(targetDir),
     () => clear && buildHelpers.copySupportFiles(targetDir),
     () => (clear || change === 'static') && buildHelpers.copyStaticFolder(targetDir),
-    () => (clear || change === 'settings') && buildHelpers.copySettings(targetDir),
+    () => (clear || change === 'settings') && buildHelpers.copySettings(targetDir, settingsFile),
     () => (clear || change === 'metadata') && buildHelpers.copyMetadata(targetDir),
     () => buildHelpers.readMetadata().then(result => (metadata = result)),
     () => buildHelpers.readSettings(environment).then(result => (settings = result)),

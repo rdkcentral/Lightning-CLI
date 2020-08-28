@@ -103,6 +103,10 @@ const checkForUpdate = () => {
         )
         return execa('npm', ['install', '-g', 'WebPlatformForEmbedded/Lightning-CLI'])
           .then(() => {
+            // Moving old setting file to new standard
+            console.log('Updating settings file to new standard settings.json => settings.dev.json')
+            execa('mv', ['settings.json', 'settings.dev.json'])
+            execa('cp', ['settings.dev.json', 'settings.prod.json'])
             spinner.succeed()
             console.log(' ')
           })
