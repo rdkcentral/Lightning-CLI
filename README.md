@@ -6,7 +6,7 @@ The Lightning-CLI is the _Command Line Interface_ tool for a seamles Lightning A
 Install the Lightning-CLI _globally_ on your system
 
 ```bash
-npm install -g rdkcentral/Lightning-CLI
+npm install -g @lightningjs/cli
 ```
 
 Usage:
