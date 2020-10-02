@@ -37,7 +37,7 @@
     "chalk": "^4.1.0",
     "commander": "^6.1.0 ",
     "concat": "^1.0.3",
-    "core-js": "^2.6.11",
+    "core-js": "^3.6.5",
     "didyoumean2": "^4.1.0",
     "dotenv": "^8.2.0",
     "execa": "^4.0.3",

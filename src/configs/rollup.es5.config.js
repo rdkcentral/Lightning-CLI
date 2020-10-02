@@ -67,7 +67,7 @@ module.exports = {
             spec: true,
             debug: false,
             useBuiltIns: 'entry',
-            corejs: '^2.6.11',
+            corejs: '^3.6.5',
           },
         ],
       ],
