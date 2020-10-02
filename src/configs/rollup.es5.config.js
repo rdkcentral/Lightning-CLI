@@ -18,9 +18,9 @@
  */
 
 const path = require('path')
-const babel = require('rollup-plugin-babel')
-const resolve = require('rollup-plugin-node-resolve')
-const commonjs = require('rollup-plugin-commonjs')
+const babel = require('@rollup/plugin-babel').babel
+const resolve = require('@rollup/plugin-node-resolve').nodeResolve
+const commonjs = require('@rollup/plugin-commonjs')
 const babelPresentEnv = require('@babel/preset-env')
 const babelPluginTransFormSpread = require('@babel/plugin-transform-spread')
 const babelPluginTransFormParameters = require('@babel/plugin-transform-parameters')

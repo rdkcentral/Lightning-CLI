@@ -18,8 +18,8 @@
  */
 
 const path = require('path')
-const resolve = require('rollup-plugin-node-resolve')
-const commonjs = require('rollup-plugin-commonjs')
+const resolve = require('@rollup/plugin-node-resolve').nodeResolve
+const commonjs = require('@rollup/plugin-commonjs')
 const alias = require('@rollup/plugin-alias')
 const json = require('@rollup/plugin-json')
 const virtual = require('@rollup/plugin-virtual')
