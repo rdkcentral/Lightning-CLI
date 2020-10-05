@@ -173,6 +173,8 @@ const addESlint = config => {
     path.join(config.targetDir, '.eslintrc.js')
   )
 
+  fs.copySync(path.join(__dirname, '../../fixtures/ide'), path.join(config.targetDir))
+
   fs.writeFileSync(
     path.join(config.targetDir, 'package.json'),
     JSON.stringify(
