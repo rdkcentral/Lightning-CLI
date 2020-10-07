@@ -2,14 +2,15 @@
   "author": "Michiel van der Geest <m.van.der.geest@metrological.com>",
   "license": "Apache-2",
   "name": "@lightningjs/cli",
-  "version": "2.0.0",
+  "version": "2.0.0-rc.0",
   "description": "",
   "bin": {
     "lightning": "./bin/index.js",
     "lng": "./bin/index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "npm publish --access public"
   },
   "lint-staged": {
     "*.js": [
