@@ -101,7 +101,7 @@ const checkForUpdate = () => {
         spinner.start(
           'Attempting to update Lightning-CLI to the latest version (' + latestVersion + ')'
         )
-        return execa('npm', ['install', '-g', 'WebPlatformForEmbedded/Lightning-CLI'])
+        return execa('npm', ['install', '-g', '-f', 'WebPlatformForEmbedded/Lightning-CLI'])
           .then(() => {
             spinner.succeed()
             console.log(' ')
