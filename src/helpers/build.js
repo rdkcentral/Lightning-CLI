@@ -273,7 +273,10 @@ const getAppVersion = () => {
 }
 
 const getSdkVersion = () => {
-  return require(path.join(process.cwd(), 'node_modules/wpe-lightning-sdk/package.json')).version
+  const packagePath = hasNewSDK()
+    ? 'node_modules/@lightningjs/sdk'
+    : 'node_modules/wpe-lightning-sdk'
+  return require(path.join(process.cwd(), packagePath, 'package.json')).version
 }
 
 const getCliVersion = () => {
