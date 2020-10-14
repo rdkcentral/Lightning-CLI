@@ -1,4 +1,4 @@
-import { Launch } from 'wpe-lightning-sdk'
+import { Launch } from '@lightningjs/sdk'
 import App from './App.js'
 
 export default function() {

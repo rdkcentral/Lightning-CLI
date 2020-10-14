@@ -144,6 +144,21 @@ const setAppData = config => {
   })
 }
 
+const setSdkVersion = config => {
+  return new Promise((resolve, reject) => {
+    execa('npm', ['view', '@lightningjs/sdk', 'version'])
+      .then(({ stdout }) => {
+        replaceInFile.sync({
+          files: config.targetDir + '/*',
+          from: /\{\$sdkVersion\}/g,
+          to: '^' + stdout,
+        })
+        resolve()
+      })
+      .catch(reject)
+  })
+}
+
 const addESlint = config => {
   fs.copyFileSync(
     path.join(__dirname, '../../fixtures/eslint/.editorconfig'),
@@ -157,6 +172,8 @@ const addESlint = config => {
     path.join(__dirname, '../../fixtures/eslint/.eslintrc.js'),
     path.join(config.targetDir, '.eslintrc.js')
   )
+
+  fs.copySync(path.join(__dirname, '../../fixtures/ide'), path.join(config.targetDir))
 
   fs.writeFileSync(
     path.join(config.targetDir, 'package.json'),
@@ -178,6 +195,7 @@ const createApp = config => {
   return sequence([
     () => copyLightningFixtures(config).then(targetDir => (config.targetDir = targetDir)),
     () => setAppData(config),
+    () => setSdkVersion(config),
     () => config.eslint && addESlint(config),
     () =>
       new Promise(resolve => {

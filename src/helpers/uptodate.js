@@ -32,9 +32,7 @@ const ask = require('../helpers/ask')
 const fetchLatestVersion = () => {
   const gitBranch = getGitBranch()
   const url = gitBranch
-    ? 'https://raw.githubusercontent.com/WebPlatformForEmbedded/Lightning-CLI/' +
-      gitBranch +
-      '/package.json'
+    ? 'https://raw.githubusercontent.com/rdkcentral/Lightning-CLI/' + gitBranch + '/package.json'
     : false
 
   return new Promise((resolve, reject) => {
@@ -96,12 +94,23 @@ const checkForUpdate = () => {
   spinner.start('Verifying if your installation of Lightning-CLI is up to date.')
   return fetchLatestVersion()
     .then(latestVersion => {
-      if (semver.lt(packageJson.version, latestVersion)) {
+      if (
+        semver.lt(packageJson.version, latestVersion) ||
+        packageJson.name === 'wpe-lightning-cli' // always update when old package name
+      ) {
         spinner.fail()
         spinner.start(
           'Attempting to update Lightning-CLI to the latest version (' + latestVersion + ')'
         )
-        return execa('npm', ['install', '-g', '-f', 'WebPlatformForEmbedded/Lightning-CLI'])
+
+        const options = ['install', '-g', '@lightningjs/cli']
+
+        // force update when old package name
+        if (packageJson.name === 'wpe-lightning-cli') {
+          options.splice(2, 0, '-f')
+        }
+
+        return execa('npm', options)
           .then(() => {
             spinner.succeed()
             console.log(' ')
@@ -112,7 +121,7 @@ const checkForUpdate = () => {
             console.log(' ')
             console.log(' ')
             console.log(
-              'Please update Lightning-CLI manually by running: npm install -g WebPlatformForEmbedded/Lightning-CLI'
+              'Please update Lightning-CLI manually by running: npm install -g -f @lightningjs/cli'
             )
             console.log(' ')
             exit()

@@ -42,29 +42,11 @@ const ensureFolderExists = folder => {
 const copySupportFiles = folder => {
   spinner.start('Copying support files to "' + folder.split('/').pop() + '"')
 
-  // see if project is "old" style (i.e. has no lib folder in support)
-  // TODO: this whole block could be removed at one point assuming all projects are updated
-  if (!fs.existsSync('./node_modules/wpe-lightning-sdk/support/lib')) {
-    console.log('')
-    console.log('')
-    // fixme: add example npm command to upgrade to latest SDK
-    console.log(
-      '⚠️  You are using an older version of the Lightning SDK. Please consider upgrading to the latest version.  ⚠️'
-    )
-    console.log('')
-    shell.cp('./node_modules/wpe-lightning/dist/lightning.js', folder)
-    // lightning es5 bundle in dist didn't exist in earlier versions (< 1.3.1)
-    if (fs.existsSync('./node_modules/wpe-lightning/dist/lightning.es5.js')) {
-      shell.cp('./node_modules/wpe-lightning/dist/lightning.es5.js', folder)
-    }
-    shell.cp('./node_modules/wpe-lightning/devtools/lightning-inspect.js', folder)
-    // lightning es5 inspector in devtools didn't exist in earlier versions (< 1.3.1)
-    if (fs.existsSync('./node_modules/wpe-lightning/devtools/lightning-inspect.es5.js')) {
-      shell.cp('./node_modules/wpe-lightning/devtools/lightning-inspect.es5.js', folder)
-    }
+  if (hasNewSDK()) {
+    shell.cp('-r', path.join(process.cwd(), 'node_modules/@lightningjs/sdk/support/*'), folder)
+  } else {
+    shell.cp('-r', path.join(process.cwd(), 'node_modules/wpe-lightning-sdk/support/*'), folder)
   }
-  // simply copy everything in the support folder
-  shell.cp('-r', './node_modules/wpe-lightning-sdk/support/*', folder)
   spinner.succeed()
 }
 
@@ -291,7 +273,10 @@ const getAppVersion = () => {
 }
 
 const getSdkVersion = () => {
-  return require(path.join(process.cwd(), 'node_modules/wpe-lightning-sdk/package.json')).version
+  const packagePath = hasNewSDK()
+    ? 'node_modules/@lightningjs/sdk'
+    : 'node_modules/wpe-lightning-sdk'
+  return require(path.join(process.cwd(), packagePath, 'package.json')).version
 }
 
 const getCliVersion = () => {
@@ -301,6 +286,11 @@ const makeSafeAppId = metadata =>
   ['APP', metadata.identifier && metadata.identifier.replace(/\./g, '_').replace(/-/g, '_')]
     .filter(val => val)
     .join('_')
+
+const hasNewSDK = () => {
+  const dependencies = Object.keys(require(path.join(process.cwd(), 'package.json')).dependencies)
+  return dependencies.indexOf('@lightningjs/sdk') > -1
+}
 
 module.exports = {
   removeFolder,
@@ -322,4 +312,5 @@ module.exports = {
   getCliVersion,
   bundlePolyfills,
   makeSafeAppId,
+  hasNewSDK,
 }

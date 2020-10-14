@@ -18,8 +18,8 @@
  */
 
 const path = require('path')
-const resolve = require('rollup-plugin-node-resolve')
-const commonjs = require('rollup-plugin-commonjs')
+const resolve = require('@rollup/plugin-node-resolve').nodeResolve
+const commonjs = require('@rollup/plugin-commonjs')
 const alias = require('@rollup/plugin-alias')
 const json = require('@rollup/plugin-json')
 const virtual = require('@rollup/plugin-virtual')
@@ -45,6 +45,7 @@ module.exports = {
     alias({
       entries: {
         'wpe-lightning': path.join(__dirname, '../alias/wpe-lightning.js'),
+        '@lightningjs/core': path.join(__dirname, '../alias/lightningjs-core.js'),
         '@': path.resolve(process.cwd(), 'src/'),
         '~': path.resolve(process.cwd(), 'node_modules/'),
       },

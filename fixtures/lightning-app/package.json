@@ -2,6 +2,6 @@
   "name": "{$appId}",
   "description": "{$appName}",
   "dependencies": {
-    "wpe-lightning-sdk": "rdkcentral/Lightning-SDK"
+    "@lightningjs/sdk": "{$sdkVersion}"
   }
 }

@@ -18,9 +18,9 @@
  */
 
 const path = require('path')
-const babel = require('rollup-plugin-babel')
-const resolve = require('rollup-plugin-node-resolve')
-const commonjs = require('rollup-plugin-commonjs')
+const babel = require('@rollup/plugin-babel').babel
+const resolve = require('@rollup/plugin-node-resolve').nodeResolve
+const commonjs = require('@rollup/plugin-commonjs')
 const babelPresentEnv = require('@babel/preset-env')
 const babelPluginTransFormSpread = require('@babel/plugin-transform-spread')
 const babelPluginTransFormParameters = require('@babel/plugin-transform-parameters')
@@ -49,6 +49,7 @@ module.exports = {
     alias({
       entries: {
         'wpe-lightning': path.join(__dirname, '../alias/wpe-lightning.js'),
+        '@lightningjs/core': path.join(__dirname, '../alias/lightningjs-core.js'),
         '@': path.resolve(process.cwd(), 'src/'),
         '~': path.resolve(process.cwd(), 'node_modules/'),
       },
@@ -66,7 +67,7 @@ module.exports = {
             spec: true,
             debug: false,
             useBuiltIns: 'entry',
-            corejs: '^2.6.11',
+            corejs: '^3.6.5',
           },
         ],
       ],
