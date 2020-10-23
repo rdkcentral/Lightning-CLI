@@ -27,6 +27,7 @@ module.exports = () => {
     process.env.LNG_SERVE_OPEN === 'false' ? false : '-o',
     process.env.LNG_SERVE_CACHE_TIME ? '-c' + process.env.LNG_SERVE_CACHE_TIME : '-c-1',
     process.env.LNG_SERVE_PORT ? '-p' + process.env.LNG_SERVE_PORT : false,
+    process.env.LNG_SERVE_PROXY ? '-P' + process.env.LNG_SERVE_PROXY : false,
   ].filter(val => val)
 
   const subprocess = execa(path.join(__dirname, '../..', 'node_modules/.bin/http-server'), args)
