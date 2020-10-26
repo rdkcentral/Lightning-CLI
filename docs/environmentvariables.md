@@ -40,6 +40,10 @@ Whether or not the Lightning-CLI should open a browser window when running `lng 
 
 On which port the Lightning-CLI should serve when running `lng serve` (or `lng dev`). Defaults to auto incrementing depending on available ports, starting at `8080`
 
+#### `LNG_SERVE_PROXY`
+
+Proxies all requests which can't be resolved locally to the given url.
+
 #### `LNG_BUILD_SOURCEMAP`
 
 Instructs the Lightning-CLI whether and how to generate sourcemaps. Possible values: `true`, `false` or `inline`. Defaults to `true`
