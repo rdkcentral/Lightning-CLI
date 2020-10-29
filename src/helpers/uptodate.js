@@ -19,7 +19,6 @@
 
 const fs = require('fs')
 const path = require('path')
-// const https = require('https')
 const semver = require('semver')
 const execa = require('execa')
 const isOnline = require('is-online')
