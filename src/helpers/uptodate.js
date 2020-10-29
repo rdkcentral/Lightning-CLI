@@ -79,6 +79,10 @@ const checkForUpdate = () => {
   spinner.start('Verifying if your installation of Lightning-CLI is up to date.')
   return fetchLatestVersion()
     .then(version => {
+      if (version === false) {
+        spinner.succeed()
+        return Promise.resolve()
+      }
       if (
         semver.lt(packageJson.version, version) ||
         packageJson.name === 'wpe-lightning-cli' // always update when old package name

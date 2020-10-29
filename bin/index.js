@@ -133,6 +133,13 @@ program
     updateCheck(true).then(() => uploadAction())
   })
 
+program
+  .command('update')
+  .description(['🔄', ' '.repeat(3), 'Update the Lightning-CLI to the latest version'].join(''))
+  .action(() => {
+    updateCheck(true).then(() => process.exit(1))
+  })
+
 program.on('command:*', () => {
   const suggestion = didYouMean(
     program.args[0] || '',
