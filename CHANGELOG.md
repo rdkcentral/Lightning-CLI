@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.1.0
+
+*30 oct 2020*
+
+- Added `LNG_SERVE_PROXY` environment variable
+- Added fix for polyfills not being copied over when using `lng dist --es5`-command
+- Fixed auto-update functionality
+- Added update `lng update`-command
+
 ## v2.0.2
 
 *19 oct 2020*
