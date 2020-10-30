@@ -19,10 +19,10 @@
 
 const fs = require('fs')
 const path = require('path')
-const https = require('https')
 const semver = require('semver')
 const execa = require('execa')
 const isOnline = require('is-online')
+const latestVersion = require('latest-version')
 
 const spinner = require('./spinner.js')
 const exit = require('./exit.js')
@@ -30,33 +30,17 @@ const packageJson = require('../../package.json')
 const ask = require('../helpers/ask')
 
 const fetchLatestVersion = () => {
-  const gitBranch = getGitBranch()
-  const url = gitBranch
-    ? 'https://raw.githubusercontent.com/rdkcentral/Lightning-CLI/' + gitBranch + '/package.json'
-    : false
-
   return new Promise((resolve, reject) => {
-    if (!url) reject('Skipping auto update.')
-    https
-      .get(url, res => {
-        let body = ''
-
-        res.on('data', chunk => {
-          body += chunk
-        })
-
-        res.on('end', () => {
-          try {
-            let json = JSON.parse(body)
-            resolve(json.version)
-          } catch (error) {
-            reject('Unable to get CLI version from ' + url)
-          }
-        })
-      })
-      .on('error', error => {
-        reject(error)
-      })
+    // if a git folder exists, we are probably working of a clone,
+    // so likely we don't want to do any auto updates
+    const gitFolder = path.join(__dirname, '../../.git')
+    if (fs.existsSync(gitFolder)) {
+      resolve(false)
+    } else {
+      return latestVersion(packageJson.name)
+        .then(resolve)
+        .catch(reject)
+    }
   })
 }
 
@@ -93,15 +77,17 @@ const testConnection = async () => {
 const checkForUpdate = () => {
   spinner.start('Verifying if your installation of Lightning-CLI is up to date.')
   return fetchLatestVersion()
-    .then(latestVersion => {
+    .then(version => {
+      if (version === false) {
+        spinner.succeed()
+        return Promise.resolve()
+      }
       if (
-        semver.lt(packageJson.version, latestVersion) ||
+        semver.lt(packageJson.version, version) ||
         packageJson.name === 'wpe-lightning-cli' // always update when old package name
       ) {
         spinner.fail()
-        spinner.start(
-          'Attempting to update Lightning-CLI to the latest version (' + latestVersion + ')'
-        )
+        spinner.start('Attempting to update Lightning-CLI to the latest version (' + version + ')')
 
         const options = ['install', '-g', '@lightningjs/cli']
 
@@ -136,24 +122,6 @@ const checkForUpdate = () => {
       console.log(error)
       console.log(' ')
     })
-}
-
-const getGitBranch = () => {
-  // if a git folder exists, we are probably working of a clone,
-  // so likely we don't want to do any auto updates
-  const gitFolder = path.join(__dirname, '../../.git')
-  if (fs.existsSync(gitFolder)) {
-    return false
-  }
-  // otherwise base on the package.json
-  else {
-    const packageJson = require(path.join(__dirname, '../../package.json'))
-    if (packageJson._requested && 'gitCommittish' in packageJson._requested) {
-      return packageJson._requested.gitCommittish || 'master' // gitCommittish is null for master
-    } else {
-      return false
-    }
-  }
 }
 
 module.exports = upToDate

@@ -172,10 +172,12 @@ const getEnvAppVars = (parsed = {}) =>
 const bundlePolyfills = folder => {
   spinner.start('Bundling ES5 polyfills and saving to "' + folder.split('/').pop() + '"')
 
-  const pathToPolyfills = path.join(
-    process.cwd(),
-    './node_modules/wpe-lightning-sdk/support/polyfills'
-  )
+  const nodeModulesPath = hasNewSDK()
+    ? path.join(process.cwd(), 'node_modules/@lightningjs/sdk')
+    : path.join(process.cwd(), 'node_modules/wpe-lightning-sdk/')
+
+  const pathToPolyfills = path.join(nodeModulesPath, 'support/polyfills')
+
   const polyfills = fs.readdirSync(pathToPolyfills).map(file => path.join(pathToPolyfills, file))
 
   return concat(polyfills, path.join(folder, 'polyfills.js')).then(() => {
