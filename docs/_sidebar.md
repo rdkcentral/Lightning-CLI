@@ -8,4 +8,5 @@
   - [Docs](commands/docs.md)
   - [Dist](commands/dist.md)
   - [Upload](commands/upload.md)
+  - [Update](commands/update.md)
 - [Environment variables](environmentvariables.md)
