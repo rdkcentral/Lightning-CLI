@@ -7,7 +7,7 @@
 - Added `LNG_SERVE_PROXY` environment variable
 - Added fix for polyfills not being copied over when using `lng dist --es5`-command
 - Fixed auto-update functionality
-- Added update `lng update`-command
+- Added `lng update`-command
 
 ## v2.0.2
 
