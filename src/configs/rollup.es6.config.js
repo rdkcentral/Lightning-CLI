@@ -35,8 +35,8 @@ module.exports = {
   plugins: [
     json(),
     url({
-      limit: 1,
-      destDir: 'build/static',
+      limit: 0,
+      destDir: (process.env.LNG_BUILD_FOLDER || 'build') + '/static',
       publicPath: 'static/',
     }),
     inject({
