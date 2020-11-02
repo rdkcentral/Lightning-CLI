@@ -18,6 +18,7 @@
  */
 
 const path = require('path')
+const process = require('process')
 const babel = require('@rollup/plugin-babel').babel
 const resolve = require('@rollup/plugin-node-resolve').nodeResolve
 const commonjs = require('@rollup/plugin-commonjs')
@@ -40,7 +41,7 @@ module.exports = {
     json(),
     url({
       limit: 0,
-      destDir: (process.env.LNG_BUILD_FOLDER || 'build') + '/static',
+      destDir: path.join(process.cwd(), process.env.LNG_BUILD_FOLDER || 'build') + '/static',
       publicPath: 'static/',
     }),
     inject({
