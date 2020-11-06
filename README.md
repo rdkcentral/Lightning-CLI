@@ -1,6 +1,6 @@
 # Lightning CLI
 
-The Lightning-CLI is the _Command Line Interface_ tool for a seamles Lightning App Development flow.
+The Lightning-CLI is the _Command Line Interface_ tool for a seamless Lightning App Development flow.
 
 Install the Lightning-CLI _globally_ on your system
 

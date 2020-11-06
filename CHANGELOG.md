@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.2.0
+
+*6 nov 2020*
+
+- Added rollup image-plugin to bundle up image assets (as base64-images)
+
 ## v2.1.0
 
 *30 oct 2020*
