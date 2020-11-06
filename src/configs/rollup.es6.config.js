@@ -18,12 +18,14 @@
  */
 
 const path = require('path')
+const process = require('process')
 const resolve = require('@rollup/plugin-node-resolve').nodeResolve
 const commonjs = require('@rollup/plugin-commonjs')
 const alias = require('@rollup/plugin-alias')
 const json = require('@rollup/plugin-json')
 const virtual = require('@rollup/plugin-virtual')
 const inject = require('@rollup/plugin-inject')
+const image = require('@rollup/plugin-image')
 const buildHelpers = require(path.join(__dirname, '../helpers/build'))
 const dotenv = require('dotenv').config()
 const minify = require('rollup-plugin-terser').terser
@@ -33,6 +35,7 @@ const os = require('os')
 module.exports = {
   plugins: [
     json(),
+    image(),
     inject({
       'process.env': 'processEnv',
     }),
