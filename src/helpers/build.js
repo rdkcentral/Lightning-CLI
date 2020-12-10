@@ -121,14 +121,16 @@ const bundleEs6App = (folder, metadata, options = {}) => {
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
 
-  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), args)
+  const levelsDown =
+    __dirname.indexOf('/node_modules/@lightningjs/cli') > -1 ? '../../../../..' : '../..'
+  return execa(path.join(__dirname, levelsDown, 'node_modules/.bin/rollup'), args)
     .then(() => {
       spinner.succeed()
       return metadata
     })
     .catch(e => {
       spinner.fail('Error while creating ES6 bundle (see log)')
-      console.log(e.stderr)
+      console.log(e)
       throw Error(e)
     })
 }
@@ -149,7 +151,9 @@ const bundleEs5App = (folder, metadata, options = {}) => {
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
 
-  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), args)
+  const levelsDown =
+    __dirname.indexOf('/node_modules/@lightningjs/cli') > -1 ? '../../../../..' : '../..'
+  return execa(path.join(__dirname, levelsDown, 'node_modules/.bin/rollup'), args)
     .then(() => {
       spinner.succeed()
       return metadata
