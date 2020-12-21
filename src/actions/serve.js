@@ -35,5 +35,14 @@ module.exports = () => {
   subprocess.catch(e => console.log(chalk.red(e.stderr)))
   subprocess.stdout.pipe(process.stdout)
 
+  // Hack for windows to prevent leaving orphan processes, resulting in multiple http-server running instances
+  if (require('os').platform() === 'win32') {
+    process.on('SIGINT', () => {
+      require('child_process').exec('taskkill /PID ' + subprocess.pid + ' /T /F', () => {
+        process.exit()
+      })
+    })
+  }
+
   return subprocess
 }
