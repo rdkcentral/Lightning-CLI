@@ -19,8 +19,11 @@
 
 const path = require('path')
 const process = require('process')
+const babel = require('@rollup/plugin-babel').babel
 const resolve = require('@rollup/plugin-node-resolve').nodeResolve
 const commonjs = require('@rollup/plugin-commonjs')
+const babelPresentEnv = require('@babel/preset-env')
+const babelPluginProposalDecorators = require('@babel/plugin-proposal-decorators')
 const alias = require('@rollup/plugin-alias')
 const json = require('@rollup/plugin-json')
 const virtual = require('@rollup/plugin-virtual')
@@ -54,6 +57,9 @@ module.exports = {
       },
     }),
     resolve({ mainFields: ['module', 'main', 'browser'] }),
+    babel({
+      plugins: [[babelPluginProposalDecorators, { legacy: true }]],
+    }),
     commonjs({ sourceMap: false }),
     (process.env.LNG_BUILD_MINIFY === 'true' || process.env.NODE_ENV === 'production') &&
       minify({ keep_fnames: true }),

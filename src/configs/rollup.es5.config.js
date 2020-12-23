@@ -23,6 +23,7 @@ const babel = require('@rollup/plugin-babel').babel
 const resolve = require('@rollup/plugin-node-resolve').nodeResolve
 const commonjs = require('@rollup/plugin-commonjs')
 const babelPresentEnv = require('@babel/preset-env')
+const babelPluginProposalDecorators = require('@babel/plugin-proposal-decorators')
 const babelPluginTransFormSpread = require('@babel/plugin-transform-spread')
 const babelPluginTransFormParameters = require('@babel/plugin-transform-parameters')
 const alias = require('@rollup/plugin-alias')
@@ -58,7 +59,6 @@ module.exports = {
       },
     }),
     resolve({ mainFields: ['module', 'main', 'browser'] }),
-    commonjs({ sourceMap: false }),
     babel({
       presets: [
         [
@@ -74,8 +74,13 @@ module.exports = {
           },
         ],
       ],
-      plugins: [babelPluginTransFormSpread, babelPluginTransFormParameters],
+      plugins: [
+        [babelPluginProposalDecorators, { legacy: true }],
+        babelPluginTransFormSpread,
+        babelPluginTransFormParameters,
+      ],
     }),
+    commonjs({ sourceMap: false }),
     (process.env.LNG_BUILD_MINIFY === 'true' || process.env.NODE_ENV === 'production') &&
       minify({ keep_fnames: true }),
     license({
