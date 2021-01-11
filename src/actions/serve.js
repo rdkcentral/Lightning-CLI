@@ -20,6 +20,8 @@
 const execa = require('execa')
 const path = require('path')
 const chalk = require('chalk')
+const os = require('os')
+const child_process = require('child_process')
 
 module.exports = () => {
   const args = [
@@ -34,6 +36,15 @@ module.exports = () => {
 
   subprocess.catch(e => console.log(chalk.red(e.stderr)))
   subprocess.stdout.pipe(process.stdout)
+
+  // Hack for windows to prevent leaving orphan processes, resulting in multiple http-server running instances
+  if (os.platform() === 'win32') {
+    process.on('SIGINT', () => {
+      child_process.exec('taskkill /pid ' + subprocess.pid + ' /t /f', () => {
+        process.exit()
+      })
+    })
+  }
 
   return subprocess
 }
