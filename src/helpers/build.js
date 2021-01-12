@@ -149,7 +149,7 @@ const buildAppEsBuild = async (folder, metadata, type) => {
       entryPoints: [`${process.cwd()}/src/index.js`],
       bundle: true,
       outfile: `${folder}/appBundle.js`,
-      minify: true,
+      minifyWhitespace: true,
       sourcemap,
       format: 'iife',
       globalName: makeSafeAppId(metadata),
