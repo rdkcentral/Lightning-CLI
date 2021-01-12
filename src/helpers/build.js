@@ -131,12 +131,18 @@ const bundleEs5App = (folder, metadata, options = {}) => {
   }
 }
 
-const buildAppEsBuild = async (folder, metadata, type, options) => {
+const buildAppEsBuild = async (folder, metadata, type) => {
   spinner.start(
     `Building ${type.toUpperCase()} appBundle using [esbuild] and saving to ${folder
       .split('/')
       .pop()}`
   )
+  const sourcemap =
+    process.env.LNG_BUILD_SOURCEMAP === 'true'
+      ? true
+      : process.env.LNG_BUILD_SOURCEMAP === 'inline'
+      ? 'inline'
+      : false
 
   try {
     await esbuild.build({
@@ -144,11 +150,10 @@ const buildAppEsBuild = async (folder, metadata, type, options) => {
       bundle: true,
       outfile: `${folder}/appBundle.js`,
       minify: true,
-      sourcemap: options.sourcemap === true,
+      sourcemap,
       format: 'iife',
       globalName: makeSafeAppId(metadata),
     })
-
     spinner.succeed()
     return metadata
   } catch (e) {
@@ -173,9 +178,10 @@ const bundleAppRollup = (folder, metadata, type, options) => {
   ]
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
-
+  console.time('rollup app')
   return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), args)
     .then(() => {
+      console.timeEnd('rollup app')
       spinner.succeed()
       return metadata
     })
