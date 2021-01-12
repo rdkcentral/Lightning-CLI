@@ -49,7 +49,7 @@ const copySupportFiles = folder => {
     shell.cp('-r', path.join(process.cwd(), 'node_modules/wpe-lightning-sdk/support/*'), folder)
   }
 
-  if (process.env.APP_BUNDLER === 'esbuild') {
+  if (process.env.LNG_BUNDLER === 'esbuild') {
     shell.cp(
       '-r',
       path.join(__dirname, '../../fixtures/support/startApp.js'),
@@ -116,7 +116,7 @@ const readJson = fileName => {
 }
 
 const bundleEs6App = (folder, metadata, options = {}) => {
-  if (process.env.APP_BUNDLER === 'esbuild') {
+  if (process.env.LNG_BUNDLER === 'esbuild') {
     return buildAppEsBuild(folder, metadata, 'es6', options)
   } else {
     return bundleAppRollup(folder, metadata, 'es6', options)
@@ -124,7 +124,7 @@ const bundleEs6App = (folder, metadata, options = {}) => {
 }
 
 const bundleEs5App = (folder, metadata, options = {}) => {
-  if (process.env.APP_BUNDLER === 'esbuild') {
+  if (process.env.LNG_BUNDLER === 'esbuild') {
     return buildAppEsBuild(folder, metadata, 'es6', options)
   } else {
     return bundleAppRollup(folder, metadata, 'es5', options)
