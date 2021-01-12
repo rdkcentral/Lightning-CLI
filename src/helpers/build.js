@@ -178,10 +178,8 @@ const bundleAppRollup = (folder, metadata, type, options) => {
   ]
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
-  console.time('rollup app')
   return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), args)
     .then(() => {
-      console.timeEnd('rollup app')
       spinner.succeed()
       return metadata
     })
