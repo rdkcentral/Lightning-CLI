@@ -24,6 +24,7 @@ const path = require('path')
 const chalk = require('chalk')
 const concat = require('concat')
 const os = require('os')
+const esbuild = require('esbuild')
 
 const spinner = require('./spinner')
 
@@ -47,6 +48,15 @@ const copySupportFiles = folder => {
   } else {
     shell.cp('-r', path.join(process.cwd(), 'node_modules/wpe-lightning-sdk/support/*'), folder)
   }
+
+  if (process.env.APP_BUNDLER === 'esbuild') {
+    shell.cp(
+      '-r',
+      path.join(__dirname, '../../fixtures/support/startApp.js'),
+      path.join(folder, 'startApp.js')
+    )
+  }
+
   spinner.succeed()
 }
 
@@ -106,11 +116,54 @@ const readJson = fileName => {
 }
 
 const bundleEs6App = (folder, metadata, options = {}) => {
-  spinner.start('Building ES6 appBundle and saving to "' + folder.split('/').pop() + '"')
+  if (process.env.APP_BUNDLER === 'esbuild') {
+    return buildAppEsBuild(folder, metadata, 'es6', options)
+  } else {
+    return bundleAppRollup(folder, metadata, 'es6', options)
+  }
+}
+
+const bundleEs5App = (folder, metadata, options = {}) => {
+  if (process.env.APP_BUNDLER === 'esbuild') {
+    return buildAppEsBuild(folder, metadata, 'es6', options)
+  } else {
+    return bundleAppRollup(folder, metadata, 'es5', options)
+  }
+}
+
+const buildAppEsBuild = async (folder, metadata, type, options) => {
+  spinner.start(
+    `Building ${type.toUpperCase()} appBundle using [esbuild] and saving to ${folder
+      .split('/')
+      .pop()}`
+  )
+
+  try {
+    await esbuild.build({
+      entryPoints: [`${process.cwd()}/src/index.js`],
+      bundle: true,
+      outfile: `${folder}/appBundle.js`,
+      minify: true,
+      sourcemap: options.sourcemap === true,
+      format: 'iife',
+      globalName: makeSafeAppId(metadata),
+    })
+
+    spinner.succeed()
+    return metadata
+  } catch (e) {
+    spinner.fail(`Error while creating ${type.toUpperCase()} bundle using [esbuild] (see log)`)
+    console.log(e.stderr)
+    throw Error(e)
+  }
+}
+
+const bundleAppRollup = (folder, metadata, type, options) => {
+  spinner.start(`Building ${type.toUpperCase()} appBundle and saving to ${folder.split('/').pop()}`)
 
   const args = [
     '-c',
-    path.join(__dirname, '../configs/rollup.es6.config.js'),
+    path.join(__dirname, `../configs/rollup.${type}.config.js`),
     '--input',
     path.join(process.cwd(), 'src/index.js'),
     '--file',
@@ -127,35 +180,7 @@ const bundleEs6App = (folder, metadata, options = {}) => {
       return metadata
     })
     .catch(e => {
-      spinner.fail('Error while creating ES6 bundle (see log)')
-      console.log(e.stderr)
-      throw Error(e)
-    })
-}
-
-const bundleEs5App = (folder, metadata, options = {}) => {
-  spinner.start('Building ES5 appBundle and saving to "' + folder.split('/').pop() + '"')
-
-  const args = [
-    '-c',
-    path.join(__dirname, '../configs/rollup.es5.config.js'),
-    '--input',
-    path.join(process.cwd(), 'src/index.js'),
-    '--file',
-    path.join(folder, 'appBundle.es5.js'),
-    '--name',
-    makeSafeAppId(metadata),
-  ]
-
-  if (options.sourcemaps === false) args.push('--no-sourcemap')
-
-  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), args)
-    .then(() => {
-      spinner.succeed()
-      return metadata
-    })
-    .catch(e => {
-      spinner.fail('Error while creating ES5 bundle (see log)')
+      spinner.fail(`Error while creating ${type.toUpperCase()} bundle (see log)`)
       console.log(e.stderr)
       throw Error(e)
     })
