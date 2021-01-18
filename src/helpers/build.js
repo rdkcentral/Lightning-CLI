@@ -74,7 +74,7 @@ const copySupportFiles = folder => {
           console.log('WebSocket connection succesfully opened - live reload enabled');
         });
         socket.addEventListener('close', ()=>{
-          console.log('WebSocket connection closed - live reload disbled');
+          console.log('WebSocket connection closed - live reload disabled');
         });
         socket.addEventListener('message', (event)=>{
           if(event.data === "reload"){
@@ -83,7 +83,6 @@ const copySupportFiles = folder => {
         });        
       </script>
     </body>`
-
     fs.writeFileSync(file, data.replace(/<\/body>/gi, wsData))
   }
 
