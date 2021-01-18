@@ -49,12 +49,37 @@ const copySupportFiles = folder => {
     shell.cp('-r', path.join(process.cwd(), 'node_modules/wpe-lightning-sdk/support/*'), folder)
   }
 
+  // since esbuild has a different ouput over rollup
+  // we need to copy a different startApp file
   if (process.env.LNG_BUNDLER === 'esbuild') {
     shell.cp(
       '-r',
       path.join(__dirname, '../../fixtures/support/startApp.js'),
       path.join(folder, 'startApp.js')
     )
+  }
+
+  const command = process.argv.pop()
+
+  // if live reload is enabled we write the client WebSocket logic
+  // to index.html
+  if (process.env.LNG_LIVE_RELOAD && command === 'dev') {
+    const port = process.env.LNG_LIVE_RELOAD_PORT || 8991
+    const file = path.join(folder, 'index.html')
+    const data = fs.readFileSync(file, { encoding: 'utf8' })
+    const wsData = `
+      <script>
+        const socket = new WebSocket('ws://localhost:${port}');
+        socket.addEventListener('open', ()=>{
+          console.log('WebSocket connection succesfully opened');
+        });
+        socket.addEventListener('message', (event)=>{
+          console.log('message', event);
+        });
+      </script>
+    </body>`
+
+    fs.writeFileSync(file, data.replace(/<\/body>/gi, wsData))
   }
 
   spinner.succeed()
