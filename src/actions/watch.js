@@ -20,10 +20,12 @@
 const build = require('./build')
 const watch = require('watch')
 const exit = require('../helpers/exit')
+const WebSocket = require('ws')
 
 const regexp = /^(?!src|static|settings\.json|metadata\.json)(.+)$/
 
 let initCallbackProcess
+let wss
 
 module.exports = (initCallback, watchCallback) => {
   let busy = false
@@ -45,6 +47,16 @@ module.exports = (initCallback, watchCallback) => {
         build(true)
           .then(() => {
             initCallbackProcess = initCallback && initCallback().catch(() => process.exit())
+
+            // if configured start WebSocket Server
+            if (process.env.LNG_LIVE_RELOAD) {
+              const port = process.env.LNG_LIVE_RELOAD_PORT || 8991
+              wss = new WebSocket.Server({ port })
+              process.on('SIGINT', () => {
+                wss.close()
+                process.exit()
+              })
+            }
           })
           .catch(() => {
             exit()
@@ -71,6 +83,12 @@ module.exports = (initCallback, watchCallback) => {
           .then(result => {
             busy = false
             watchCallback && watchCallback()
+            // send reload signal over socket
+            if (wss) {
+              wss.clients.forEach(client => {
+                client.send('reload')
+              })
+            }
           })
           .catch(() => {
             busy = false

@@ -76,6 +76,13 @@ const copySupportFiles = folder => {
         socket.addEventListener('message', (event)=>{
           console.log('message', event);
         });
+        socket.addEventListener('error', (event)=>{
+          console.log('error', event);
+        });
+        socket.addEventListener('close', (event)=>{
+          console.log('close', event);
+        });
+        
       </script>
     </body>`
 

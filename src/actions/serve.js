@@ -20,19 +20,8 @@
 const execa = require('execa')
 const path = require('path')
 const chalk = require('chalk')
-const WebSocket = require('ws')
 
 module.exports = () => {
-  if (process.env.LNG_LIVE_RELOAD) {
-    const port = process.env.LIVE_LIVE_RELOAD_PORT || 8991
-    const wss = new WebSocket.Server({ port })
-
-    process.on('SIGINT', () => {
-      wss.close()
-      process.exit()
-    })
-  }
-
   const args = [
     './build',
     process.env.LNG_SERVE_OPEN === 'false' ? false : '-o',
