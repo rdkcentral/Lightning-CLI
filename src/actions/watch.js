@@ -49,7 +49,7 @@ module.exports = (initCallback, watchCallback) => {
             initCallbackProcess = initCallback && initCallback().catch(() => process.exit())
 
             // if configured start WebSocket Server
-            if (process.env.LNG_LIVE_RELOAD) {
+            if (process.env.LNG_LIVE_RELOAD === 'true') {
               const port = process.env.LNG_LIVE_RELOAD_PORT || 8991
               wss = new WebSocket.Server({ port })
               process.on('SIGINT', () => {

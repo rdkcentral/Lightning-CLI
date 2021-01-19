@@ -63,7 +63,7 @@ const copySupportFiles = folder => {
 
   // if live reload is enabled we write the client WebSocket logic
   // to index.html
-  if (process.env.LNG_LIVE_RELOAD && command === 'dev') {
+  if (process.env.LNG_LIVE_RELOAD === 'true' && command === 'dev') {
     const port = process.env.LNG_LIVE_RELOAD_PORT || 8991
     const file = path.join(folder, 'index.html')
     const data = fs.readFileSync(file, { encoding: 'utf8' })
