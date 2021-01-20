@@ -1,5 +1,7 @@
 const helpers = require('../helpers/build')
 const os = require('os')
+const alias = require('../plugins/esbuild-alias')
+const path = require('path')
 
 module.exports = (folder, globalName) => {
   const sourcemap =
@@ -10,6 +12,12 @@ module.exports = (folder, globalName) => {
       : false
 
   return {
+    plugins: [
+      alias([
+        { find: '@', filter: /@\//, replace: path.resolve(process.cwd(), 'src/') },
+        { find: '~', filter: /~\//, replace: path.resolve(process.cwd(), 'node_modules/') },
+      ]),
+    ],
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
     outfile: `${folder}/appBundle.js`,
