@@ -16,6 +16,11 @@ module.exports = (folder, globalName) => {
       alias([
         { find: '@', filter: /@\//, replace: path.resolve(process.cwd(), 'src/') },
         { find: '~', filter: /~\//, replace: path.resolve(process.cwd(), 'node_modules/') },
+        {
+          find: 'wpe-lightning',
+          filter: /^wpe-lightning/,
+          replace: path.join(__dirname, '../alias/wpe-lightning.js'),
+        },
       ]),
     ],
     entryPoints: [`${process.cwd()}/src/index.js`],
