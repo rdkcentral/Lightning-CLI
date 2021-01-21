@@ -28,7 +28,7 @@ const regexp = /^(?!src|static|settings\.json|metadata\.json)(.+)$/
 let initCallbackProcess
 let wss
 
-const initWebSocketServer = async () => {
+const initWebSocketServer = () => {
   const port = process.env.LNG_LIVE_RELOAD_PORT || 8888
   const server = new WebSocket.Server({ port })
 
