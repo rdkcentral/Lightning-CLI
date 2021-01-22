@@ -26,7 +26,6 @@ const concat = require('concat')
 const os = require('os')
 
 const spinner = require('./spinner')
-const isInstalledGlobally = require('is-installed-globally')
 
 const removeFolder = folder => {
   spinner.start('Removing "' + folder.split('/').pop() + '" folder')
@@ -121,7 +120,9 @@ const bundleEs6App = (folder, metadata, options = {}) => {
   ]
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
-  const levelsDown = isInstalledGlobally ? '../..' : '../../../../..'
+
+  let currentWorkingDir = process.cwd()
+  let levelsDown = __dirname.indexOf(currentWorkingDir) > -1 ? '../../../../..' : '../..'
   return execa(path.join(__dirname, levelsDown, 'node_modules/.bin/rollup'), args)
     .then(() => {
       spinner.succeed()
@@ -149,7 +150,9 @@ const bundleEs5App = (folder, metadata, options = {}) => {
   ]
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
-  const levelsDown = isInstalledGlobally ? '../..' : '../../../../..'
+
+  let currentWorkingDir = process.cwd()
+  let levelsDown = __dirname.indexOf(currentWorkingDir) > -1 ? '../../../../..' : '../..'
   return execa(path.join(__dirname, levelsDown, 'node_modules/.bin/rollup'), args)
     .then(() => {
       spinner.succeed()

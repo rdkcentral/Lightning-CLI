@@ -35,8 +35,9 @@ module.exports = () => {
     '-o',
     '-c-1',
   ]
-
-  const subprocess = execa(path.join(__dirname, '../..', 'node_modules/.bin/http-server'), args)
+  let currentWorkingDir = process.cwd()
+  let levelsDown = __dirname.indexOf(currentWorkingDir) > -1 ? '../../../../..' : '../..'
+  const subprocess = execa(path.join(__dirname, levelsDown, 'node_modules/.bin/http-server'), args)
   subprocess.catch(e => console.log(chalk.red(e.stderr)))
   subprocess.stdout.pipe(process.stdout)
 }
