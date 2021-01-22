@@ -29,6 +29,7 @@ module.exports = (folder, globalName) => {
     minifyWhitespace: true,
     sourcemap,
     format: 'iife',
+    target: process.env.LNG_BUNDLER_TARGET || '',
     globalName,
     banner: [
       '/*',
