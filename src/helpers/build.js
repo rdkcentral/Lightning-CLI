@@ -47,15 +47,6 @@ const copySupportFiles = folder => {
   } else {
     shell.cp('-r', path.join(process.cwd(), 'node_modules/wpe-lightning-sdk/support/*'), folder)
   }
-
-  if (process.env.LNG_BUNDLER === 'esbuild') {
-    shell.cp(
-      '-r',
-      path.join(__dirname, '../../fixtures/support/startApp.js'),
-      path.join(folder, 'startApp.js')
-    )
-  }
-
   spinner.succeed()
 }
 
