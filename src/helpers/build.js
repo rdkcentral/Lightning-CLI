@@ -49,16 +49,6 @@ const copySupportFiles = folder => {
     shell.cp('-r', path.join(process.cwd(), 'node_modules/wpe-lightning-sdk/support/*'), folder)
   }
 
-  // since esbuild has a different ouput over rollup
-  // we need to copy a different startApp file
-  if (process.env.LNG_BUNDLER === 'esbuild') {
-    shell.cp(
-      '-r',
-      path.join(__dirname, '../../fixtures/support/startApp.js'),
-      path.join(folder, 'startApp.js')
-    )
-  }
-
   const command = process.argv.pop()
 
   // if live reload is enabled we write the client WebSocket logic
@@ -69,18 +59,18 @@ const copySupportFiles = folder => {
     const data = fs.readFileSync(file, { encoding: 'utf8' })
     const wsData = `
       <script>
-        const socket = new WebSocket('ws://localhost:${port}');
-        socket.addEventListener('open', ()=>{
+        var socket = new WebSocket('ws://localhost:${port}');
+        socket.addEventListener('open', function() {
           console.log('WebSocket connection succesfully opened - live reload enabled');
         });
-        socket.addEventListener('close', ()=>{
+        socket.addEventListener('close', function() {
           console.log('WebSocket connection closed - live reload disabled');
         });
-        socket.addEventListener('message', (event)=>{
-          if(event.data === "reload"){
+        socket.addEventListener('message', function(event) {
+          if(event.data === 'reload'){
             document.location.reload();
           }
-        });        
+        });
       </script>
     </body>`
     fs.writeFileSync(file, data.replace(/<\/body>/gi, wsData))
