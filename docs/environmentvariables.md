@@ -64,7 +64,7 @@ Whether or not the Lightning CLI should auto update. Possible values: `true` or 
 
 #### `LNG_APP_BUNDLER`
 
-Specify which bundler you want to use. Possible values `esbuild` or `rollup`, defaults to `rollup`
+Specifies which bundler to use. Possible values `esbuild` or `rollup`, defaults to `rollup`
 
 ### Custom App environment variables
 

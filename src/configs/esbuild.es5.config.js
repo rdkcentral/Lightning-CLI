@@ -1,4 +1,4 @@
-const helpers = require('../helpers/build')
+const buildHelpers = require('../helpers/build')
 const os = require('os')
 
 module.exports = (folder, globalName) => {
@@ -19,9 +19,9 @@ module.exports = (folder, globalName) => {
     globalName,
     banner: [
       '/*',
-      ` App version: ${helpers.getAppVersion()}`,
-      ` SDK version: ${helpers.getSdkVersion()}`,
-      ` CLI version: ${helpers.getCliVersion()}`,
+      ` App version: ${buildHelpers.getAppVersion()}`,
+      ` SDK version: ${buildHelpers.getSdkVersion()}`,
+      ` CLI version: ${buildHelpers.getCliVersion()}`,
       '',
       ` gmtDate: ${new Date().toGMTString()}`,
       '*/',
