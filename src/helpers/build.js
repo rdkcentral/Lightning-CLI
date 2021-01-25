@@ -25,7 +25,6 @@ const chalk = require('chalk')
 const concat = require('concat')
 const os = require('os')
 const esbuild = require('esbuild')
-
 const spinner = require('./spinner')
 
 const removeFolder = folder => {
@@ -144,7 +143,7 @@ const bundleEs6App = (folder, metadata, options = {}) => {
 
 const bundleEs5App = (folder, metadata, options = {}) => {
   if (process.env.LNG_BUNDLER === 'esbuild') {
-    return buildAppEsBuild(folder, metadata, 'es6', options)
+    return buildAppEsBuild(folder, metadata, 'es5', options)
   } else {
     return bundleAppRollup(folder, metadata, 'es5', options)
   }
@@ -156,23 +155,9 @@ const buildAppEsBuild = async (folder, metadata, type) => {
       .split('/')
       .pop()}`
   )
-  const sourcemap =
-    process.env.LNG_BUILD_SOURCEMAP === 'true'
-      ? true
-      : process.env.LNG_BUILD_SOURCEMAP === 'inline'
-      ? 'inline'
-      : false
-
   try {
-    await esbuild.build({
-      entryPoints: [`${process.cwd()}/src/index.js`],
-      bundle: true,
-      outfile: `${folder}/appBundle.js`,
-      minifyWhitespace: true,
-      sourcemap,
-      format: 'iife',
-      globalName: makeSafeAppId(metadata),
-    })
+    const getConfig = require(`../configs/esbuild.${type}.config`)
+    await esbuild.build(getConfig(folder, makeSafeAppId(metadata)))
     spinner.succeed()
     return metadata
   } catch (e) {

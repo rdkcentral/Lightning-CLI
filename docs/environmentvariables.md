@@ -62,18 +62,17 @@ In which folder the standalone, distributable App (using `lng dist`) should be g
 
 Whether or not the Lightning CLI should auto update. Possible values: `true` or `false`, defaults to `true`. **Note**: it's recommended to keep auto updates enabled.
 
-
 ### `LNG_LIVE_RELOAD`
 
 Instructs your browser to reload the location when a new app bundle is created (using `lng dev`). When the watcher resolves,
 `document.location.reload()` is called in the browser (tab) that serves your app. Possible value: `true` or `false`. Defaults to `false`
 
-
 ### `LNG_LIVE_RELOAD_PORT`
 
 Live reload communication is driven by WebSockets. `LNG_LIVE_RELOAD_PORT` let's you specify the port it's listening on. Defaults to `8888`
+#### `LNG_APP_BUNDLER`
+Specifies which bundler to use. Possible values `esbuild` or `rollup`, defaults to `rollup`
 
 ### Custom App environment variables
-
 You can specify custom environment variables that will be _injected_ into your App bundle. This can be useful for specifying an API endpoint or API key.
 App specific variables should always start with `APP_` and will then be made available inside the App code as `process.env.APP_MY_VAR`.
