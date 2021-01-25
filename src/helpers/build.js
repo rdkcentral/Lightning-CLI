@@ -47,6 +47,34 @@ const copySupportFiles = folder => {
   } else {
     shell.cp('-r', path.join(process.cwd(), 'node_modules/wpe-lightning-sdk/support/*'), folder)
   }
+
+  const command = process.argv.pop()
+
+  // if live reload is enabled we write the client WebSocket logic
+  // to index.html
+  if (process.env.LNG_LIVE_RELOAD === 'true' && command === 'dev') {
+    const port = process.env.LNG_LIVE_RELOAD_PORT || 8991
+    const file = path.join(folder, 'index.html')
+    const data = fs.readFileSync(file, { encoding: 'utf8' })
+    const wsData = `
+      <script>
+        var socket = new WebSocket('ws://localhost:${port}');
+        socket.addEventListener('open', function() {
+          console.log('WebSocket connection succesfully opened - live reload enabled');
+        });
+        socket.addEventListener('close', function() {
+          console.log('WebSocket connection closed - live reload disabled');
+        });
+        socket.addEventListener('message', function(event) {
+          if(event.data === 'reload'){
+            document.location.reload();
+          }
+        });
+      </script>
+    </body>`
+    fs.writeFileSync(file, data.replace(/<\/body>/gi, wsData))
+  }
+
   spinner.succeed()
 }
 

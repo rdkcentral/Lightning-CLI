@@ -58,7 +58,8 @@
     "semver": "^7.3.2",
     "shelljs": "^0.8.4",
     "targz": "^1.0.1",
-    "watch": "^1.0.2"
+    "watch": "^1.0.2",
+    "ws": "^7.4.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
