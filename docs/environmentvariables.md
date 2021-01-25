@@ -62,6 +62,10 @@ In which folder the standalone, distributable App (using `lng dist`) should be g
 
 Whether or not the Lightning CLI should auto update. Possible values: `true` or `false`, defaults to `true`. **Note**: it's recommended to keep auto updates enabled.
 
+#### `LNG_APP_BUNDLER`
+
+Specifies which bundler to use. Possible values `esbuild` or `rollup`, defaults to `rollup`
+
 ### Custom App environment variables
 
 You can specify custom environment variables that will be _injected_ into your App bundle. This can be useful for specifying an API endpoint or API key.
