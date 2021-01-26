@@ -176,7 +176,7 @@ const bundleAppRollup = (folder, metadata, type, options) => {
     '--input',
     path.join(process.cwd(), 'src/index.js'),
     '--file',
-    path.join(folder, 'appBundle.js'),
+    path.join(folder, type === 'es6' ? 'appBundle.js' : 'appBundle.es5.js'),
     '--name',
     makeSafeAppId(metadata),
   ]
