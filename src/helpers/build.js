@@ -27,12 +27,12 @@ const os = require('os')
 const esbuild = require('esbuild')
 const spinner = require('./spinner')
 
-const findFolder = (parent, folderPath) => {
-  const fullPath = path.join(parent, folderPath)
+const findFile = (parent, filePath) => {
+  const fullPath = path.join(parent, filePath)
   if (fs.existsSync(fullPath)) {
     return fullPath
   }
-  return findFolder(path.join(parent, '..'), folderPath)
+  return findFile(path.join(parent, '..'), filePath)
 }
 
 const removeFolder = folder => {
@@ -48,15 +48,13 @@ const ensureFolderExists = folder => {
 }
 
 const copySupportFiles = folder => {
-  console.log('WIBBLE')
-
   spinner.start('Copying support files to "' + folder.split('/').pop() + '"')
 
   const nodeModulesPath = hasNewSDK()
     ? 'node_modules/@lightningjs/sdk'
     : 'node_modules/wpe-lightning-sdk'
 
-  const lightningSDKfolder = findFolder(process.cwd(), nodeModulesPath)
+  const lightningSDKfolder = findFile(process.cwd(), nodeModulesPath)
 
   shell.cp('-r', path.join(lightningSDKfolder, 'support/*'), folder)
 
@@ -323,7 +321,8 @@ const getSdkVersion = () => {
   const packagePath = hasNewSDK()
     ? 'node_modules/@lightningjs/sdk'
     : 'node_modules/wpe-lightning-sdk'
-  return require(path.join(process.cwd(), packagePath, 'package.json')).version
+  const packageJsonPath = findFile(process.cwd(), packagePath)
+  return require(path.join(packageJsonPath, 'package.json')).version
 }
 
 const getCliVersion = () => {
