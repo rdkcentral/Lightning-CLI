@@ -67,7 +67,7 @@ module.exports = {
             targets: {
               chrome: '39',
             },
-            spec: true,
+            spec: false,
             debug: false,
             useBuiltIns: 'entry',
             corejs: '^3.6.5',
