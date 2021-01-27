@@ -20,10 +20,31 @@
 const build = require('./build')
 const watch = require('watch')
 const exit = require('../helpers/exit')
+const WebSocket = require('ws')
+const chalk = require('chalk')
 
 const regexp = /^(?!src|static|settings\.json|metadata\.json)(.+)$/
 
 let initCallbackProcess
+let wss
+
+const initWebSocketServer = () => {
+  const port = process.env.LNG_LIVE_RELOAD_PORT || 8888
+  const server = new WebSocket.Server({ port })
+
+  server.on('error', e => {
+    if (e.code === 'EADDRINUSE') {
+      console.log(chalk.red(chalk.underline(`Process already running on port: ${port}`)))
+    }
+  })
+
+  process.on('SIGINT', () => {
+    server.close()
+    process.exit()
+  })
+
+  return server
+}
 
 module.exports = (initCallback, watchCallback) => {
   let busy = false
@@ -45,6 +66,11 @@ module.exports = (initCallback, watchCallback) => {
         build(true)
           .then(() => {
             initCallbackProcess = initCallback && initCallback().catch(() => process.exit())
+
+            // if configured start WebSocket Server
+            if (process.env.LNG_LIVE_RELOAD === 'true') {
+              wss = initWebSocketServer()
+            }
           })
           .catch(() => {
             exit()
@@ -71,6 +97,12 @@ module.exports = (initCallback, watchCallback) => {
           .then(result => {
             busy = false
             watchCallback && watchCallback()
+            // send reload signal over socket
+            if (wss) {
+              wss.clients.forEach(client => {
+                client.send('reload')
+              })
+            }
           })
           .catch(() => {
             busy = false

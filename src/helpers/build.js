@@ -24,7 +24,7 @@ const path = require('path')
 const chalk = require('chalk')
 const concat = require('concat')
 const os = require('os')
-
+const esbuild = require('esbuild')
 const spinner = require('./spinner')
 
 const removeFolder = folder => {
@@ -47,6 +47,34 @@ const copySupportFiles = folder => {
   } else {
     shell.cp('-r', path.join(process.cwd(), 'node_modules/wpe-lightning-sdk/support/*'), folder)
   }
+
+  const command = process.argv.pop()
+
+  // if live reload is enabled we write the client WebSocket logic
+  // to index.html
+  if (process.env.LNG_LIVE_RELOAD === 'true' && command === 'dev') {
+    const port = process.env.LNG_LIVE_RELOAD_PORT || 8991
+    const file = path.join(folder, 'index.html')
+    const data = fs.readFileSync(file, { encoding: 'utf8' })
+    const wsData = `
+      <script>
+        var socket = new WebSocket('ws://localhost:${port}');
+        socket.addEventListener('open', function() {
+          console.log('WebSocket connection succesfully opened - live reload enabled');
+        });
+        socket.addEventListener('close', function() {
+          console.log('WebSocket connection closed - live reload disabled');
+        });
+        socket.addEventListener('message', function(event) {
+          if(event.data === 'reload'){
+            document.location.reload();
+          }
+        });
+      </script>
+    </body>`
+    fs.writeFileSync(file, data.replace(/<\/body>/gi, wsData))
+  }
+
   spinner.succeed()
 }
 
@@ -106,11 +134,45 @@ const readJson = fileName => {
 }
 
 const bundleEs6App = (folder, metadata, options = {}) => {
-  spinner.start('Building ES6 appBundle and saving to "' + folder.split('/').pop() + '"')
+  if (process.env.LNG_BUNDLER === 'esbuild') {
+    return buildAppEsBuild(folder, metadata, 'es6', options)
+  } else {
+    return bundleAppRollup(folder, metadata, 'es6', options)
+  }
+}
+
+const bundleEs5App = (folder, metadata, options = {}) => {
+  if (process.env.LNG_BUNDLER === 'esbuild') {
+    return buildAppEsBuild(folder, metadata, 'es5', options)
+  } else {
+    return bundleAppRollup(folder, metadata, 'es5', options)
+  }
+}
+
+const buildAppEsBuild = async (folder, metadata, type) => {
+  spinner.start(
+    `Building ${type.toUpperCase()} appBundle using [esbuild] and saving to ${folder
+      .split('/')
+      .pop()}`
+  )
+  try {
+    const getConfig = require(`../configs/esbuild.${type}.config`)
+    await esbuild.build(getConfig(folder, makeSafeAppId(metadata)))
+    spinner.succeed()
+    return metadata
+  } catch (e) {
+    spinner.fail(`Error while creating ${type.toUpperCase()} bundle using [esbuild] (see log)`)
+    console.log(e.stderr)
+    throw Error(e)
+  }
+}
+
+const bundleAppRollup = (folder, metadata, type, options) => {
+  spinner.start(`Building ${type.toUpperCase()} appBundle and saving to ${folder.split('/').pop()}`)
 
   const args = [
     '-c',
-    path.join(__dirname, '../configs/rollup.es6.config.js'),
+    path.join(__dirname, `../configs/rollup.${type}.config.js`),
     '--input',
     path.join(process.cwd(), 'src/index.js'),
     '--file',
@@ -129,37 +191,7 @@ const bundleEs6App = (folder, metadata, options = {}) => {
       return metadata
     })
     .catch(e => {
-      spinner.fail('Error while creating ES6 bundle (see log)')
-      console.log(e.stderr)
-      throw Error(e)
-    })
-}
-
-const bundleEs5App = (folder, metadata, options = {}) => {
-  spinner.start('Building ES5 appBundle and saving to "' + folder.split('/').pop() + '"')
-
-  const args = [
-    '-c',
-    path.join(__dirname, '../configs/rollup.es5.config.js'),
-    '--input',
-    path.join(process.cwd(), 'src/index.js'),
-    '--file',
-    path.join(folder, 'appBundle.es5.js'),
-    '--name',
-    makeSafeAppId(metadata),
-  ]
-
-  if (options.sourcemaps === false) args.push('--no-sourcemap')
-
-  let currentWorkingDir = process.cwd()
-  let levelsDown = __dirname.indexOf(currentWorkingDir) > -1 ? '../../../../..' : '../..'
-  return execa(path.join(__dirname, levelsDown, 'node_modules/.bin/rollup'), args)
-    .then(() => {
-      spinner.succeed()
-      return metadata
-    })
-    .catch(e => {
-      spinner.fail('Error while creating ES5 bundle (see log)')
+      spinner.fail(`Error while creating ${type.toUpperCase()} bundle (see log)`)
       console.log(e.stderr)
       throw Error(e)
     })
