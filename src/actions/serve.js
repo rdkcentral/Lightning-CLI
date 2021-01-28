@@ -22,6 +22,7 @@ const path = require('path')
 const chalk = require('chalk')
 const os = require('os')
 const child_process = require('child_process')
+const isLocallyInstalled = require('../helpers/localinstallationcheck')
 
 module.exports = () => {
   const args = [
@@ -32,8 +33,7 @@ module.exports = () => {
     process.env.LNG_SERVE_PROXY ? '-P' + process.env.LNG_SERVE_PROXY : false,
   ].filter(val => val)
 
-  let currentWorkingDir = process.cwd()
-  let levelsDown = __dirname.indexOf(currentWorkingDir) > -1 ? '../../../../..' : '../..'
+  let levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
   const subprocess = execa(path.join(__dirname, levelsDown, 'node_modules/.bin/http-server'), args)
 
   subprocess.catch(e => console.log(chalk.red(e.stderr)))
