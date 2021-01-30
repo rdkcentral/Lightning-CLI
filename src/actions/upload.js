@@ -27,6 +27,7 @@ const ask = require('../helpers/ask')
 const spinner = require('../helpers/spinner')
 const exit = require('../helpers/exit')
 const buildHelpers = require('../helpers/build')
+const chalk = require('chalk')
 
 const UPLOAD_ERRORS = {
   version_already_exists: 'The current version of your app already exists',
@@ -92,7 +93,13 @@ module.exports = () => {
   return sequence([
     () => buildHelpers.ensureCorrectGitIgnore(),
     // todo: save API key locally for future use and set it as default answer
-    () => ask('Please provide your API key'),
+    () => {
+      if (process.env.LNG_API_KEY) {
+        console.log(`🔑 ${chalk.yellow(chalk.underline('using API stored in env'))}`)
+        return Promise.resolve(process.env.LNG_API_KEY)
+      }
+      return ask('Please provide your API key')
+    },
     apiKey => login(apiKey).then(usr => ((user = usr), (usr.apiKey = apiKey))),
     () => packageAction(),
     packageData => upload(packageData, user),
