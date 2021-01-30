@@ -9,12 +9,10 @@ const isFile = path => {
 }
 
 const getAsFile = path => {
-  const hasIndex = /index$/
   const extensions = ['js', 'mjs', 'ts']
-
   const file = extensions
     .reduce((acc, ext) => {
-      acc.push(hasIndex.test(path) ? `${path}.${ext}` : `${path}/index.${ext}`)
+      acc.push(`${path}.${ext}`, `${path}/index.${ext}`)
       return acc
     }, [])
     .filter(f => isFile(f))
