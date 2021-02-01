@@ -74,9 +74,6 @@ Live reload communication is driven by WebSockets. `LNG_LIVE_RELOAD_PORT` let's 
 #### `LNG_BUNDLER`
 Specifies which bundler to use. Possible values `esbuild` or `rollup`, defaults to `rollup`
 
-#### `LNG_BUNDLER_TARGET` 
-This sets the target environment for the generated JavaScript code through [esbuild](https://esbuild.github.io/api/#target)
-
 
 ### Custom App environment variables
 You can specify custom environment variables that will be _injected_ into your App bundle. This can be useful for specifying an API endpoint or API key.
