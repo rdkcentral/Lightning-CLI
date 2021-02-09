@@ -184,7 +184,7 @@ const bundleAppRollup = (folder, metadata, type, options) => {
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
 
-  let levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
+  const levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
   return execa(path.join(__dirname, levelsDown, 'node_modules/.bin/rollup'), args)
     .then(() => {
       spinner.succeed()

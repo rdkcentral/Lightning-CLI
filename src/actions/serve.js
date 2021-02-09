@@ -33,7 +33,7 @@ module.exports = () => {
     process.env.LNG_SERVE_PROXY ? '-P' + process.env.LNG_SERVE_PROXY : false,
   ].filter(val => val)
 
-  let levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
+  const levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
   const subprocess = execa(path.join(__dirname, levelsDown, 'node_modules/.bin/http-server'), args)
 
   subprocess.catch(e => console.log(chalk.red(e.stderr)))

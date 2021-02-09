@@ -18,8 +18,7 @@
  */
 
 const isLocallyInstalled = () => {
-  let currentWorkingDir = process.cwd()
-  return __dirname.indexOf(currentWorkingDir) > -1
+  return __dirname.indexOf(process.cwd()) > -1
 }
 
 module.exports = isLocallyInstalled
