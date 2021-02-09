@@ -26,6 +26,7 @@ const concat = require('concat')
 const os = require('os')
 const esbuild = require('esbuild')
 const spinner = require('./spinner')
+const isLocallyInstalled = require('./localinstallationcheck')
 
 const removeFolder = folder => {
   spinner.start('Removing "' + folder.split('/').pop() + '" folder')
@@ -182,7 +183,9 @@ const bundleAppRollup = (folder, metadata, type, options) => {
   ]
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
-  return execa(path.join(__dirname, '../..', 'node_modules/.bin/rollup'), args)
+
+  let levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
+  return execa(path.join(__dirname, levelsDown, 'node_modules/.bin/rollup'), args)
     .then(() => {
       spinner.succeed()
       return metadata
