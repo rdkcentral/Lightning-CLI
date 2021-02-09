@@ -18,7 +18,9 @@
  */
 
 const buildHelpers = require('../helpers/build')
+const alias = require('../plugins/esbuild-alias')
 const os = require('os')
+const path = require('path')
 
 module.exports = (folder, globalName) => {
   const sourcemap =
@@ -29,6 +31,17 @@ module.exports = (folder, globalName) => {
       : false
 
   return {
+    plugins: [
+      alias([
+        { find: '@', filter: /@\//, replace: path.resolve(process.cwd(), 'src/') },
+        { find: '~', filter: /~\//, replace: path.resolve(process.cwd(), 'node_modules/') },
+        {
+          find: 'wpe-lightning',
+          filter: /^wpe-lightning$/,
+          replace: path.join(__dirname, '../alias/wpe-lightning.js'),
+        },
+      ]),
+    ],
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
     outfile: `${folder}/appBundle.es5.js`,
