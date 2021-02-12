@@ -21,7 +21,14 @@
 
             var appData = {}
 
-            var app = {$APP_ID}(appSettings, platformSettings, appData)
+            var bundle = window.{$APP_ID};
+
+            // support rollup and esbuild
+            if (typeof bundle !== 'function') {
+              bundle = bundle.default;
+            }
+
+            var app = bundle(appSettings, platformSettings, appData)
             document.body.appendChild(app.stage.getCanvas())
 
         </script>
