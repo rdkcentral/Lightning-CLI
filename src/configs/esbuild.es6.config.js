@@ -45,7 +45,7 @@ module.exports = (folder, globalName) => {
         { find: '~', filter: /~\//, replace: path.resolve(process.cwd(), 'node_modules/') },
         {
           find: 'wpe-lightning',
-          filter: /^wpe-lightning/,
+          filter: /^wpe-lightning$/,
           replace: path.join(__dirname, '../alias/wpe-lightning.js'),
         },
       ]),
