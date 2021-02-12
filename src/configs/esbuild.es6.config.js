@@ -21,6 +21,7 @@ const buildHelpers = require('../helpers/build')
 const os = require('os')
 const alias = require('../plugins/esbuild-alias')
 const path = require('path')
+const dotenv = require('dotenv').config()
 
 module.exports = (folder, globalName) => {
   const sourcemap =
@@ -29,6 +30,13 @@ module.exports = (folder, globalName) => {
       : process.env.LNG_BUILD_SOURCEMAP === 'inline'
       ? 'inline'
       : false
+
+  const appVars = buildHelpers.getEnvAppVars(dotenv.parsed)
+  const keys = Object.keys(appVars)
+  const defined = keys.reduce((acc, key) => {
+    acc[`process.env.${key}`] = `"${appVars[key]}"`
+    return acc
+  }, {})
 
   return {
     plugins: [
@@ -48,6 +56,7 @@ module.exports = (folder, globalName) => {
     minifyWhitespace: true,
     sourcemap,
     format: 'iife',
+    define: defined,
     target: process.env.LNG_BUNDLER_TARGET || '',
     globalName,
     banner: [
