@@ -29,7 +29,7 @@ let initCallbackProcess
 let wss
 
 const initWebSocketServer = () => {
-  const port = process.env.LNG_LIVE_RELOAD_PORT || 8888
+  const port = process.env.LNG_LIVE_RELOAD_PORT || 8991
   const server = new WebSocket.Server({ port })
 
   server.on('error', e => {

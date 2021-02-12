@@ -9,12 +9,11 @@ const isFile = path => {
 }
 
 const getAsFile = path => {
-  const hasIndex = /index$/
+  const isDir = fs.existsSync(path) && fs.lstatSync(path).isDirectory()
   const extensions = ['js', 'mjs', 'ts']
-
   const file = extensions
     .reduce((acc, ext) => {
-      acc.push(hasIndex.test(path) ? `${path}.${ext}` : `${path}/index.${ext}`)
+      acc.push(isDir ? `${path}/index.${ext}` : `${path}.${ext}`)
       return acc
     }, [])
     .filter(f => isFile(f))
@@ -34,7 +33,7 @@ module.exports = (entries = []) => {
           }
           if (!importPath) {
             throw new Error(
-              `Unable to import: ${args.path} 
+              `Unable to import: ${args.path}
               importer: ${args.importer}`
             )
           }
