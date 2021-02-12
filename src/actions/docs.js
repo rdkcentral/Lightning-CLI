@@ -36,7 +36,7 @@ module.exports = () => {
     '-o',
     '-c-1',
   ]
-  let levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
+  const levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
   const subprocess = execa(path.join(__dirname, levelsDown, 'node_modules/.bin/http-server'), args)
   subprocess.catch(e => console.log(chalk.red(e.stderr)))
   subprocess.stdout.pipe(process.stdout)
