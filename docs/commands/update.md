@@ -1,13 +1,13 @@
-# Update command
+# Update
 
-_Update the Lightning-CLI to the latest version_
+*Update the Lightning CLI to the latest version*
 
-```bash
+```
 lng update
 ```
 
-The Lightning-CLI has an auto-update mechanism. It check periodically if you are still on the latest version,
-and updates automatically if you are not. This way you can be sure that you are always compatible with the latest
-changes (either on the Lightning-SDK side, or the Metro App store side).
+The Lightning CLI has an *auto-update* mechanism. It checks periodically if you are still using the latest version
+and, if you are not, updates automatically. This ensures that you are always compatible with the latest
+changes (either triggered by changes in the Lightning SDK side or in the Metrological Dashboard).
 
-When you don't want to wait, but force an update to the latest version manually you can use the `lng update` command.
+If you want to manually *force* an update to the latest version, use the `lng update` command.
