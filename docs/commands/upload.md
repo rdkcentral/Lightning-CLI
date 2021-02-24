@@ -2,7 +2,7 @@
 
 *Upload the Lightning App to the Metrological Dashboard, so that it can be published to the operator's App Store*
 
-```
+```bash
 lng upload
 ```
 

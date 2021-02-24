@@ -2,7 +2,7 @@
 
 *Watch for file changes and automatically rebuild the App*
 
-```
+```bash
 lng watch
 ```
 

@@ -2,7 +2,7 @@
 
 *Build a local development version of a Lightning App*
 
-```
+```bash
 lng build
 ```
 

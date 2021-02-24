@@ -2,7 +2,7 @@
 
 *Create a new Lightning App*
 
-```
+```bash
 lng create
 ```
 

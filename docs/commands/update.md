@@ -2,7 +2,7 @@
 
 *Update the Lightning CLI to the latest version*
 
-```
+```bash
 lng update
 ```
 

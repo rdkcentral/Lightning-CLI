@@ -2,7 +2,7 @@
 
 *Start a local webserver and run a built Lightning App in a web browser*
 
-```
+```bash
 lng serve
 ```
 

@@ -2,7 +2,7 @@
 
 *Build a local Lightning App, start a local webserver, run a built Lightning App in a web browser and watch for changes*
 
-```
+```bash
 lng dev
 ```
 

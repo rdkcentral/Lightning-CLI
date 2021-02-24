@@ -2,7 +2,7 @@
 
 *Open the Lightning SDK documentation*
 
-```
+```bash
 lng docs
 ```
 

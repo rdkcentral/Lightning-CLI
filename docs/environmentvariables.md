@@ -10,7 +10,7 @@ You can pass environment variables via the command prompt before calling a comma
 
 Example of passing environment variables via the *command prompt*:
 
-```
+```bash
 NODE_ENV=staging LNG_SERVE_PORT=3333 lng serve
 ```
 
