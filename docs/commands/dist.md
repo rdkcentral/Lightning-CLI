@@ -1,6 +1,5 @@
 # Dist
 
-
 *Create a standalone, distributable version of the Lightning App*
 
 ```bash

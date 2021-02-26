@@ -35,7 +35,6 @@ The environment variable `NODE_ENV` is used by several external libraries. You c
 
 ### Behavior Environment Variables
 
-
 You can use the following environment variables to customize the behavior of the Lightning CLI:
 
 | Name | Default | Description |
@@ -48,11 +47,8 @@ You can use the following environment variables to customize the behavior of the
 | `LNG_DIST_FOLDER` | dist | Specifies the folder in which the standalone, distributable App (using `lng dist`) must be generated. |
 | `LNG_AUTO_UPDATE` | true | Indicates whether or not the Lightning CLI should automatically update ('auto update'). Possible values: 'true', 'false'. **Note**: It is recommended to keep auto updates enabled. |
 
-
 ### Custom Environment Variables
 
-
 You can specify custom, app-specific environment variables to be  *injected* into your App bundle. This can be useful for specifying an API endpoint or API key, for example.
-
 
 App-specific variables must always start with `APP_` and are referenced inside the App code as `process.env.APP_MY_VAR`.
