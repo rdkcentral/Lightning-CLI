@@ -21,6 +21,7 @@ const buildHelpers = require('../helpers/build')
 const os = require('os')
 const alias = require('../plugins/esbuild-alias')
 const path = require('path')
+const dotenv = require('dotenv').config()
 
 module.exports = (folder, globalName) => {
   const sourcemap =
@@ -30,6 +31,13 @@ module.exports = (folder, globalName) => {
       ? 'inline'
       : false
 
+  const appVars = buildHelpers.getEnvAppVars(dotenv.parsed)
+  const keys = Object.keys(appVars)
+  const defined = keys.reduce((acc, key) => {
+    acc[`process.env.${key}`] = `"${appVars[key]}"`
+    return acc
+  }, {})
+
   return {
     plugins: [
       alias([
@@ -37,7 +45,7 @@ module.exports = (folder, globalName) => {
         { find: '~', filter: /~\//, replace: path.resolve(process.cwd(), 'node_modules/') },
         {
           find: 'wpe-lightning',
-          filter: /^wpe-lightning/,
+          filter: /^wpe-lightning$/,
           replace: path.join(__dirname, '../alias/wpe-lightning.js'),
         },
       ]),
@@ -48,6 +56,7 @@ module.exports = (folder, globalName) => {
     minifyWhitespace: true,
     sourcemap,
     format: 'iife',
+    define: defined,
     target: process.env.LNG_BUNDLER_TARGET || '',
     globalName,
     banner: [
