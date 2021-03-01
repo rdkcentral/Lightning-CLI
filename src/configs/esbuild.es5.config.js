@@ -19,9 +19,15 @@
 
 const buildHelpers = require('../helpers/build')
 const alias = require('../plugins/esbuild-alias')
+const babel = require('../helpers/esbuildbabel')
 const os = require('os')
 const path = require('path')
 const dotenv = require('dotenv').config()
+const babelPresetEnv = require('@babel/preset-env')
+const babelPluginTransFormSpread = require('@babel/plugin-transform-spread')
+const babelPluginTransFormParameters = require('@babel/plugin-transform-parameters')
+const babelPluginClassProperties = require('@babel/plugin-proposal-class-properties')
+const babelPluginInlineJsonImport = require('babel-plugin-inline-json-import')
 
 module.exports = (folder, globalName) => {
   const sourcemap =
@@ -49,9 +55,33 @@ module.exports = (folder, globalName) => {
           replace: path.join(__dirname, '../alias/wpe-lightning.js'),
         },
       ]),
+      babel({
+        config: {
+          presets: [
+            [
+              babelPresetEnv,
+              {
+                targets: {
+                  chrome: '39',
+                },
+                debug: false,
+                useBuiltIns: 'entry',
+                corejs: '^3.6.5',
+              },
+            ],
+          ],
+          plugins: [
+            babelPluginClassProperties,
+            babelPluginTransFormSpread,
+            babelPluginTransFormParameters,
+            babelPluginInlineJsonImport,
+          ],
+        },
+      }),
     ],
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
+    target: 'es5',
     outfile: `${folder}/appBundle.es5.js`,
     minifyWhitespace: true,
     sourcemap,
