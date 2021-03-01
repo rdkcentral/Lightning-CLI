@@ -20,6 +20,9 @@
 const execa = require('execa')
 const path = require('path')
 const chalk = require('chalk')
+const os = require('os')
+const child_process = require('child_process')
+const isLocallyInstalled = require('../helpers/localinstallationcheck')
 
 module.exports = () => {
   const args = [
@@ -30,10 +33,20 @@ module.exports = () => {
     process.env.LNG_SERVE_PROXY ? '-P' + process.env.LNG_SERVE_PROXY : false,
   ].filter(val => val)
 
-  const subprocess = execa(path.join(__dirname, '../..', 'node_modules/.bin/http-server'), args)
+  const levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
+  const subprocess = execa(path.join(__dirname, levelsDown, 'node_modules/.bin/http-server'), args)
 
   subprocess.catch(e => console.log(chalk.red(e.stderr)))
   subprocess.stdout.pipe(process.stdout)
+
+  // Hack for windows to prevent leaving orphan processes, resulting in multiple http-server running instances
+  if (os.platform() === 'win32') {
+    process.on('SIGINT', () => {
+      child_process.exec('taskkill /pid ' + subprocess.pid + ' /t /f', () => {
+        process.exit()
+      })
+    })
+  }
 
   return subprocess
 }
