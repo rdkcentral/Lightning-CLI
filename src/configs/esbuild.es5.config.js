@@ -82,6 +82,7 @@ module.exports = (folder, globalName) => {
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
     target: 'es5',
+    mainFields: ['module', 'main', 'browser'],
     outfile: `${folder}/appBundle.es5.js`,
     minifyWhitespace: true,
     sourcemap,

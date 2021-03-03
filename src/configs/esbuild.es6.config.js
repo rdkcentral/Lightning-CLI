@@ -53,6 +53,7 @@ module.exports = (folder, globalName) => {
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
     outfile: `${folder}/appBundle.js`,
+    mainFields: ['module', 'main', 'browser'],
     minifyWhitespace: true,
     sourcemap,
     format: 'iife',
