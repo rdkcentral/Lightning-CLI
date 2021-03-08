@@ -18,15 +18,33 @@
  */
 
 const path = require('path')
-
+const fs = require('fs')
 const sequence = require('../helpers/sequence')
 const buildHelpers = require('../helpers/build')
+const spinner = require('../helpers/spinner')
+const chalk = require('chalk')
 
 module.exports = (clear = false, change = null) => {
   const targetDir = path.join(process.cwd(), process.env.LNG_BUILD_FOLDER || 'build')
-
   let metadata
   let settings
+
+  const settingsEnv = process.env.LNG_SETTINGS_ENV
+  const defaultSettingsFile = 'settings.json'
+  const envSettingsFile = `settings.${settingsEnv}.json`
+  const envSettingsPath = path.join(process.cwd(), envSettingsFile)
+
+  let settingsFile = defaultSettingsFile
+  if (fs.existsSync(envSettingsPath)) {
+    settingsFile = envSettingsFile
+  } else if (settingsEnv) {
+    spinner.fail(
+      chalk.red(
+        `Environmental settings file not available at ${envSettingsPath} hence switching to default settings`
+      )
+    )
+  }
+
   return sequence([
     () => clear && buildHelpers.ensureCorrectGitIgnore(),
     () => clear && buildHelpers.ensureCorrectSdkDependency(),
@@ -34,10 +52,12 @@ module.exports = (clear = false, change = null) => {
     () => buildHelpers.ensureFolderExists(targetDir),
     () => clear && buildHelpers.copySupportFiles(targetDir),
     () => (clear || change === 'static') && buildHelpers.copyStaticFolder(targetDir),
-    () => (clear || change === 'settings') && buildHelpers.copySettings(targetDir),
+    () =>
+      (clear || change === 'settings') &&
+      buildHelpers.copySettings(settingsFile, targetDir, defaultSettingsFile),
     () => (clear || change === 'metadata') && buildHelpers.copyMetadata(targetDir),
     () => buildHelpers.readMetadata().then(result => (metadata = result)),
-    () => buildHelpers.readSettings().then(result => (settings = result)),
+    () => buildHelpers.readSettings(settingsFile).then(result => (settings = result)),
     () =>
       (clear || change === 'src') &&
       (settings.platformSettings.esEnv || 'es6') === 'es6' &&

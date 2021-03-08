@@ -89,14 +89,15 @@ const copySrcFolder = folder => {
   shell.cp('-r', './src', folder)
 }
 
-const copySettings = folder => {
-  const file = path.join(process.cwd(), 'settings.json')
+const copySettings = (settingsFile, folder, targetFile = settingsFile) => {
+  const file = path.join(process.cwd(), settingsFile)
+
   if (fs.existsSync(file)) {
-    spinner.start('Copying settings.json to "' + folder.split('/').pop() + '"')
-    shell.cp(file, folder)
+    spinner.start(`Copying ${settingsFile} to "' + ${folder.split('/').pop()} + '"`)
+    shell.cp(file, folder + `/${targetFile}`)
     spinner.succeed()
   } else {
-    spinner.fail()
+    spinner.fail(`Settings file not found and path is ${file}`)
   }
 }
 
@@ -115,8 +116,8 @@ const readMetadata = () => {
   return readJson('metadata.json')
 }
 
-const readSettings = () => {
-  return readJson('settings.json')
+const readSettings = file => {
+  return readJson(file)
 }
 
 const readJson = fileName => {

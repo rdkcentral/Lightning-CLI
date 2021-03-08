@@ -23,7 +23,10 @@ const exit = require('../helpers/exit')
 const WebSocket = require('ws')
 const chalk = require('chalk')
 
-const regexp = /^(?!src|static|settings\.json|metadata\.json)(.+)$/
+const settingsEnv = process.env.LNG_SETTINGS_ENV
+const regexp = new RegExp(
+  `^(?!src|static|settings.json|settings.${settingsEnv}.json|metadata.json)(.+)$`
+)
 
 let initCallbackProcess
 let wss
@@ -89,7 +92,7 @@ module.exports = (initCallback, watchCallback) => {
         if (f === 'metadata.json') {
           change = 'metadata'
         }
-        if (f === 'settings.json') {
+        if (f === 'settings.json' || f === `settings.${settingsEnv}.json`) {
           change = 'settings'
         }
 
