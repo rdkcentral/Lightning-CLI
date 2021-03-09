@@ -115,8 +115,8 @@ const readMetadata = () => {
   return readJson('metadata.json')
 }
 
-const readSettings = (file = 'settings.json') => {
-  return readJson(file)
+const readSettings = (settingsFileName = 'settings.json') => {
+  return readJson(settingsFileName)
 }
 
 const readJson = fileName => {
@@ -343,8 +343,8 @@ const getSettingsFileName = () => {
         )
       )
     }
-    return settingsFileName
   }
+  return settingsFileName
 }
 
 module.exports = {
