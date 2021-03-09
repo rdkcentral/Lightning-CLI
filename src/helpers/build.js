@@ -89,15 +89,14 @@ const copySrcFolder = folder => {
   shell.cp('-r', './src', folder)
 }
 
-const copySettings = (settingsFile, folder, targetFile = settingsFile) => {
+const copySettings = (settingsFile = 'settings.json', folder) => {
   const file = path.join(process.cwd(), settingsFile)
-
   if (fs.existsSync(file)) {
-    spinner.start(`Copying ${settingsFile} to "' + ${folder.split('/').pop()} + '"`)
-    shell.cp(file, folder + `/${targetFile}`)
+    spinner.start(`Copying ${settingsFile} to "${folder.split('/').pop()}"`)
+    shell.cp(file, folder + '/settings.json')
     spinner.succeed()
   } else {
-    spinner.fail(`Settings file not found and path is ${file}`)
+    spinner.fail(`Settings file not found at path ${file}`)
   }
 }
 
@@ -331,6 +330,23 @@ const hasNewSDK = () => {
   return dependencies.indexOf('@lightningjs/sdk') > -1
 }
 
+const getSettingsFileName = () => {
+  let settingsFileName = 'settings.json'
+  if (process.env.LNG_SETTINGS_ENV) {
+    const envSettingsFileName = `settings.${process.env.LNG_SETTINGS_ENV}.json`
+    if (fs.existsSync(path.join(process.cwd(), envSettingsFileName))) {
+      settingsFileName = envSettingsFileName
+    } else {
+      spinner.fail(
+        chalk.red(
+          `Settings file ${envSettingsFileName} not available in project home, hence switching to default settings`
+        )
+      )
+    }
+    return settingsFileName
+  }
+}
+
 module.exports = {
   removeFolder,
   ensureFolderExists,
@@ -352,4 +368,5 @@ module.exports = {
   bundlePolyfills,
   makeSafeAppId,
   hasNewSDK,
+  getSettingsFileName,
 }

@@ -74,6 +74,13 @@ Live reload communication is driven by WebSockets. `LNG_LIVE_RELOAD_PORT` let's 
 #### `LNG_BUNDLER`
 Specifies which bundler to use. Possible values `esbuild` or `rollup`, defaults to `rollup`
 
+#### `LNG_SETTINGS_ENV`
+Specifies which environment to be used. User need to have `Settings.{env}.json` file in the Project home folder with different settings. This will build the application with `Settings.{env}.json`.
+If `Settings.{env}.json` file is not found in the Project home folder, then default settings file(`Settings.json`) is considered to build the application.
+
+For example `LNG_SETTINGS_ENV=dev` picks up the `Settings.dev.json` file(in the Project home folder) to build the application
+
+Defaults to `Settings.json`
 
 ### Custom App environment variables
 You can specify custom environment variables that will be _injected_ into your App bundle. This can be useful for specifying an API endpoint or API key.
