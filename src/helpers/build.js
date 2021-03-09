@@ -115,7 +115,7 @@ const readMetadata = () => {
   return readJson('metadata.json')
 }
 
-const readSettings = file => {
+const readSettings = (file = 'settings.json') => {
   return readJson(file)
 }
 
