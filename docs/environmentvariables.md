@@ -82,6 +82,11 @@ For example `LNG_SETTINGS_ENV=dev` picks up the `settings.dev.json` file(in the 
 
 Defaults to `settings.json`
 
+Above will be applicable while creating a distributable(using `lng dist` command).
+
+For example `LNG_SETTINGS_ENV=dev` picks up the `settings.dev.json` file(in the Project home folder) to create the distributable(with the content mentioned in `settings.dev.json`) in `dist` folder of the application
+
+
 ### Custom App environment variables
 You can specify custom environment variables that will be _injected_ into your App bundle. This can be useful for specifying an API endpoint or API key.
 App specific variables should always start with `APP_` and will then be made available inside the App code as `process.env.APP_MY_VAR`.
