@@ -9,6 +9,8 @@ const setupDistFolder = (folder, type, metadata) => {
     ? path.join(process.cwd(), 'node_modules/@lightningjs/core')
     : path.join(process.cwd(), 'node_modules/wpe-lightning/')
 
+  const settingsFileName = buildHelpers.getSettingsFileName()
+
   if (type === 'es6') {
     shell.cp(
       path.join(nodeModulesPath, 'dist/lightning.js'),
@@ -33,7 +35,7 @@ const setupDistFolder = (folder, type, metadata) => {
     )
   }
 
-  const settingsJsonFile = path.join(process.cwd(), 'settings.json')
+  const settingsJsonFile = path.join(process.cwd(), settingsFileName)
 
   const settings = fs.existsSync(settingsJsonFile)
     ? JSON.parse(fs.readFileSync(settingsJsonFile, 'utf8'))
