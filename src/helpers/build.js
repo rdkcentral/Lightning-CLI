@@ -27,6 +27,7 @@ const os = require('os')
 const esbuild = require('esbuild')
 const spinner = require('./spinner')
 const isLocallyInstalled = require('./localinstallationcheck')
+const exit = require('./exit')
 
 const removeFolder = folder => {
   spinner.start('Removing "' + folder.split('/').pop() + '" folder')
@@ -96,7 +97,7 @@ const copySettings = folder => {
     shell.cp(file, folder)
     spinner.succeed()
   } else {
-    spinner.fail()
+    spinner.warn(`Settings file not found at the ${process.cwd()}, so switching to default settings file`)
   }
 }
 
@@ -107,7 +108,7 @@ const copyMetadata = folder => {
     shell.cp(file, folder)
     spinner.succeed()
   } else {
-    spinner.fail()
+    spinner.warn(`Metadata file not found at the ${process.cwd()}`)
   }
 }
 
@@ -126,9 +127,11 @@ const readJson = fileName => {
       try {
         resolve(JSON.parse(fs.readFileSync(file, 'utf8')))
       } catch (e) {
+        spinner.fail(`Error occurred while reading ${file} file`, e)
         reject(e)
       }
     } else {
+      spinner.fail(`File not found error occurred while reading ${file} file`)
       reject('"' + fileName + '" not found')
     }
   })
@@ -239,6 +242,7 @@ const ensureCorrectGitIgnore = () => {
 
       resolve()
     } catch (e) {
+      spinner.warn(`.gitignore file not found at ${process.cwd()}`)
       // no .gitignore file, so let's just move on
       resolve()
     }
@@ -247,7 +251,9 @@ const ensureCorrectGitIgnore = () => {
 
 const ensureCorrectSdkDependency = () => {
   const packageJsonPath = path.join(process.cwd(), 'package.json')
-  if (!fs.existsSync(packageJsonPath)) return true
+  if (!fs.existsSync(packageJsonPath)) {
+    exit(`Package.json is not available at ${process.cwd()}. Build process cannot be proceeded`)
+  }
   const packageJson = require(packageJsonPath)
   // check if package.json has old WebPlatformForEmbedded sdk dependency
   if (

@@ -34,4 +34,7 @@ module.exports = {
     spinner.fail(msg)
     console.log(' ')
   },
+  warn(msg) {
+    spinner.warn(msg)
+  },
 }
