@@ -27,6 +27,7 @@ const ask = require('../helpers/ask')
 const spinner = require('../helpers/spinner')
 const exit = require('../helpers/exit')
 const buildHelpers = require('../helpers/build')
+const checkForAppPath = require('../helpers/checkForAppPath')
 
 const UPLOAD_ERRORS = {
   version_already_exists: 'The current version of your app already exists',
@@ -46,7 +47,7 @@ const login = key => {
         spinner.succeed()
         return user
       }
-      exit('Unexepected authentication error')
+      exit('Unexpected authentication error')
     })
     .catch(err => {
       exit('Incorrect API key or not logged in to metrological dashboard')
@@ -88,6 +89,7 @@ const upload = (packageData, user) => {
 }
 
 module.exports = () => {
+  checkForAppPath()
   let user
   return sequence([
     () => buildHelpers.ensureCorrectGitIgnore(),

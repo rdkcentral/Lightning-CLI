@@ -104,7 +104,7 @@ const validateAppId = appId => {
 
 const validateAppName = appName => {
   if (!appName) {
-    exit('Please provide an app ID')
+    exit('Please provide an app Name')
   }
   // todo: add possible pre-processing
   return appName
@@ -155,7 +155,10 @@ const setSdkVersion = config => {
         })
         resolve()
       })
-      .catch(reject)
+      .catch(e => {
+        console.log(`Error occurred while setting sdk version. Error is : ${e}`)
+        reject()
+      })
   })
 }
 
@@ -212,7 +215,7 @@ const npmInstall = cwd => {
   spinner.start('Installing NPM dependencies')
   return execa('npm', ['install'], { cwd })
     .then(() => spinner.succeed('NPM dependencies installed'))
-    .catch(e => spinner.fail(e))
+    .catch(e => spinner.fail(`Error occurred while installing npm dependencies, Error is ${e}`))
 }
 
 const gitInit = cwd => {
@@ -222,12 +225,12 @@ const gitInit = cwd => {
     .then(({ stdout }) => (msg = stdout))
     .then(() => {
       return fs.copyFileSync(
-        path.join(__dirname, '../../fixtures/git/.gitignore'),
+        path.join(__dirname, '../../fixtures/git/gitignore'),
         path.join(cwd, '.gitignore')
       )
     })
     .then(() => spinner.succeed(msg))
-    .catch(e => spinner.fail(e))
+    .catch(e => spinner.fail(`Error occurred while creating git repository, Error is ${e}`))
 }
 
 const install = config => {

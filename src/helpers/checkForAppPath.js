@@ -17,19 +17,25 @@
  * limitations under the License.
  */
 
-const watch = require('./watch')
-const serve = require('./serve')
-const checkForAppPath = require('../helpers/checkForAppPath')
+const exit = require('./exit')
+const fs = require('fs')
+const path = require('path')
 
-module.exports = () => {
-  checkForAppPath()
-  watch(serve, () => {
-    console.log('')
-    if (process.env.LNG_LIVE_RELOAD === 'true') {
-      console.log('Navigate to web browser to see the changes')
-    } else {
-      console.log('Reload your web browser to see the changes')
-    }
-    console.log('')
-  })
+const checkForApp = () => {
+  const packageJsonPath = path.join(process.cwd(), 'package.json')
+  if (!fs.existsSync(packageJsonPath)) {
+    exit(`Package.json is not available at ${process.cwd()}. Build process cannot be proceeded`)
+  }
+  const packageJson = require(packageJsonPath)
+  if (
+    packageJson.dependencies &&
+    (Object.keys(packageJson.dependencies).indexOf('wpe-lightning-sdk') > -1 ||
+      Object.keys(packageJson.dependencies).indexOf('@lightningjs/sdk') > -1)
+  ) {
+    return true
+  } else {
+    exit('Please make sure you are running the command in the Application directory')
+  }
 }
+
+module.exports = checkForApp

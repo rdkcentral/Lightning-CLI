@@ -22,8 +22,10 @@ const chalk = require('chalk')
 const path = require('path')
 const buildHelpers = require('../helpers/build')
 const isLocallyInstalled = require('../helpers/localinstallationcheck')
+const checkForAppPath = require('../helpers/checkForAppPath')
 
 module.exports = () => {
+  checkForAppPath()
   console.log(chalk.green('Serving the Lightning-SDK documentation\n\n'))
 
   const args = [

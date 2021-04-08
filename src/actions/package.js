@@ -38,7 +38,7 @@ const pack = (buildDir, releasesDir, metadata) => {
       return target
     })
     .catch(e => {
-      console.log(e)
+      console.log(`Error occurred while creating release package. Error is ${e}`)
       exit()
     })
 }
@@ -47,6 +47,7 @@ const tar = (src, dest) => {
   return new Promise((resolve, reject) => {
     targz.compress({ src, dest }, err => {
       if (err) {
+        console.log(`Error while compressing the tar file. Error is : ${err}`)
         reject(err)
       } else {
         resolve()

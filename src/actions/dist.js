@@ -3,9 +3,11 @@ const fs = require('fs')
 const sequence = require('../helpers/sequence')
 const buildHelpers = require('../helpers/build')
 const distHelpers = require('../helpers/dist')
+const checkForAppPath = require('../helpers/checkForAppPath')
 
 module.exports = types => {
   const baseDistDir = path.join(process.cwd(), process.env.LNG_DIST_FOLDER || 'dist')
+  checkForAppPath()
 
   let metadata
 

@@ -22,6 +22,7 @@ const watch = require('watch')
 const exit = require('../helpers/exit')
 const WebSocket = require('ws')
 const chalk = require('chalk')
+const checkForAppPath = require('../helpers/checkForAppPath')
 
 const regexp = /^(?!src|static|settings\.json|metadata\.json)(.+)$/
 
@@ -47,6 +48,7 @@ const initWebSocketServer = () => {
 }
 
 module.exports = (initCallback, watchCallback) => {
+  checkForAppPath()
   let busy = false
   return watch.watchTree(
     './',

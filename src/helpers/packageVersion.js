@@ -8,6 +8,7 @@ module.exports = packageName => {
 
       resolve(version)
     } catch (e) {
+      console.log(`Error occurred while getting package Version. Error is: ${e}`)
       resolve(false)
     }
   })

@@ -23,8 +23,10 @@ const chalk = require('chalk')
 const os = require('os')
 const child_process = require('child_process')
 const isLocallyInstalled = require('../helpers/localinstallationcheck')
+const checkForAppPath = require('../helpers/checkForAppPath')
 
 module.exports = () => {
+  checkForAppPath()
   const args = [
     './build',
     process.env.LNG_SERVE_OPEN === 'false' ? false : '-o',
