@@ -28,7 +28,6 @@ const spinner = require('./spinner.js')
 const exit = require('./exit.js')
 const packageJson = require('../../package.json')
 const ask = require('../helpers/ask')
-const checkForAppPath = require('../helpers/checkForAppPath')
 
 const fetchLatestVersion = () => {
   return new Promise((resolve, reject) => {
@@ -46,7 +45,6 @@ const fetchLatestVersion = () => {
 }
 
 const upToDate = async (skip = false) => {
-  checkForAppPath()
   if (process.env.LNG_AUTO_UPDATE !== undefined) {
     skip = process.env.LNG_AUTO_UPDATE === 'false' ? true : false
   }

@@ -27,6 +27,7 @@ const os = require('os')
 const esbuild = require('esbuild')
 const spinner = require('./spinner')
 const isLocallyInstalled = require('./localinstallationcheck')
+const exit = require('./exit')
 
 const removeFolder = folder => {
   spinner.start('Removing "' + folder.split('/').pop() + '" folder')
@@ -251,7 +252,6 @@ const ensureCorrectGitIgnore = () => {
 
 const ensureCorrectSdkDependency = () => {
   const packageJsonPath = path.join(process.cwd(), 'package.json')
-
   const packageJson = require(packageJsonPath)
   // check if package.json has old WebPlatformForEmbedded sdk dependency
   if (
@@ -333,6 +333,24 @@ const hasNewSDK = () => {
   const dependencies = Object.keys(require(path.join(process.cwd(), 'package.json')).dependencies)
   return dependencies.indexOf('@lightningjs/sdk') > -1
 }
+const ensureLightningApp = () => {
+  return new Promise(resolve => {
+    const packageJsonPath = path.join(process.cwd(), 'package.json')
+    if (!fs.existsSync(packageJsonPath)) {
+      exit(`Package.json is not available at ${process.cwd()}. Build process cannot be proceeded`)
+    }
+    const packageJson = require(packageJsonPath)
+    if (
+      packageJson.dependencies &&
+      (Object.keys(packageJson.dependencies).indexOf('wpe-lightning-sdk') > -1 ||
+        Object.keys(packageJson.dependencies).indexOf('@lightningjs/sdk') > -1)
+    ) {
+      resolve()
+    } else {
+      exit('Please make sure you are running the command in the Application directory')
+    }
+  })
+}
 
 module.exports = {
   removeFolder,
@@ -355,4 +373,5 @@ module.exports = {
   bundlePolyfills,
   makeSafeAppId,
   hasNewSDK,
+  ensureLightningApp,
 }

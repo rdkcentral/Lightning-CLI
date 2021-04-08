@@ -22,24 +22,31 @@ const chalk = require('chalk')
 const path = require('path')
 const buildHelpers = require('../helpers/build')
 const isLocallyInstalled = require('../helpers/localinstallationcheck')
-const checkForAppPath = require('../helpers/checkForAppPath')
+const sequence = require('../helpers/sequence')
 
 module.exports = () => {
-  checkForAppPath()
-  console.log(chalk.green('Serving the Lightning-SDK documentation\n\n'))
+  return sequence([
+    () => buildHelpers.ensureLightningApp(),
+    () => {
+      console.log(chalk.green('Serving the Lightning-SDK documentation\n\n'))
 
-  const args = [
-    path.join(
-      process.cwd(),
-      buildHelpers.hasNewSDK()
-        ? 'node_modules/@lightningjs/sdk/docs'
-        : 'node_modules/wpe-lightning-sdk/docs'
-    ),
-    '-o',
-    '-c-1',
-  ]
-  const levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
-  const subprocess = execa(path.join(__dirname, levelsDown, 'node_modules/.bin/http-server'), args)
-  subprocess.catch(e => console.log(chalk.red(e.stderr)))
-  subprocess.stdout.pipe(process.stdout)
+      const args = [
+        path.join(
+          process.cwd(),
+          buildHelpers.hasNewSDK()
+            ? 'node_modules/@lightningjs/sdk/docs'
+            : 'node_modules/wpe-lightning-sdk/docs'
+        ),
+        '-o',
+        '-c-1',
+      ]
+      const levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
+      const subprocess = execa(
+        path.join(__dirname, levelsDown, 'node_modules/.bin/http-server'),
+        args
+      )
+      subprocess.catch(e => console.log(chalk.red(e.stderr)))
+      subprocess.stdout.pipe(process.stdout)
+    },
+  ])
 }

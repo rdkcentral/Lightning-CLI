@@ -21,14 +21,14 @@ const path = require('path')
 
 const sequence = require('../helpers/sequence')
 const buildHelpers = require('../helpers/build')
-const checkForAppPath = require('../helpers/checkForAppPath')
 
 module.exports = (clear = false, change = null) => {
   const targetDir = path.join(process.cwd(), process.env.LNG_BUILD_FOLDER || 'build')
-  checkForAppPath()
+
   let metadata
   let settings
   return sequence([
+    () => buildHelpers.ensureLightningApp(),
     () => clear && buildHelpers.ensureCorrectGitIgnore(),
     () => clear && buildHelpers.ensureCorrectSdkDependency(),
     () => clear && buildHelpers.removeFolder(targetDir),
