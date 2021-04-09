@@ -21,6 +21,7 @@ const execa = require('execa')
 const chalk = require('chalk')
 const path = require('path')
 const buildHelpers = require('../helpers/build')
+const isLocallyInstalled = require('../helpers/localinstallationcheck')
 
 module.exports = () => {
   console.log(chalk.green('Serving the Lightning-SDK documentation\n\n'))
@@ -35,8 +36,8 @@ module.exports = () => {
     '-o',
     '-c-1',
   ]
-
-  const subprocess = execa(path.join(__dirname, '../..', 'node_modules/.bin/http-server'), args)
+  const levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
+  const subprocess = execa(path.join(__dirname, levelsDown, 'node_modules/.bin/http-server'), args)
   subprocess.catch(e => console.log(chalk.red(e.stderr)))
   subprocess.stdout.pipe(process.stdout)
 }
