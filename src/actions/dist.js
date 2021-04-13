@@ -3,13 +3,16 @@ const fs = require('fs')
 const sequence = require('../helpers/sequence')
 const buildHelpers = require('../helpers/build')
 const distHelpers = require('../helpers/dist')
+const distWatch = require('../helpers/distWatch')
 
 module.exports = types => {
   const baseDistDir = path.join(process.cwd(), process.env.LNG_DIST_FOLDER || 'dist')
 
   let metadata
 
-  const dist = type => {
+  const dist = option => {
+    const type = option.type
+
     let distDir
     return sequence([
       () => distHelpers.moveOldDistFolderToBuildFolder(),
@@ -37,6 +40,7 @@ module.exports = types => {
         type === 'es5' &&
         buildHelpers.bundleEs5App(path.join(distDir, 'js'), metadata, { sourcemaps: false }),
       () => type === 'es5' && buildHelpers.bundlePolyfills(path.join(distDir, 'js')),
+      () => option.isWatchEnabled && distWatch(type),
     ])
   }
 
