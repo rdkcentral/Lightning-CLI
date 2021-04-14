@@ -5,7 +5,7 @@ const buildHelpers = require('../helpers/build')
 const distHelpers = require('../helpers/dist')
 const distWatch = require('../helpers/distWatch')
 
-module.exports = types => {
+module.exports = options => {
   const baseDistDir = path.join(process.cwd(), process.env.LNG_DIST_FOLDER || 'dist')
 
   let metadata
@@ -45,7 +45,7 @@ module.exports = types => {
   }
 
   // execute the dist function for all types
-  return types.reduce((promise, type) => {
+  return options.reduce((promise, type) => {
     return promise
       .then(function() {
         return dist(type)

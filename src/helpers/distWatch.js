@@ -37,8 +37,8 @@ const distWatch = type => {
           change = 'static'
         }
         updateDistFolder(change, type)
+        busy = false
       }
-      busy = false
     }
   )
 }

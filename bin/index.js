@@ -111,14 +111,14 @@ program
     )
   )
   .action(options => {
-    let input = options.opts()
+    const input = options.opts()
     const defaultTypes = [{ type: 'es6', isWatchEnabled: input.watch }]
     const selectedTypes = Object.keys(input)
       .map(type => {
         //Consider only es5, es6 types and exclude watch
-        if (input[type] && type !== 'watch' && type.toLocaleLowerCase()) {
+        if (input[type] && type !== 'watch') {
           return {
-            type: type,
+            type: type.toLocaleLowerCase(),
             isWatchEnabled: input.watch,
           }
         }
