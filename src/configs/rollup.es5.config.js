@@ -58,7 +58,7 @@ module.exports = {
         '~': path.resolve(process.cwd(), 'node_modules/'),
       },
     }),
-    resolve({ mainFields: ['module', 'main', 'browser'] }),
+    resolve(buildHelpers.getResolveConfigForRollup()),
     commonjs({ sourceMap: false }),
     babel({
       presets: [
