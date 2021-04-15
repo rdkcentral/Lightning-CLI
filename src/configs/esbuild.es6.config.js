@@ -31,6 +31,7 @@ module.exports = (folder, globalName) => {
       ? 'inline'
       : false
 
+  //Load .env config every time build is triggered
   const dotEnvConfig = dotenv.config()
   const appVars = buildHelpers.getEnvAppVars(dotEnvConfig.parsed)
   const keys = Object.keys(appVars)
