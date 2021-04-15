@@ -330,6 +330,19 @@ const hasNewSDK = () => {
   return dependencies.indexOf('@lightningjs/sdk') > -1
 }
 
+/**
+ * function to get the config for rollup/node-resolve plugin
+ * @returns Object
+ */
+const getResolveConfigForRollup = () => {
+  return {
+    mainFields:
+      process.env.LNG_SERVER_BUILD === 'true'
+        ? ['module', 'main', 'browser']
+        : ['module', 'browser', 'main'],
+  }
+}
+
 module.exports = {
   removeFolder,
   ensureFolderExists,
@@ -351,4 +364,5 @@ module.exports = {
   bundlePolyfills,
   makeSafeAppId,
   hasNewSDK,
+  getResolveConfigForRollup,
 }

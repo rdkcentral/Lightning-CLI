@@ -53,7 +53,7 @@ module.exports = {
         '~': path.resolve(process.cwd(), 'node_modules/'),
       },
     }),
-    resolve({ mainFields: ['module', 'main', 'browser'] }),
+    resolve(buildHelpers.getResolveConfigForRollup()),
     commonjs({ sourceMap: false }),
     (process.env.LNG_BUILD_MINIFY === 'true' || process.env.NODE_ENV === 'production') &&
       minify({ keep_fnames: true }),
