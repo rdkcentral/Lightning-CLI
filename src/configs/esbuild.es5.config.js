@@ -21,7 +21,7 @@ const buildHelpers = require('../helpers/build')
 const alias = require('../plugins/esbuild-alias')
 const os = require('os')
 const path = require('path')
-const dotenv = require('dotenv').config()
+const dotenv = require('dotenv')
 
 module.exports = (folder, globalName) => {
   const sourcemap =
@@ -31,7 +31,8 @@ module.exports = (folder, globalName) => {
       ? 'inline'
       : false
 
-  const appVars = buildHelpers.getEnvAppVars(dotenv.parsed)
+  const dotEnvConfig = dotenv.config()
+  const appVars = buildHelpers.getEnvAppVars(dotEnvConfig.parsed)
   const keys = Object.keys(appVars)
   const defined = keys.reduce((acc, key) => {
     acc[`process.env.${key}`] = `"${appVars[key]}"`
