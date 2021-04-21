@@ -30,6 +30,12 @@ const spinner = require('../helpers/spinner')
 
 /******* Questions *******/
 
+const askAppTemplate = () =>
+  ask('Select a template', null, 'list', [
+    { name: 'Routed app (recommended)', value: 'router' },
+    { name: 'Empty app', value: 'empty' },
+  ])
+
 const askAppName = () =>
   sequence([
     () => ask('What is the name of your Lightning App?', 'My Awesome App'),
@@ -74,6 +80,7 @@ const askGitInit = () =>
 const askConfig = () => {
   const config = {}
   return sequence([
+    () => askAppTemplate().then(template => (config.template = template)),
     () => askAppName().then(appName => (config.appName = appName)),
     () => askAppId().then(appId => (config.appId = appId)),
     () => askAppFolder(config.appId).then(folder => (config.appFolder = folder)),
@@ -123,8 +130,8 @@ const copyLightningFixtures = config => {
     if (config.appFolder && fs.pathExistsSync(targetDir)) {
       exit('The target directory ' + targetDir + ' already exists')
     }
-
-    fs.copySync(path.join(__dirname, '../../fixtures/lightning-app'), targetDir)
+    const appDir = config.template === 'router' ? 'lightning-app-routed' : 'lightning-app'
+    fs.copySync(path.join(__dirname, `../../fixtures/${appDir}`), targetDir)
 
     resolve(targetDir)
   })
