@@ -49,6 +49,12 @@ const setupDistFolder = (folder, type, metadata) => {
         },
       }
 
+  //Adding complete metadata info to app settings
+  Object.assign(settings.appSettings, metadata)
+
+  //To align with the production response, adding the 'identifier' as 'id'
+  settings.appSettings.id = metadata.identifier
+
   replaceInFile.sync({
     files: folder + '/*',
     from: /\{\$APPSETTINGS\}/g,
