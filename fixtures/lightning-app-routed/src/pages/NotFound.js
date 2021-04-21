@@ -1,4 +1,4 @@
-import { Lightning, Router } from '@lightningjs/sdk'
+import { Lightning, Router, Utils } from '@lightningjs/sdk'
 
 export default class NotFound extends Lightning.Component {
   static _template() {
@@ -6,26 +6,66 @@ export default class NotFound extends Lightning.Component {
       rect: true,
       w: 1920,
       h: 1080,
-      color: 0x858585,
-      Label: {
+      color: 0xff402662,
+      Header: {
+        mount: 0.5,
         x: 960,
         y: 540,
-        mount: 0.5,
         text: {
-          text: ' - Page not found - ',
+          text: 'Page not found',
+          fontFace: 'Bold',
+          fontSize: 128,
         },
       },
-      Details: {
-        x: 960,
-        y: 650,
-        mount: 0.5,
-        alpha: 0.5,
-        text: {
-          fontSize: 27,
-          textAlign: 'center',
-          lineHeight: 40,
-          text:
-            'up navigate to Home page \nright navigate to Settings page \ndown navigate to Account page\n back to navigate to previous page',
+      Arrows: {
+        Up: {
+          flex: { direction: 'column' },
+          Arrow: {
+            flexItem: { marginTop: 50, marginBottom: 20 },
+            mountX: 0.5,
+            x: 960,
+            src: Utils.asset('arrow.png'),
+          },
+          Label: {
+            mountX: 0.5,
+            x: 960,
+            text: {
+              text: 'Home Page',
+              fontFace: 'Regular',
+              textAlign: 'center',
+              wordWrapWidth: 300,
+              lineHeight: 48,
+            },
+          },
+        },
+        Right: {
+          flex: {},
+          mountX: 1,
+          x: 1920,
+          mountY: 0.5,
+          y: 540,
+          Label: {
+            mountY: 0.5,
+            y: 24,
+            text: {
+              text: 'Account Page',
+              fontFace: 'Regular',
+              textAlign: 'right',
+              wordWrapWidth: 300,
+              lineHeight: 48,
+            },
+          },
+          Arrow: {
+            flexItem: { marginRight: 50, marginLeft: 20 },
+            rotation: Math.PI * 0.5,
+            src: Utils.asset('arrow.png'),
+          },
+        },
+        Enter: {
+          mountX: 0.5,
+          x: 960,
+          y: 980,
+          text: { text: 'press [Back] to go to the previous page', fontFace: 'Regular' },
         },
       },
     }
@@ -36,10 +76,10 @@ export default class NotFound extends Lightning.Component {
   }
 
   _handleRight() {
-    Router.navigate('settings')
+    Router.navigate('account')
   }
 
-  _handleDown() {
-    Router.navigate('account')
+  pageTransition() {
+    return 'right'
   }
 }

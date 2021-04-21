@@ -1,4 +1,4 @@
-import { Lightning, Router } from '@lightningjs/sdk'
+import { Lightning, Router, Utils } from '@lightningjs/sdk'
 
 export default class Home extends Lightning.Component {
   static _template() {
@@ -6,24 +6,31 @@ export default class Home extends Lightning.Component {
       rect: true,
       w: 1920,
       h: 1080,
-      color: 0xff20639b,
-      Label: {
+      color: 0xff30be96,
+      Header: {
+        mount: 0.5,
         x: 960,
         y: 540,
-        mount: 0.5,
         text: {
-          text: 'Home',
+          text: 'Home Page',
+          fontFace: 'Bold',
+          fontSize: 128,
         },
       },
-      Details: {
-        x: 960,
-        y: 590,
-        mount: 0.5,
-        alpha: 0.5,
-        text: {
-          fontSize: 27,
-          textColor: 0xdd000000,
-          text: 'press up to go to the browse page',
+      Arrows: {
+        Up: {
+          flex: { direction: 'column' },
+          Arrow: {
+            flexItem: { marginTop: 50, marginBottom: 20 },
+            mountX: 0.5,
+            x: 960,
+            src: Utils.asset('arrow.png'),
+          },
+          Label: {
+            mountX: 0.5,
+            x: 960,
+            text: { text: 'Browse Page', fontFace: 'Regular' },
+          },
         },
       },
     }
@@ -35,5 +42,9 @@ export default class Home extends Lightning.Component {
 
   _handleUp() {
     Router.navigate('home/browse/adventure')
+  }
+
+  pageTransition() {
+    return 'up'
   }
 }

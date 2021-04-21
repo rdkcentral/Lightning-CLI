@@ -6,14 +6,28 @@ export default class Error extends Lightning.Component {
       rect: true,
       w: 1920,
       h: 1080,
-      color: 0xffb70606,
-      Label: {
-        x: 100,
-        y: 100,
+      color: 0xfff1465b,
+      Header: {
+        mount: 0.5,
+        x: 960,
+        y: 140,
         text: {
           text: 'Error',
-          fontSize: 22,
+          fontFace: 'Bold',
+          fontSize: 128,
         },
+      },
+      Error: {
+        mountX: 0.5,
+        x: 960,
+        y: 220,
+        text: { text: '', fontFace: 'Regular', textAlign: 'center' },
+      },
+      Enter: {
+        mountX: 0.5,
+        x: 960,
+        y: 980,
+        text: { text: 'press [enter] to navigate to Home Page', fontFace: 'Regular' },
       },
     }
   }
@@ -33,23 +47,21 @@ export default class Error extends Lightning.Component {
 
   set error(obj) {
     if (!obj.page) {
-      this.tag('Label').text = obj.error
+      this.tag('Error').text = obj.error
     } else {
       const { page, error, hash, route } = obj
-      const errorMessage = `
-error while loading page: ${page.constructor.name}
-press enter to navigate to home
+      const errorMessage = `error while loading page: ${page.constructor.name}
 --
 loaded via hash: ${hash}
 resulted in route: ${route.path}
 --
 ${error.toString()}`
 
-      this.tag('Label').text = errorMessage
+      this.tag('Error').text = errorMessage
     }
   }
 
   pageTransition() {
-    return 'up'
+    return 'fade'
   }
 }

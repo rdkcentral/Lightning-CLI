@@ -1,4 +1,4 @@
-import { Lightning, Router } from '@lightningjs/sdk'
+import { Lightning, Router, Utils } from '@lightningjs/sdk'
 
 export default class Browse extends Lightning.Component {
   static _template() {
@@ -6,31 +6,52 @@ export default class Browse extends Lightning.Component {
       rect: true,
       w: 1920,
       h: 1080,
-      color: 0xff3caea3,
-      Label: {
+      color: 0xff9055ff,
+      Header: {
+        mount: 0.5,
         x: 960,
         y: 540,
-        mount: 0.5,
         text: {
-          text: 'Browse page',
+          text: 'Browse Page',
+          fontFace: 'Bold',
+          fontSize: 128,
         },
       },
-      Details: {
-        x: 960,
-        y: 610,
-        mount: 0.5,
-        alpha: 0.5,
-        text: {
-          fontSize: 27,
-          textColor: 0xdd000000,
-          lineHeight: 35,
-          text: 'press up to navigate to the Player page\npress right to navigate to account page',
+      Arrows: {
+        Up: {
+          flex: { direction: 'column' },
+          Arrow: {
+            flexItem: { marginTop: 50, marginBottom: 20 },
+            mountX: 0.5,
+            x: 960,
+            src: Utils.asset('arrow.png'),
+          },
+          Label: {
+            mountX: 0.5,
+            x: 960,
+            text: { text: 'Player Page', fontFace: 'Regular' },
+          },
+        },
+        Right: {
+          flex: {},
+          mountX: 1,
+          x: 1920,
+          mountY: 0.5,
+          y: 540,
+          Label: {
+            mountY: 0.5,
+            y: 24,
+            text: { text: 'Account Page', fontFace: 'Regular' },
+          },
+          Arrow: {
+            flexItem: { marginRight: 50, marginLeft: 20 },
+            rotation: Math.PI * 0.5,
+            src: Utils.asset('arrow.png'),
+          },
         },
       },
     }
   }
-
-  _init() {}
 
   _handleUp() {
     const videoId = Math.floor(Math.random() * 300000) + 800000
@@ -42,6 +63,6 @@ export default class Browse extends Lightning.Component {
   }
 
   pageTransition() {
-    return 'fade'
+    return 'up'
   }
 }

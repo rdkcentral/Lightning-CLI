@@ -6,25 +6,23 @@ export default class Boot extends Lightning.Component {
       rect: true,
       w: 1920,
       h: 1080,
-      color: 0xff4c87b4,
-      Label: {
+      color: 0xffff6b00,
+      Header: {
+        mount: 0.5,
         x: 960,
         y: 540,
-        mount: 0.5,
         text: {
-          text: ' - Boot page - ',
+          text: 'Boot Page',
+          fontFace: 'Bold',
+          fontSize: 128,
         },
       },
-      Explanation: {
-        x: 960,
-        y: 630,
-        mount: 0.5,
-        alpha: 0.5,
-        text: {
-          fontSize: 27,
-          textAlign: 'center',
-          lineHeight: 35,
-          text: 'Press enter to Resume to link / deeplink',
+      Arrows: {
+        Enter: {
+          mountX: 0.5,
+          x: 960,
+          y: 980,
+          text: { text: 'press [enter] to resume to link / deeplink', fontFace: 'Regular' },
         },
       },
     }
