@@ -16,18 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Copyright (c) Antoine Boulanger (https://github.com/antoineboulanger)
- * Licensed under the ISC License
  */
-
-const babel = require('@babel/core')
-const fs = require('fs')
-const path = require('path')
 
 /**
  * Copyright (c) Antoine Boulanger (https://github.com/antoineboulanger)
  * Licensed under the ISC License
  */
+const babel = require('@babel/core')
+const fs = require('fs')
+const path = require('path')
+
 const pluginBabel = (options = {}) => ({
   name: 'babel',
   setup(build, { transform } = {}) {
