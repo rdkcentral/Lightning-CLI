@@ -22,4 +22,6 @@ and regenerated.
 By default, the `lng dist` command generates an *es6*-compatible appBundle. Optionally, you can generate an *es5* version of the App,
 by passing `--es5` as an option as shown below:
 
-`lng dist --es5`
+```bash
+lng dist --es5
+```

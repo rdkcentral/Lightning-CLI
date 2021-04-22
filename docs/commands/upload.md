@@ -1,6 +1,6 @@
 # Upload
 
-*Upload the Lightning App to the Metrological Dashboard, so that it can be published to the operator's App Store*
+*Upload the Lightning App to the Metrological Dashboard, so that it can be published to an operator's App Store*
 
 ```bash
 lng upload
@@ -9,7 +9,7 @@ lng upload
 > Run this command from the root folder of your Lightning App.
 
 When you have finished developing your App, you can upload your App to the Metrological Dashboard,
-so it can be published to the operator s App Store.
+so it can be published to an operator s App Store.
 
 > You need to create an account to be able to upload Apps to the [Metrological Dashboard](http://dashboard.metrological.com/).
 
