@@ -222,7 +222,7 @@ const gitInit = cwd => {
     .then(({ stdout }) => (msg = stdout))
     .then(() => {
       return fs.copyFileSync(
-        path.join(__dirname, '../../fixtures/git/.gitignore'),
+        path.join(__dirname, '../../fixtures/git/gitignore'),
         path.join(cwd, '.gitignore')
       )
     })

@@ -36,6 +36,7 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@rollup/plugin-virtual": "^2.0.3",
+    "babel-plugin-inline-json-import": "^0.3.2",
     "axios": "^0.20.0",
     "chalk": "^4.1.0",
     "commander": "^6.1.0 ",
