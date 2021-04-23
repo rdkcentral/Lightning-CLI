@@ -102,7 +102,7 @@ const checkForUpdate = () => {
             console.log(' ')
           })
           .catch(e => {
-            spinner.fail()
+            spinner.fail('Error occurred while updating cli')
             console.log(e)
             console.log(' ')
             console.log(' ')
@@ -118,7 +118,7 @@ const checkForUpdate = () => {
       }
     })
     .catch(error => {
-      spinner.fail()
+      spinner.fail('Error occurred while checking for cli update')
       console.log(error)
       console.log(' ')
     })

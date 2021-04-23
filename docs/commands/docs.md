@@ -1,14 +1,14 @@
-# Docs command
+# Docs
 
-_Open the Lightning-SDK documentation_
+*Open the Lightning SDK documentation*
 
 ```bash
 lng docs
 ```
 
-The `lng docs` command can be used whenever you need to review the _Lightning-SDK_ documentation for the App you are currently developing.
+> Run this command from the root folder of your Lightning App.
 
-It's important to realize that the _Lightning-SDK_ documentation is _version controlled_. The `lng docs` command will open
-a local webserver with the documentation matching the _exact_ SDK version the App is using.
+You can use the `lng docs` command if you need to review the *Lightning SDK* documentation for the App that you are currently developing.
 
-_**Note**: Run this command in the root folder of your Lightning App_
+It is important to realize that the *Lightning SDK* documentation is *version controlled*. The `lng docs` command will open
+a local webserver that displays the documentation matching the *exact* SDK version that your App is using.
