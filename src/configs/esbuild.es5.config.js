@@ -22,7 +22,7 @@ const alias = require('../plugins/esbuild-alias')
 const babel = require('../helpers/esbuildbabel')
 const os = require('os')
 const path = require('path')
-const dotenv = require('dotenv').config()
+const dotenv = require('dotenv')
 const babelPresetEnv = require('@babel/preset-env')
 const babelPluginTransFormSpread = require('@babel/plugin-transform-spread')
 const babelPluginTransFormParameters = require('@babel/plugin-transform-parameters')
@@ -37,7 +37,9 @@ module.exports = (folder, globalName) => {
       ? 'inline'
       : false
 
-  const appVars = buildHelpers.getEnvAppVars(dotenv.parsed)
+  // Load .env config every time build is triggered
+  const dotEnvConfig = dotenv.config()
+  const appVars = buildHelpers.getEnvAppVars(dotEnvConfig.parsed)
   const keys = Object.keys(appVars)
   const defined = keys.reduce((acc, key) => {
     acc[`process.env.${key}`] = `"${appVars[key]}"`
