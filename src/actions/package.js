@@ -38,7 +38,7 @@ const pack = (buildDir, releasesDir, metadata) => {
       return target
     })
     .catch(e => {
-      console.log(`Error occurred while creating release package. Error is ${e}`)
+      console.log(`Error occurred while creating release package\n\n${e}`)
       exit()
     })
 }

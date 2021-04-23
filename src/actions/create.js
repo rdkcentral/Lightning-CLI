@@ -27,6 +27,7 @@ const sequence = require('../helpers/sequence')
 const ask = require('../helpers/ask')
 const exit = require('../helpers/exit')
 const spinner = require('../helpers/spinner')
+const { fail } = require('../helpers/spinner')
 
 /******* Questions *******/
 
@@ -156,7 +157,7 @@ const setSdkVersion = config => {
         resolve()
       })
       .catch(e => {
-        console.log(`Error occurred while setting sdk version. Error is : ${e}`)
+        spinner.fail(`Error occurred while setting sdk version\n\n${e}`)
         reject()
       })
   })
@@ -215,7 +216,7 @@ const npmInstall = cwd => {
   spinner.start('Installing NPM dependencies')
   return execa('npm', ['install'], { cwd })
     .then(() => spinner.succeed('NPM dependencies installed'))
-    .catch(e => spinner.fail(`Error occurred while installing npm dependencies, Error is ${e}`))
+    .catch(e => spinner.fail(`Error occurred while installing npm dependencies\n\n${e}`))
 }
 
 const gitInit = cwd => {
@@ -230,7 +231,7 @@ const gitInit = cwd => {
       )
     })
     .then(() => spinner.succeed(msg))
-    .catch(e => spinner.fail(`Error occurred while creating git repository, Error is ${e}`))
+    .catch(e => spinner.fail(`Error occurred while creating git repository\n\n${e}`))
 }
 
 const install = config => {

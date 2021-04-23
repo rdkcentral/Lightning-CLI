@@ -129,7 +129,7 @@ const readJson = fileName => {
       try {
         resolve(JSON.parse(fs.readFileSync(file, 'utf8')))
       } catch (e) {
-        spinner.fail(`Error occurred while reading ${file} file`, e)
+        spinner.fail(`Error occurred while reading ${file} file\n\n${e}`)
         reject(e)
       }
     } else {
