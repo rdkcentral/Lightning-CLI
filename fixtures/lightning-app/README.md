@@ -19,7 +19,6 @@ npm install -g @lightningjs/cli
 
 3. Fire up a local webserver and open the App in a browser by running `lng serve` inside the root of your project
 
-
 #### Developing the App
 
 During development you can use the **watcher** functionality of the _Lightning-CLI_.
