@@ -49,6 +49,16 @@ You can use the following environment variables to customize the behavior of the
 
 ### Custom Environment Variables
 
+<<<<<<< HEAD
+#### `LNG_SETTINGS_ENV`
+Specifies which environment to be used. User need to have `settings.{env}.json` file in the Project home folder with different settings. This will build/dist the application with `settings.{env}.json`.
+If `settings.{env}.json` file is not found in the Project home folder, then default settings file(`settings.json`) is considered to build/dist the application.
+
+For example `LNG_SETTINGS_ENV=dev` picks up the `settings.dev.json` file(in the Project home folder) to build/dist the application
+
+Defaults to `settings.json`
+=======
 You can specify custom, app-specific environment variables to be  *injected* into your App bundle. This can be useful for specifying an API endpoint or API key, for example.
+>>>>>>> dev
 
 App-specific variables must always start with `APP_` and are referenced inside the App code as `process.env.APP_MY_VAR`.
