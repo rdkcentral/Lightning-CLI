@@ -91,7 +91,7 @@ const checkUploadFileSize = packageData => {
   const stats = fs.statSync(packageData.tgzFile)
   const fileSizeInMB = stats.size / 1000000 //convert from Bytes to MB
 
-  if (fileSizeInMB > 10) {
+  if (fileSizeInMB >= 10) {
     exit('Upload File size is greater than 10 MB. Please make sure the size is less than 10MB')
   }
   return packageData
