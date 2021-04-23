@@ -31,6 +31,7 @@ module.exports = types => {
   const dist = type => {
     let distDir
     return sequence([
+      () => buildHelpers.ensureLightningApp(),
       () => distHelpers.moveOldDistFolderToBuildFolder(),
       () => buildHelpers.ensureCorrectGitIgnore(),
       () => buildHelpers.readMetadata().then(result => (metadata = result)),

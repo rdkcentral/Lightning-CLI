@@ -46,7 +46,7 @@ const login = key => {
         spinner.succeed()
         return user
       }
-      exit('Unexepected authentication error')
+      exit('Unexpected authentication error')
     })
     .catch(err => {
       exit('Incorrect API key or not logged in to metrological dashboard')
@@ -90,6 +90,7 @@ const upload = (packageData, user) => {
 module.exports = () => {
   let user
   return sequence([
+    () => buildHelpers.ensureLightningApp(),
     () => buildHelpers.ensureCorrectGitIgnore(),
     // todo: save API key locally for future use and set it as default answer
     () => ask('Please provide your API key'),

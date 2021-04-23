@@ -29,6 +29,7 @@ module.exports = (clear = false, change = null) => {
   let settings
 
   return sequence([
+    () => buildHelpers.ensureLightningApp(),
     () => clear && buildHelpers.ensureCorrectGitIgnore(),
     () => clear && buildHelpers.ensureCorrectSdkDependency(),
     () => clear && buildHelpers.removeFolder(targetDir),
