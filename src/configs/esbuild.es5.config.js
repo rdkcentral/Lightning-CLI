@@ -2,7 +2,7 @@
  * If not stated otherwise in this file or this component's LICENSE file the
  * following copyright and licenses apply:
  *
- * Copyright 2020 RDK Management
+ * Copyright 2020 Metrological
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,6 @@ module.exports = (folder, globalName) => {
     acc[`process.env.${key}`] = `"${appVars[key]}"`
     return acc
   }, {})
-  // for process.env.NODE_ENV
   defined['process.env.NODE_ENV'] = `"${process.env.NODE_ENV}"`
 
   return {
