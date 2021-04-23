@@ -37,6 +37,8 @@ module.exports = (folder, globalName) => {
     acc[`process.env.${key}`] = `"${appVars[key]}"`
     return acc
   }, {})
+  // for process.env.NODE_ENV
+  defined['process.env.NODE_ENV'] = `"${process.env.NODE_ENV}"`
 
   return {
     plugins: [
