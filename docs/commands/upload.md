@@ -1,17 +1,16 @@
-# Upload command
+# Upload
 
-_Upload the Lightning App to the Metrological Back Office to be published in an App Store_
+*Upload the Lightning App to the Metrological Dashboard, so that it can be published to an operator's App Store*
 
 ```bash
 lng upload
 ```
 
-When you're finished developing your App you can choose to upload your App to the Metrological Back Office
-so it can be published to an operators App Store.
+> Run this command from the root folder of your Lightning App.
 
-_Note: you will need to create an account to upload Apps to the Metrological Back Office (http://dashboard.metrological.com/)_
+When you have finished developing your App, you can upload your App to the Metrological Dashboard,
+so it can be published to an operator s App Store.
 
-The `lng upload` command takes care of the entire process of uploading. It will ask you for a valid API-key in order
-to authenticate your account. It will then build and bundle up your App and upload it to the Metrological Back Office.
+> You need to create an account to be able to upload Apps to the [Metrological Dashboard](http://dashboard.metrological.com/).
 
-_**Note**: Run this command in the root folder of your Lightning App_
+The `lng upload` command takes care of the *entire* uploading process. It prompts you for a valid *API key* to authenticate your account. It will then build and bundle up your App and upload it to the Metrological Dashboard.

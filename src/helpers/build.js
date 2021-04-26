@@ -2,7 +2,7 @@
  * If not stated otherwise in this file or this component's LICENSE file the
  * following copyright and licenses apply:
  *
- * Copyright 2020 RDK Management
+ * Copyright 2020 Metrological
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ const os = require('os')
 const esbuild = require('esbuild')
 const spinner = require('./spinner')
 const isLocallyInstalled = require('./localinstallationcheck')
+const exit = require('./exit')
 
 const removeFolder = folder => {
   spinner.start('Removing "' + folder.split('/').pop() + '" folder')
@@ -89,14 +90,16 @@ const copySrcFolder = folder => {
   shell.cp('-r', './src', folder)
 }
 
-const copySettings = folder => {
-  const file = path.join(process.cwd(), 'settings.json')
+const copySettings = (settingsFile = 'settings.json', folder) => {
+  const file = path.join(process.cwd(), settingsFile)
   if (fs.existsSync(file)) {
-    spinner.start('Copying settings.json to "' + folder.split('/').pop() + '"')
-    shell.cp(file, folder)
+    spinner.start(`Copying ${settingsFile} to "${folder.split('/').pop()}"`)
+    shell.cp(file, folder + '/settings.json')
     spinner.succeed()
   } else {
-    spinner.fail()
+    spinner.warn(
+      `Settings file not found at the ${process.cwd()}, so switching to default settings file`
+    )
   }
 }
 
@@ -107,7 +110,7 @@ const copyMetadata = folder => {
     shell.cp(file, folder)
     spinner.succeed()
   } else {
-    spinner.fail()
+    spinner.warn(`Metadata file not found at the ${process.cwd()}`)
   }
 }
 
@@ -115,8 +118,8 @@ const readMetadata = () => {
   return readJson('metadata.json')
 }
 
-const readSettings = () => {
-  return readJson('settings.json')
+const readSettings = (settingsFileName = 'settings.json') => {
+  return readJson(settingsFileName)
 }
 
 const readJson = fileName => {
@@ -126,9 +129,11 @@ const readJson = fileName => {
       try {
         resolve(JSON.parse(fs.readFileSync(file, 'utf8')))
       } catch (e) {
+        spinner.fail(`Error occurred while reading ${file} file\n\n${e}`)
         reject(e)
       }
     } else {
+      spinner.fail(`File not found error occurred while reading ${file} file`)
       reject('"' + fileName + '" not found')
     }
   })
@@ -247,7 +252,6 @@ const ensureCorrectGitIgnore = () => {
 
 const ensureCorrectSdkDependency = () => {
   const packageJsonPath = path.join(process.cwd(), 'package.json')
-  if (!fs.existsSync(packageJsonPath)) return true
   const packageJson = require(packageJsonPath)
   // check if package.json has old WebPlatformForEmbedded sdk dependency
   if (
@@ -329,6 +333,41 @@ const hasNewSDK = () => {
   const dependencies = Object.keys(require(path.join(process.cwd(), 'package.json')).dependencies)
   return dependencies.indexOf('@lightningjs/sdk') > -1
 }
+const ensureLightningApp = () => {
+  return new Promise(resolve => {
+    const packageJsonPath = path.join(process.cwd(), 'package.json')
+    if (!fs.existsSync(packageJsonPath)) {
+      exit(`Package.json is not available at ${process.cwd()}. Build process cannot be proceeded`)
+    }
+    const packageJson = require(packageJsonPath)
+    if (
+      packageJson.dependencies &&
+      (Object.keys(packageJson.dependencies).indexOf('wpe-lightning-sdk') > -1 ||
+        Object.keys(packageJson.dependencies).indexOf('@lightningjs/sdk') > -1)
+    ) {
+      resolve()
+    } else {
+      exit('Please make sure you are running the command in the Application directory')
+    }
+  })
+}
+
+const getSettingsFileName = () => {
+  let settingsFileName = 'settings.json'
+  if (process.env.LNG_SETTINGS_ENV) {
+    const envSettingsFileName = `settings.${process.env.LNG_SETTINGS_ENV}.json`
+    if (fs.existsSync(path.join(process.cwd(), envSettingsFileName))) {
+      settingsFileName = envSettingsFileName
+    } else {
+      spinner.fail(
+        chalk.red(
+          `Settings file ${envSettingsFileName} not available in project home, hence switching to default settings`
+        )
+      )
+    }
+  }
+  return settingsFileName
+}
 
 module.exports = {
   removeFolder,
@@ -351,4 +390,6 @@ module.exports = {
   bundlePolyfills,
   makeSafeAppId,
   hasNewSDK,
+  ensureLightningApp,
+  getSettingsFileName,
 }

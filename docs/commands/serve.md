@@ -1,13 +1,13 @@
-# Serve command
+# Serve
 
-_Start a local webserver and run a built Lightning App in a web browser_
+*Start a local webserver and run a built Lightning App in a web browser*
 
 ```bash
 lng serve
 ```
 
-The `lng serve` command starts a local webserver and runs an App built with the `lng build` command from the `build` folder.
+> Run this command from the root folder of your Lightning App.
 
-By default the local webserver launches on the next available port starting at `8080` and opens a browser window with your App.
+The `lng serve` command starts a local webserver and runs an App (that was built with the `lng build` command) from the **build** folder.
 
-_**Note**: Run this command in the root folder of your Lightning App_
+By default, the local webserver launches at the next available port –starting at 8080– and opens your App in a new browser window.

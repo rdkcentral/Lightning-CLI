@@ -2,7 +2,7 @@
  * If not stated otherwise in this file or this component's LICENSE file the
  * following copyright and licenses apply:
  *
- * Copyright 2020 RDK Management
+ * Copyright 2020 Metrological
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,22 @@
 
 const watch = require('./watch')
 const serve = require('./serve')
+const sequence = require('../helpers/sequence')
+const buildHelpers = require('../helpers/build')
 
 module.exports = () => {
-  watch(serve, () => {
-    // fixme: reload webbrowser automatically
-    console.log('')
-    console.log('Reload your webbrowser to see the changes')
-    console.log('')
-  })
+  return sequence([
+    () => buildHelpers.ensureLightningApp(),
+    () => {
+      watch(serve, () => {
+        console.log('')
+        if (process.env.LNG_LIVE_RELOAD === 'true') {
+          console.log('Navigate to web browser to see the changes')
+        } else {
+          console.log('Reload your web browser to see the changes')
+        }
+        console.log('')
+      })
+    },
+  ])
 }

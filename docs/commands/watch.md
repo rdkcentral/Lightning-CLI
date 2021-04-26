@@ -1,22 +1,24 @@
-# Watch command
+# Watch
 
-_Watch for file changes and automatically rebuild the App_
+*Watch for file changes and automatically rebuild the App*
 
 ```bash
 lng watch
 ```
 
-Whenever you make a change to an App's source code, you have to _rebuild_ the App (using `lng build`).
-This can become a cumbersome process, not to mention easy to forget.
+> Run this command from the root folder of your Lightning App.
 
-The `lng watch` command automates this for you, by initiating a _watcher_ that keeps track of file changes
-and triggers a rebuild upon every change.
+If you make a change to the source code of your App, you have to *rebuild* the App (using `lng build`).
+This can become a cumbersome process and is easily forgotten.
 
-The command watches the `src` folder, the `static` folder, `settings.json` and `metadata.json`. The Lightning-CLI intelligently
-generates a new build depending on what has changed.
+The `lng watch` command performs an automatic build, by initiating a *watcher* that keeps track of any file changes
+and that triggers a rebuild for every change.
 
-If you make changes outside any of these files and folders, you will have to manually rebuild your App.
+The command watches the **src** and **static** folders and the **settings.json** and **metadata.json** files.
 
-Note that the `lng watch` command _doesn't_ automatically _hot reload_ the App. You will still have to refresh the browser to see the latest changes.
+The Lightning CLI intelligently
+generates a new build, depending on what has changed.
 
-_**Note**: Run this command in the root folder of your Lightning App_
+If you make changes *outside* the files and folders mentioned above, you have to rebuild your App manually.
+
+> The `lng watch` command does *not* automatically *hot reload* your App. You still have to refresh the browser to see the latest changes.

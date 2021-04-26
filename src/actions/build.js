@@ -2,7 +2,7 @@
  * If not stated otherwise in this file or this component's LICENSE file the
  * following copyright and licenses apply:
  *
- * Copyright 2020 RDK Management
+ * Copyright 2020 Metrological
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -18,26 +18,29 @@
  */
 
 const path = require('path')
-
 const sequence = require('../helpers/sequence')
 const buildHelpers = require('../helpers/build')
 
 module.exports = (clear = false, change = null) => {
   const targetDir = path.join(process.cwd(), process.env.LNG_BUILD_FOLDER || 'build')
 
+  let settingsFileName = buildHelpers.getSettingsFileName()
   let metadata
   let settings
+
   return sequence([
+    () => buildHelpers.ensureLightningApp(),
     () => clear && buildHelpers.ensureCorrectGitIgnore(),
     () => clear && buildHelpers.ensureCorrectSdkDependency(),
     () => clear && buildHelpers.removeFolder(targetDir),
     () => buildHelpers.ensureFolderExists(targetDir),
     () => clear && buildHelpers.copySupportFiles(targetDir),
     () => (clear || change === 'static') && buildHelpers.copyStaticFolder(targetDir),
-    () => (clear || change === 'settings') && buildHelpers.copySettings(targetDir),
+    () =>
+      (clear || change === 'settings') && buildHelpers.copySettings(settingsFileName, targetDir),
     () => (clear || change === 'metadata') && buildHelpers.copyMetadata(targetDir),
     () => buildHelpers.readMetadata().then(result => (metadata = result)),
-    () => buildHelpers.readSettings().then(result => (settings = result)),
+    () => buildHelpers.readSettings(settingsFileName).then(result => (settings = result)),
     () =>
       (clear || change === 'src') &&
       (settings.platformSettings.esEnv || 'es6') === 'es6' &&

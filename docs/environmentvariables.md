@@ -1,23 +1,25 @@
-# Environment variables
+# Environment Variables
 
-The Lightning-CLI accepts 3 types of _environment variables_:
+The Lightning CLI accepts three types of *environment variables*, which are:
 
-- `NODE_ENV`
-- a predefined set to customize behavior of certain CLI commands (e.g. on which `port` to open `lng serve`)
-- custom variables that are injected into the App (e.g. an API key)
+* `NODE_ENV`
+* A predefined set of environment variables that *customize the behavior* of CLI commands (for example, by changing the port on which to open `lng serve`)
+* Custom, app-specific variables to be injected into your App (for example, an API key)
 
-Environment variables can be passed via the command prompt before calling a command:
+You can pass environment variables via the command prompt before calling a command, or you can specify them in the **.env** file.
+
+Example of passing environment variables via the *command prompt*:
 
 ```bash
 NODE_ENV=staging LNG_SERVE_PORT=3333 lng serve
 ```
 
-_This will start a server on `port 3333` and the value of `process.env.NODE_ENV` (accesible from within an app) will be set to `staging`_.
+This starts a server on *port 3333* and sets the value of `process.env.NODE_ENV` (accessible from inside you App) to 'staging'.
 
-It's also possible to specify multiple environment variables in a `.env` file:
+Example of specifying environment variables in the **.env** file:
 
 ```
-NOD_ENV=production
+NODE_ENV=production
 
 LNG_SERVE_OPEN=false
 LNG_SERVE_PORT=1234
@@ -25,56 +27,33 @@ LNG_SERVE_PORT=1234
 APP_API_KEY=mysecretapikey
 ```
 
+## Types of Environment Variables
+
 ### NODE_ENV
 
-`NODE_ENV` is an environment variable used by several external libraries. `NODE_ENV` is made available in your app code as `process.env.NODE_ENV`.
+The environment variable `NODE_ENV` is used by several external libraries. You can also reference to this environment variable in your App code as `process.env.NODE_ENV`.
 
-### Behavior environment variables
+### Behavior Environment Variables
 
-The following environment variables are available to customize the behavior of the Lightning-CLI:
+You can use the following environment variables to customize the behavior of the Lightning CLI:
 
-#### `LNG_SERVE_OPEN`
-Whether or not the Lightning-CLI should open a browser window when running `lng serve` (or `lng dev`). Possible values: `true` or `false`, defaults to `true`
+| Name | Default | Description |
+|---|---|---|
+| `LNG_SERVE_OPEN` | true | Indicates whether or not the Lightning CLI opens a browser window when running `lng serve` or `lng dev`. Possible values: `true`, `false`. |
+| `LNG_SERVE_PORT` | auto-incrementing, start at '8080' | Specifies on which port the Lightning CLI must serve when running `lng serve` or `lng dev`. Auto-incrementing and starting port (see Default) depend on available ports. |
+| `LNG_SERVE_PROXY` | (N.A.) | Proxies all requests that cannot be resolved locally to the given URL. |
+| `LNG_BUILD_SOURCEMAP` | true | Instructs the Lightning CLI whether or not and if so, *how* to generate sourcemaps. Possible values: `true`, `false`, `inline`. The value `true` generates the sourcemaps in a separate file (**appBundle.js.map**). The value `inline` appends the sourcemaps to the **appBundle.js** itself as a data URI. |
+| `LNG_BUILD_FOLDER` | build | Specifies the folder in which the built App (using `lng build`) will be generated. |
+| `LNG_DIST_FOLDER` | dist | Specifies the folder in which the standalone, distributable App (using `lng dist`) will be generated. |
+| `LNG_AUTO_UPDATE` | true | Indicates whether or not the Lightning CLI should automatically update ('auto update'). Possible values: `true`, `false`. **Note**: It is recommended to keep auto updates enabled. |
 
-#### `LNG_SERVE_PORT`
+#### `LNG_SETTINGS_ENV`
+Specifies which environment to be used. User need to have `settings.{env}.json` file in the Project home folder with different settings. This will build/dist the application with `settings.{env}.json`.
+If `settings.{env}.json` file is not found in the Project home folder, then default settings file(`settings.json`) is considered to build/dist the application.
 
-On which port the Lightning-CLI should serve when running `lng serve` (or `lng dev`). Defaults to auto incrementing depending on available ports, starting at `8080`
+For example `LNG_SETTINGS_ENV=dev` picks up the `settings.dev.json` file(in the Project home folder) to build/dist the application
 
-#### `LNG_SERVE_PROXY`
+Defaults to `settings.json`
+You can specify custom, app-specific environment variables to be  *injected* into your App bundle. This can be useful for specifying an API endpoint or API key, for example.
 
-Proxies all requests which can't be resolved locally to the given url.
-
-#### `LNG_BUILD_SOURCEMAP`
-
-Instructs the Lightning-CLI whether and how to generate sourcemaps. Possible values: `true`, `false` or `inline`. Defaults to `true`
-
-`true` will generate the sourcemaps in a separate file (`appBundle.js.map`). `inline` will append the sourcemaps to the `appBundle.js` itself as a data URI.
-
-#### `LNG_BUILD_FOLDER`
-
-In which folder the built App (using `lng build`) should be generated. Defaults to `build`
-
-#### `LNG_DIST_FOLDER`
-
-In which folder the standalone, distributable App (using `lng dist`) should be generated. Defaults to `dist`
-
-#### `LNG_AUTO_UPDATE`
-
-Whether or not the Lightning CLI should auto update. Possible values: `true` or `false`, defaults to `true`. **Note**: it's recommended to keep auto updates enabled.
-
-#### `LNG_LIVE_RELOAD`
-
-Instructs your browser to reload the location when a new app bundle is created (using `lng dev`). When the watcher resolves,
-`document.location.reload()` is called in the browser (tab) that serves your app. Possible value: `true` or `false`. Defaults to `false`
-
-#### `LNG_LIVE_RELOAD_PORT`
-
-Live reload communication is driven by WebSockets. `LNG_LIVE_RELOAD_PORT` let's you specify the port it's listening on. Defaults to `8888`
-
-#### `LNG_BUNDLER`
-Specifies which bundler to use. Possible values `esbuild` or `rollup`, defaults to `rollup`
-
-
-### Custom App environment variables
-You can specify custom environment variables that will be _injected_ into your App bundle. This can be useful for specifying an API endpoint or API key.
-App specific variables should always start with `APP_` and will then be made available inside the App code as `process.env.APP_MY_VAR`.
+App-specific variables must always start with `APP_` and are referenced inside the App code as `process.env.APP_MY_VAR`.
