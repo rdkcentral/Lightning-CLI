@@ -1,22 +1,27 @@
-# Dist command
+# Dist
 
-_Create a standalone, distributable version of the Lightning App_
+*Create a standalone, distributable version of the Lightning App*
 
 ```bash
 lng dist
 ```
 
-The `lng dist` command is used to build a _standalone, distributable_ version of your App that can either be run
-locally (by starting your own local server) or uploaded to a webserver.
+> Run this command from the root folder of your Lightning App.
 
-The first time you run this command it will generate the necessary folder structure and files (in the `dist-`folder),
-and it will copy the settings from your `settings.json` into the `index.html`.
+The `lng dist` command is used to build a *standalone, distributable* version of your App that can either be run
+locally (by starting your own local server) or that can be uploaded to a webserver.
 
-Once created it's safe to make your own customizations to `index.html`. The `appBundle.js` and the `static`-folder are purged
-and regenerated everytime you run `lng dist`.
+The first time you run this command, it generates the required folder structure and files (in the **dist** folder),
+and copies the settings from your **settings.json** file into the **index.html** file.
 
-By default the `lng dist` command generates an _ES6_ compatible appBundle. Optionally you can generate an _ES5_ version of the App,
-by passing `--es5` as an option (`lng dist --es5`).
+After that, you can make your own customizations to **index.html**.
 
+Each time that you run `lng dist`, the **appBundle.js** and the **static** folders are purged
+and regenerated.
 
-_**Note**: Run this command in the root folder of your Lightning App_
+By default, the `lng dist` command generates an *es6*-compatible appBundle. Optionally, you can generate an *es5* version of the App,
+by passing `--es5` as an option as shown below:
+
+```bash
+lng dist --es5
+```
