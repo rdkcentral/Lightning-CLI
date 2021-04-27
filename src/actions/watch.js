@@ -2,7 +2,7 @@
  * If not stated otherwise in this file or this component's LICENSE file the
  * following copyright and licenses apply:
  *
- * Copyright 2020 RDK Management
+ * Copyright 2020 Metrological
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,10 @@ const watch = require('watch')
 const exit = require('../helpers/exit')
 const WebSocket = require('ws')
 const chalk = require('chalk')
+const buildHelpers = require('../helpers/build')
 
-const regexp = /^(?!src|static|settings\.json|metadata\.json)(.+)$/
+const settingsFileName = buildHelpers.getSettingsFileName() //Get settings file name
+const regexp = new RegExp(`^(?!src|static|${settingsFileName}|metadata.json)(.+)$`)
 
 let initCallbackProcess
 let wss
@@ -89,7 +91,7 @@ module.exports = (initCallback, watchCallback) => {
         if (f === 'metadata.json') {
           change = 'metadata'
         }
-        if (f === 'settings.json') {
+        if (f === settingsFileName) {
           change = 'settings'
         }
 

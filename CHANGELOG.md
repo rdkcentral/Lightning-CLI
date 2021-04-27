@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.5.0
+
+*23 apr 2021*
+
+- Updated CLI documentation
+- Added es5 support for esbuild bundler
+- Added support for different `settings.json`-files per environment
+- Improved error messages
+- Fixed missing `.gitignore`-file when creating new project with GIT options selected
+- Fixed App specific environment variables not repopulating between builds in esbuild bundler
+- Fixed version not showing in VersionLabel for dist version of App
+- Added warning when upload package too large
+
 ## v2.2.0
 
 *6 nov 2020*

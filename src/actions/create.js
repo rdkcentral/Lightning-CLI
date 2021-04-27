@@ -2,7 +2,7 @@
  * If not stated otherwise in this file or this component's LICENSE file the
  * following copyright and licenses apply:
  *
- * Copyright 2020 RDK Management
+ * Copyright 2020 Metrological
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ const sequence = require('../helpers/sequence')
 const ask = require('../helpers/ask')
 const exit = require('../helpers/exit')
 const spinner = require('../helpers/spinner')
+const { fail } = require('../helpers/spinner')
 
 /******* Questions *******/
 
@@ -104,7 +105,7 @@ const validateAppId = appId => {
 
 const validateAppName = appName => {
   if (!appName) {
-    exit('Please provide an app ID')
+    exit('Please provide an app Name')
   }
   // todo: add possible pre-processing
   return appName
@@ -155,7 +156,10 @@ const setSdkVersion = config => {
         })
         resolve()
       })
-      .catch(reject)
+      .catch(e => {
+        spinner.fail(`Error occurred while setting sdk version\n\n${e}`)
+        reject()
+      })
   })
 }
 
@@ -212,7 +216,7 @@ const npmInstall = cwd => {
   spinner.start('Installing NPM dependencies')
   return execa('npm', ['install'], { cwd })
     .then(() => spinner.succeed('NPM dependencies installed'))
-    .catch(e => spinner.fail(e))
+    .catch(e => spinner.fail(`Error occurred while installing npm dependencies\n\n${e}`))
 }
 
 const gitInit = cwd => {
@@ -222,12 +226,12 @@ const gitInit = cwd => {
     .then(({ stdout }) => (msg = stdout))
     .then(() => {
       return fs.copyFileSync(
-        path.join(__dirname, '../../fixtures/git/.gitignore'),
+        path.join(__dirname, '../../fixtures/git/gitignore'),
         path.join(cwd, '.gitignore')
       )
     })
     .then(() => spinner.succeed(msg))
-    .catch(e => spinner.fail(e))
+    .catch(e => spinner.fail(`Error occurred while creating git repository\n\n${e}`))
 }
 
 const install = config => {

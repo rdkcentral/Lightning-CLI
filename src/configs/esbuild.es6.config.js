@@ -2,7 +2,7 @@
  * If not stated otherwise in this file or this component's LICENSE file the
  * following copyright and licenses apply:
  *
- * Copyright 2020 RDK Management
+ * Copyright 2020 Metrological
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ const buildHelpers = require('../helpers/build')
 const os = require('os')
 const alias = require('../plugins/esbuild-alias')
 const path = require('path')
-const dotenv = require('dotenv').config()
+const dotenv = require('dotenv')
 
 module.exports = (folder, globalName) => {
   const sourcemap =
@@ -31,7 +31,9 @@ module.exports = (folder, globalName) => {
       ? 'inline'
       : false
 
-  const appVars = buildHelpers.getEnvAppVars(dotenv.parsed)
+  //Load .env config every time build is triggered
+  const dotEnvConfig = dotenv.config()
+  const appVars = buildHelpers.getEnvAppVars(dotEnvConfig.parsed)
   const keys = Object.keys(appVars)
   const defined = keys.reduce((acc, key) => {
     acc[`process.env.${key}`] = `"${appVars[key]}"`
@@ -53,6 +55,7 @@ module.exports = (folder, globalName) => {
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
     outfile: `${folder}/appBundle.js`,
+    mainFields: ['module', 'main', 'browser'],
     minifyWhitespace: true,
     sourcemap,
     format: 'iife',

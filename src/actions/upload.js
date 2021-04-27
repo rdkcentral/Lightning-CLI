@@ -2,7 +2,7 @@
  * If not stated otherwise in this file or this component's LICENSE file the
  * following copyright and licenses apply:
  *
- * Copyright 2020 RDK Management
+ * Copyright 2020 Metrological
  *
  * Licensed under the Apache License, Version 2.0 (the License);
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ const login = key => {
         spinner.succeed()
         return user
       }
-      exit('Unexepected authentication error')
+      exit('Unexpected authentication error')
     })
     .catch(err => {
       exit('Incorrect API key or not logged in to metrological dashboard')
@@ -87,14 +87,26 @@ const upload = (packageData, user) => {
     })
 }
 
+const checkUploadFileSize = packageData => {
+  const stats = fs.statSync(packageData.tgzFile)
+  const fileSizeInMB = stats.size / 1000000 //convert from Bytes to MB
+
+  if (fileSizeInMB >= 10) {
+    exit('Upload File size is greater than 10 MB. Please make sure the size is less than 10MB')
+  }
+  return packageData
+}
+
 module.exports = () => {
   let user
   return sequence([
+    () => buildHelpers.ensureLightningApp(),
     () => buildHelpers.ensureCorrectGitIgnore(),
     // todo: save API key locally for future use and set it as default answer
     () => ask('Please provide your API key'),
     apiKey => login(apiKey).then(usr => ((user = usr), (usr.apiKey = apiKey))),
     () => packageAction(),
+    packageData => checkUploadFileSize(packageData),
     packageData => upload(packageData, user),
   ])
 }
