@@ -2,7 +2,7 @@
 
 ## v2.5.1
 
-*39 jun 2021*
+*29 jun 2021*
 
 - Fixes dynamic imports in rollup created bundle
 
