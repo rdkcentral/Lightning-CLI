@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 const path = require('path')
 const fs = require('fs')
 const sequence = require('../helpers/sequence')
@@ -66,6 +66,8 @@ module.exports = types => {
       .then(function() {
         return dist(type)
       })
-      .catch(Promise.reject)
+      .catch(() => {
+        process.exit(1)
+      })
   }, Promise.resolve(null))
 }

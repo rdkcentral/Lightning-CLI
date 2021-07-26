@@ -168,7 +168,7 @@ const buildAppEsBuild = async (folder, metadata, type) => {
     return metadata
   } catch (e) {
     spinner.fail(`Error while creating ${type.toUpperCase()} bundle using [esbuild] (see log)`)
-    console.log(e.stderr)
+    console.error(e.stderr)
     throw Error(e)
   }
 }
@@ -197,7 +197,7 @@ const bundleAppRollup = (folder, metadata, type, options) => {
     })
     .catch(e => {
       spinner.fail(`Error while creating ${type.toUpperCase()} bundle (see log)`)
-      console.log(e.stderr)
+      console.error(e.stderr)
       throw Error(e)
     })
 }
