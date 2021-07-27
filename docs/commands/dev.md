@@ -1,17 +1,17 @@
-# Dev command
+# Dev
 
-_Build a local Lightning App, start a local webserver, run a built Lightning App in a web browser and watch for changes_
+*Build a local Lightning App, start a local webserver, run a built Lightning App in a web browser and watch for changes*
 
 ```bash
 lng dev
 ```
 
-The `lng dev` command combines three Lightning-CLI commands into one, making it the most convenient command to use during development.
+> Run this command from the root folder of your Lightning App.
 
-Running `lng dev`:
-- first _builds_ your Lightning App (i.e. `lng build`)
-- then starts a local _webserver_ and _opens_ it in a web browser (i.e. `lng serve`)
-- finally it will also initiate a _watcher_ for any file changes and automatically _rebuild_ the App upon each change (i.e. `lng watch`)
+The `lng dev` command combines *three* Lightning CLI commands into *one*, making it the *most convenient* command to use during development.
 
-_**Note**: Run this command in the root folder of your Lightning App_
+The command `lng dev` performs the following actions subsequently:
 
+1. Build your Lightning App (see `[lng build](build.md)`)
+2. Start a local webserver and open it in a web browser (see `[lng serve](serve.md)`)
+3. Initiate a *watcher* for any file changes and automatically *rebuild* the App upon each change (see `[lng watch](watch.md)`)

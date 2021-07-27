@@ -34,6 +34,7 @@ module.exports = options => {
 
     let distDir
     return sequence([
+      () => buildHelpers.ensureLightningApp(),
       () => distHelpers.moveOldDistFolderToBuildFolder(),
       () => buildHelpers.ensureCorrectGitIgnore(),
       () => buildHelpers.readMetadata().then(result => (metadata = result)),
