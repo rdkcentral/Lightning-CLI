@@ -51,6 +51,7 @@ module.exports = (folder, globalName) => {
       alias([
         { find: '@', filter: /@\//, replace: path.resolve(process.cwd(), 'src/') },
         { find: '~', filter: /~\//, replace: path.resolve(process.cwd(), 'node_modules/') },
+        { find: '@lightningjs/core', filter: /^@lightningjs\/core$/, replace: path.join(__dirname, '../alias/lightningjs-core.js'),},
         {
           find: 'wpe-lightning',
           filter: /^wpe-lightning$/,
@@ -81,6 +82,7 @@ module.exports = (folder, globalName) => {
         },
       }),
     ],
+    minify:true,
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
     target: 'es5',
