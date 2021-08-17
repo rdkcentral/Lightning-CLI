@@ -52,6 +52,7 @@ module.exports = (folder, globalName) => {
         },
       ]),
     ],
+    logLevel: 'silent',
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
     outfile: `${folder}/appBundle.js`,

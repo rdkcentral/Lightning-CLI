@@ -81,6 +81,7 @@ module.exports = (folder, globalName) => {
         },
       }),
     ],
+    logLevel: 'silent',
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
     target: 'es5',

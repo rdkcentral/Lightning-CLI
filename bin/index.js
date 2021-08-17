@@ -46,7 +46,9 @@ program
   .command('create')
   .description(['✨', ' '.repeat(3), 'Create a new Lightning App'].join(''))
   .action(() => {
-    updateCheck(true).then(() => createAction())
+    updateCheck(true)
+      .then(() => createAction())
+      .catch(console.error)
   })
 
 program
@@ -55,7 +57,9 @@ program
     ['👷‍♂️', ' '.repeat(3), 'Build a local development version of the Lightning App'].join('')
   )
   .action(() => {
-    updateCheck().then(() => buildAction(true))
+    updateCheck()
+      .then(() => buildAction(true))
+      .catch(console.error)
   })
 
 program
@@ -68,7 +72,9 @@ program
     ].join('')
   )
   .action(() => {
-    updateCheck().then(() => serveAction().catch(() => process.exit()))
+    updateCheck()
+      .then(() => serveAction())
+      .catch(console.error)
   })
 
 program
@@ -77,7 +83,12 @@ program
     ['👀', ' '.repeat(3), 'Watch for file changes and automatically rebuild the App'].join('')
   )
   .action(() => {
-    updateCheck().then(() => watchAction())
+    updateCheck()
+      .then(() => watchAction())
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
@@ -90,14 +101,21 @@ program
     ].join('')
   )
   .action(() => {
-    updateCheck().then(() => devAction())
+    updateCheck()
+      .then(() => devAction())
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
   .command('docs')
   .description(['📖', ' '.repeat(3), 'Open the Lightning-SDK documentation'].join(''))
   .action(() => {
-    updateCheck().then(() => docsAction())
+    updateCheck()
+      .then(() => docsAction())
+      .catch(console.error)
   })
 
 program
@@ -117,7 +135,9 @@ program
       .map(type => input[type] === true && type.toLocaleLowerCase())
       .filter(val => !!val)
 
-    updateCheck().then(() => distAction(selectedTypes.length ? selectedTypes : defaultTypes))
+    updateCheck()
+      .then(() => distAction(selectedTypes.length ? selectedTypes : defaultTypes))
+      .catch(console.error)
   })
 
 program
@@ -130,14 +150,18 @@ program
     ].join('')
   )
   .action(() => {
-    updateCheck(true).then(() => uploadAction())
+    updateCheck(true)
+      .then(() => uploadAction())
+      .catch(console.error)
   })
 
 program
   .command('update')
   .description(['🔄', ' '.repeat(3), 'Update the Lightning-CLI to the latest version'].join(''))
   .action(() => {
-    updateCheck(true).then(() => process.exit(1))
+    updateCheck(true)
+      .then(() => process.exit(1))
+      .catch(console.error)
   })
 
 program.on('command:*', () => {
