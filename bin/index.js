@@ -85,10 +85,7 @@ program
   .action(() => {
     updateCheck()
       .then(() => watchAction())
-      .catch(e => {
-        console.error(e)
-        process.exit(1)
-      })
+      .catch(console.error)
   })
 
 program
@@ -103,10 +100,7 @@ program
   .action(() => {
     updateCheck()
       .then(() => devAction())
-      .catch(e => {
-        console.error(e)
-        process.exit(1)
-      })
+      .catch(console.error)
   })
 
 program
