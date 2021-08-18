@@ -39,12 +39,16 @@ module.exports = (folder, globalName) => {
 
   // Load .env config every time build is triggered
   const dotEnvConfig = dotenv.config()
-  const appVars = buildHelpers.getEnvAppVars(dotEnvConfig.parsed)
+  const appVars = {
+    NODE_ENV: process.env.NODE_ENV,
+    ...buildHelpers.getEnvAppVars(dotEnvConfig.parsed)
+  }
   const keys = Object.keys(appVars)
   const defined = keys.reduce((acc, key) => {
     acc[`process.env.${key}`] = `"${appVars[key]}"`
     return acc
   }, {})
+  defined['process.env.NODE_ENV'] = `"${process.env.NODE_ENV}"`
   const minify = (process.env.LNG_BUILD_MINIFY === 'true' || process.env.NODE_ENV === 'production')
 
   return {

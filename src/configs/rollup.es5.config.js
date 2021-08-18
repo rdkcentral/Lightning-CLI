@@ -106,6 +106,7 @@ module.exports = {
   ],
   output: {
     format: 'iife',
+    inlineDynamicImports: true,
     sourcemap: true,
   },
 }
