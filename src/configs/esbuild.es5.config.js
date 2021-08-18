@@ -49,12 +49,14 @@ module.exports = (folder, globalName) => {
     return acc
   }, {})
   defined['process.env.NODE_ENV'] = `"${process.env.NODE_ENV}"`
+  const minify = (process.env.LNG_BUILD_MINIFY === 'true' || process.env.NODE_ENV === 'production')
 
   return {
     plugins: [
       alias([
         { find: '@', filter: /@\//, replace: path.resolve(process.cwd(), 'src/') },
         { find: '~', filter: /~\//, replace: path.resolve(process.cwd(), 'node_modules/') },
+        { find: '@lightningjs/core', filter: /^@lightningjs\/core$/, replace: path.join(__dirname, '../alias/lightningjs-core.js'),},
         {
           find: 'wpe-lightning',
           filter: /^wpe-lightning$/,
@@ -85,12 +87,14 @@ module.exports = (folder, globalName) => {
         },
       }),
     ],
+    minifyWhitespace: minify,
+    minifyIdentifiers: minify,
+    minifySyntax: false,
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
     target: 'es5',
     mainFields: ['module', 'main', 'browser'],
     outfile: `${folder}/appBundle.es5.js`,
-    minifyWhitespace: true,
     sourcemap,
     format: 'iife',
     define: defined,
