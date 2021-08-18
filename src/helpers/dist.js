@@ -32,8 +32,8 @@ const setupDistFolder = (folder, type, metadata) => {
 
   if (type === 'es6') {
     shell.cp(
-      path.join(nodeModulesPath, 'dist/lightning.js'),
-      path.join(folder, 'js', 'lightning.js')
+      path.join(nodeModulesPath, 'dist/lightning.min.js'),
+      path.join(folder, 'js', 'lightning.min.js')
     )
 
     shell.cp(
@@ -42,10 +42,10 @@ const setupDistFolder = (folder, type, metadata) => {
     )
   }
   if (type === 'es5') {
-    const lightningFile = path.join(nodeModulesPath, 'dist/lightning.es5.js')
+    const lightningFile = path.join(nodeModulesPath, 'dist/lightning.es5.min.js')
     // lightning es5 bundle in dist didn't exist in earlier versions (< 1.3.1)
     if (fs.existsSync(lightningFile)) {
-      shell.cp(lightningFile, path.join(folder, 'js', 'lightning.es5.js'))
+      shell.cp(lightningFile, path.join(folder, 'js', 'lightning.es5.min.js'))
     }
 
     shell.cp(
