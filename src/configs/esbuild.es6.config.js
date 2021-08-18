@@ -39,6 +39,7 @@ module.exports = (folder, globalName) => {
     acc[`process.env.${key}`] = `"${appVars[key]}"`
     return acc
   }, {})
+  const minify = (process.env.LNG_BUILD_MINIFY === 'true' || process.env.NODE_ENV === 'production')
 
   return {
     plugins: [
@@ -53,8 +54,8 @@ module.exports = (folder, globalName) => {
         { find: '~', filter: /~\//, replace: path.resolve(process.cwd(), 'node_modules/') },
       ]),
     ],
-    minifyWhitespace: true,
-    minifyIdentifiers: true,
+    minifyWhitespace: minify,
+    minifyIdentifiers: minify,
     minifySyntax: false,
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
