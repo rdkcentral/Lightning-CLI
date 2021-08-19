@@ -22,15 +22,16 @@ const fs = require('fs-extra')
 const replaceInFile = require('replace-in-file')
 const execa = require('execa')
 const chalk = require('chalk')
+const isOnline = require('is-online')
+const shell = require('shelljs')
 
 const sequence = require('../helpers/sequence')
 const ask = require('../helpers/ask')
 const exit = require('../helpers/exit')
 const spinner = require('../helpers/spinner')
-const { fail } = require('../helpers/spinner')
-const inquirer = require('inquirer')
-
-const shell = require('shelljs')
+const templateHomeDir = path.join(require('os').homedir(), '.lightning-templates')
+//TODO - Update the repo URL
+const templateRepo = 'git@github.com:sandeep-vedam/templates.git'
 
 /******* Questions *******/
 
@@ -58,24 +59,9 @@ const askAppFolder = appId =>
   ])
 
 const askTemplate = templates => {
-  // console.log('typeof templates', templates)
-  //     ask('Select the list of templates from the below list?', null, 'list', templates).then(
-  //       val => val
-  //     )
-  return inquirer
-    .prompt([
-      {
-        name: 'q',
-        message: 'Select the list of templates from the below list?',
-        default: null,
-        type: 'list',
-        choices: templates,
-      },
-    ])
-    .then(answers => {
-      console.log(answers.q)
-      return answers.q
-    })
+  return ask('Select the list of templates from the below list?', null, 'list', templates).then(
+    val => val
+  )
 }
 
 const askESlint = () =>
@@ -96,38 +82,81 @@ const askGitInit = () =>
     val => val === 'Yes'
   )
 
-const installApp = folder => {
-  let folderInstall = path.join(folder, '../lightning-apps')
-  console.log(folderInstall)
-  let repoUrl = 'git@github.com:sandeep-vedam/templates.git'
-  // console.clear()
-  shell.exec(`git clone ${repoUrl} ${folderInstall}`, { silent: true })
-}
-
-const readData = folder => {
+const createLightningTemplatesFolder = () => {
   return new Promise(resolve => {
-    let folderInstall = path.join(folder, '../lightning-apps')
-    let data = fs.readFileSync(`${folderInstall}/index.json`, 'utf8')
-    resolve(JSON.parse(data).templates)
+    fs.pathExistsSync(templateHomeDir)
+      ? resolve(templateHomeDir)
+      : resolve(fs.ensureDirSync(templateHomeDir))
   })
 }
 
-const askConfig = () => {
-  const config = {}
+const testConnection = async () => {
+  return await isOnline()
+}
+
+const gitOperations = (folder, templateRepo) => {
+  let localGitRepo = path.join(folder, '.git')
+  if (fs.pathExistsSync(localGitRepo)) {
+    const update = Math.random() < 0.8
+    if (!update) {
+      shell.exec(`cd ${folder} && git pull`)
+    }
+  } else {
+    shell.exec(`git clone ${templateRepo} ${folder}`)
+  }
+}
+
+const templateRepoDownload = async folder => {
+  gitOperations(folder, templateRepo)
+  return readDataFromTemplateIndex(folder)
+}
+
+const readDataFromTemplateIndex = folder => {
+  return new Promise(resolve => {
+    const data = JSON.parse(fs.readFileSync(`${folder}/index.json`, 'utf8'))
+    resolve(data.templates)
+  })
+}
+
+const downloadTemplateRepo = config => {
   return sequence([
+    () =>
+      createLightningTemplatesFolder().then(folder => {
+        return (config.templatesHomeFolder = folder)
+      }),
+    () =>
+      templateRepoDownload(config.templatesHomeFolder).then(templates => {
+        return (config.templates = templates)
+      }),
+  ])
+}
+
+const askConfig = async () => {
+  const config = {}
+  const isOnline = await testConnection()
+  return sequence([
+    () => {
+      if (isOnline) {
+        return downloadTemplateRepo(config)
+      } else if (
+        fs.pathExistsSync(templateHomeDir) &&
+        fs.pathExistsSync(path.join(templateHomeDir, 'index.json'))
+      ) {
+        return readDataFromTemplateIndex(templateHomeDir).then(templates => {
+          return (config.templates = templates)
+        })
+      }
+    },
     () => askAppName().then(appName => (config.appName = appName)),
     () => askAppId().then(appId => (config.appId = appId)),
     () => askAppFolder(config.appId).then(folder => (config.appFolder = folder)),
-    () => installApp(config.appFolder),
-    () =>
-      readData(config.appFolder).then(templates => {
-        console.log('Templates are', templates)
-        return (config.templates = templates)
-      }),
-    () =>
-      askTemplate(config.templates).then(
-        selectedTemplate => (config.selectedTemplate = selectedTemplate)
-      ),
+    () => {
+      if (config.templates) {
+        return askTemplate(config.templates).then(selectedTemplate => {
+          config.selectedTemplate = selectedTemplate
+        })
+      }
+    },
     () => askESlint().then(eslint => (config.eslint = eslint)),
     () => config,
   ])
@@ -168,25 +197,37 @@ const validateAppFolder = folder => {
 
 /******* Actions *******/
 
-const copyLightningFixtures = config => {
+const copyLightningFixtures = async config => {
   return new Promise(resolve => {
     const targetDir = path.join(process.cwd(), config.appFolder || '')
     if (config.appFolder && fs.pathExistsSync(targetDir)) {
       exit('The target directory ' + targetDir + ' already exists')
     }
-
-    fs.copySync(
-      path.join(config.appFolder, `../lightning-apps/${config.selectedTemplate}`),
-      targetDir
-    )
-
+    if (config.selectedTemplate) {
+      //Get index of the selected template
+      const index = config.templates.reduce((finalIndex, template, templateIndex) => {
+        if (template.name === config.selectedTemplate) {
+          finalIndex = templateIndex
+        }
+        return finalIndex
+      }, 0)
+      const localRepoSubFolder = path.join(config.templatesHomeFolder, config.templates[index].path)
+      if (config.templates[index].path) {
+        if (config.templates[index].repo) {
+          gitOperations(localRepoSubFolder, config.templates[index].repo)
+          fs.copySync(localRepoSubFolder, targetDir)
+        } else {
+          fs.copySync(localRepoSubFolder, targetDir)
+        }
+      }
+    } else {
+      spinner.warn(
+        'No templates are available to download, hence falling back to the default template'
+      )
+      fs.copySync(path.join(__dirname, '../../fixtures/lightning-app'), targetDir)
+    }
     resolve(targetDir)
   })
-}
-
-const deleteTemplateRepo = folder => {
-  let folderInstall = path.join(folder, '../lightning-apps')
-  shell.rm('-rf', folderInstall)
 }
 
 const setAppData = config => {
@@ -256,7 +297,6 @@ const createApp = config => {
   spinner.start('Creating Lightning App ' + config.appName)
   return sequence([
     () => copyLightningFixtures(config).then(targetDir => (config.targetDir = targetDir)),
-    () => deleteTemplateRepo(config.appFolder),
     () => setAppData(config),
     () => setSdkVersion(config),
     () => config.eslint && addESlint(config),
@@ -315,7 +355,7 @@ const done = config => {
   console.log('👉  Get started with the following commands:')
   console.log(' ')
   config.appFolder &&
-    console.log('   ' + chalk.grey('$') + chalk.yellow(' cd ' + chalk.underline(config.appFolder)))
+  console.log('   ' + chalk.grey('$') + chalk.yellow(' cd ' + chalk.underline(config.appFolder)))
   console.log('   ' + chalk.grey('$') + chalk.yellow(' lng build'))
   console.log('   ' + chalk.grey('$') + chalk.yellow(' lng serve'))
   console.log(' ')
