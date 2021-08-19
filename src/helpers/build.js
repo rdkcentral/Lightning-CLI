@@ -171,6 +171,7 @@ const buildAppEsBuild = async (folder, metadata, type) => {
     console.log(chalk.red('--------------------------------------------------------------'))
     console.log(chalk.italic(e.message))
     console.log(chalk.red('--------------------------------------------------------------'))
+    process.env.LNG_BUILD_EXIT_ON_FAIL && process.exit(1)
   }
 }
 
@@ -202,6 +203,7 @@ const bundleAppRollup = (folder, metadata, type, options) => {
       console.log(chalk.red('--------------------------------------------------------------'))
       console.log(chalk.italic(e.stderr))
       console.log(chalk.red('--------------------------------------------------------------'))
+      process.env.LNG_BUILD_EXIT_ON_FAIL && process.exit(1)
     })
 }
 
