@@ -48,7 +48,10 @@ program
   .action(() => {
     updateCheck(true)
       .then(() => createAction())
-      .catch(console.error)
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
@@ -59,7 +62,10 @@ program
   .action(() => {
     updateCheck()
       .then(() => buildAction(true))
-      .catch(console.error)
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
@@ -74,7 +80,10 @@ program
   .action(() => {
     updateCheck()
       .then(() => serveAction())
-      .catch(console.error)
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
@@ -85,7 +94,10 @@ program
   .action(() => {
     updateCheck()
       .then(() => watchAction())
-      .catch(console.error)
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
@@ -100,7 +112,10 @@ program
   .action(() => {
     updateCheck()
       .then(() => devAction())
-      .catch(console.error)
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
@@ -109,7 +124,10 @@ program
   .action(() => {
     updateCheck()
       .then(() => docsAction())
-      .catch(console.error)
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
@@ -131,7 +149,10 @@ program
 
     updateCheck()
       .then(() => distAction(selectedTypes.length ? selectedTypes : defaultTypes))
-      .catch(console.error)
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
@@ -146,7 +167,10 @@ program
   .action(() => {
     updateCheck(true)
       .then(() => uploadAction())
-      .catch(console.error)
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
@@ -155,7 +179,10 @@ program
   .action(() => {
     updateCheck(true)
       .then(() => process.exit(1))
-      .catch(console.error)
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program.on('command:*', () => {
