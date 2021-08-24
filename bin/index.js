@@ -118,7 +118,6 @@ program
     const isWatchEnabled = input.watch ? input.watch : false
     delete input.watch
 
-    // const defaultConfig = [{ type: 'es6', isWatchEnabled }]
     const selectedTypes = Object.keys(input)
       .map(type => input[type] === true && type.toLocaleLowerCase())
       .filter(val => !!val)
