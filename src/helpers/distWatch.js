@@ -3,7 +3,7 @@ const watch = require('watch')
 const sequence = require('../helpers/sequence')
 const path = require('path')
 
-const regexp = /^(?!src)(.+)$/
+const regexp = /^(?!src|static)(.+)$/
 
 let metadata
 
@@ -33,6 +33,9 @@ const distWatch = type => {
         if (/^src/g.test(f)) {
           change = 'src'
         }
+        if (/^static/g.test(f)) {
+          change = 'static'
+        }
         updateDistFolder(change, type)
         busy = false
       }
@@ -50,6 +53,7 @@ const updateDistFolder = (change = null, type) => {
   const distDir = path.join(baseDistDir, type)
   sequence([
     () => buildHelpers.readMetadata().then(result => (metadata = result)),
+    () => change === 'static' && buildHelpers.copyStaticFolder(distDir),
     () =>
       (change === 'src') &&
       type === 'es6' &&
