@@ -109,25 +109,25 @@ program
     'Watch for file changes and automatically update the distributable version of the App'
   )
   .description(
-    ['🌎', ' '.repeat(3), 'Create a standalone distributable version of the Lightning App'].join(
-      ''
-    )
+    ['🌎', ' '.repeat(3), 'Create a standalone distributable version of the Lightning App'].join('')
   )
   .action(options => {
     const input = options.opts()
+
+    const defaultTypes = ['es6']
     const isWatchEnabled = input.watch ? input.watch : false
-    const defaultConfig = [{ type: 'es6', isWatchEnabled }]
     delete input.watch
+
+    // const defaultConfig = [{ type: 'es6', isWatchEnabled }]
     const selectedTypes = Object.keys(input)
       .map(type => input[type] === true && type.toLocaleLowerCase())
       .filter(val => !!val)
 
     updateCheck().then(() =>
-      distAction(
-        selectedTypes.length
-          ? [{ type: selectedTypes[selectedTypes.length - 1], isWatchEnabled: isWatchEnabled }]
-          : defaultConfig
-      )
+      distAction({
+        types: selectedTypes.length ? selectedTypes : defaultTypes,
+        isWatchEnabled,
+      })
     )
   })
 

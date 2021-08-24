@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 const path = require('path')
 const fs = require('fs')
 const sequence = require('../helpers/sequence')
@@ -29,9 +29,7 @@ module.exports = options => {
 
   let metadata
 
-  const dist = option => {
-    const type = option.type
-
+  const dist = (type, config) => {
     let distDir
     return sequence([
       () => buildHelpers.ensureLightningApp(),
@@ -60,15 +58,15 @@ module.exports = options => {
         type === 'es5' &&
         buildHelpers.bundleEs5App(path.join(distDir, 'js'), metadata, { sourcemaps: false }),
       () => type === 'es5' && buildHelpers.bundlePolyfills(path.join(distDir, 'js')),
-      () => option.isWatchEnabled && distWatch(type),
+      () => config.isWatchEnabled && distWatch(type),
     ])
   }
 
   // execute the dist function for all types
-  return options.reduce((promise, type) => {
+  return options.types.reduce((promise, type) => {
     return promise
       .then(function() {
-        return dist(type)
+        return dist(type, options)
       })
       .catch(Promise.reject)
   }, Promise.resolve(null))

@@ -55,11 +55,11 @@ const updateDistFolder = (change = null, type) => {
     () => buildHelpers.readMetadata().then(result => (metadata = result)),
     () => change === 'static' && buildHelpers.copyStaticFolder(distDir),
     () =>
-      (change === 'src') &&
+      change === 'src' &&
       type === 'es6' &&
       buildHelpers.bundleEs6App(path.join(distDir, 'js'), metadata, { sourcemaps: false }),
     () =>
-      (change === 'src') &&
+      change === 'src' &&
       type === 'es5' &&
       buildHelpers.bundleEs5App(path.join(distDir, 'js'), metadata, { sourcemaps: false }),
   ])
