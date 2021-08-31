@@ -29,22 +29,18 @@ module.exports = () => {
     () => buildHelpers.ensureLightningApp(),
     () => {
       console.log(chalk.green('Serving the Lightning-SDK documentation\n\n'))
+      const docFolderPath = buildHelpers.hasNewSDK()
+        ? 'node_modules/@lightningjs/sdk/docs'
+        : 'node_modules/wpe-lightning-sdk/docs'
+      const documentsPath = buildHelpers.findFile(process.cwd(), docFolderPath)
+      const args = [documentsPath, '-o', '-c-1']
+      const httpServerPath = buildHelpers.findFile(process.cwd(), 'node_modules/.bin/http-server')
 
-      const args = [
-        path.join(
-          process.cwd(),
-          buildHelpers.hasNewSDK()
-            ? 'node_modules/@lightningjs/sdk/docs'
-            : 'node_modules/wpe-lightning-sdk/docs'
-        ),
-        '-o',
-        '-c-1',
-      ]
-      const levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
-      const subprocess = execa(
-        path.join(__dirname, levelsDown, 'node_modules/.bin/http-server'),
-        args
-      )
+      const levelsDown = isLocallyInstalled()
+        ? httpServerPath
+        : path.join(__dirname, '../..', 'node_modules/.bin/http-server')
+
+      const subprocess = execa(levelsDown, args)
       subprocess.catch(e => console.log(chalk.red(e.stderr)))
       subprocess.stdout.pipe(process.stdout)
     },
