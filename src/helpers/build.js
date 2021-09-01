@@ -28,14 +28,16 @@ const esbuild = require('esbuild')
 const spinner = require('./spinner')
 const isLocallyInstalled = require('./localinstallationcheck')
 const exit = require('./exit')
+const depth = 4
 
-const findFile = (parent, filePath) => {
+const findFile = (parent, filePath, depthCount = 0) => {
+  if (depthCount >= depth) throw new Error('File search exceeded')
+
   const fullPath = path.join(parent, filePath)
   if (fs.existsSync(fullPath)) {
-    console.log(fullPath)
     return fullPath
   }
-  return findFile(path.join(parent, '..'), filePath)
+  return findFile(path.join(parent, '..'), filePath, ++depthCount)
 }
 
 const removeFolder = folder => {
@@ -200,8 +202,7 @@ const bundleAppRollup = (folder, metadata, type, options) => {
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
 
-  let rollupPath = findFile(process.cwd(), 'node_modules/.bin/rollup')
-
+  const rollupPath = findFile(process.cwd(), 'node_modules/.bin/rollup')
   const levelsDown = isLocallyInstalled()
     ? rollupPath
     : path.join(__dirname, '../..', 'node_modules/.bin/rollup')

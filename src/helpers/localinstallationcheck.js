@@ -16,9 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const path = require('path')
 
 const isLocallyInstalled = () => {
-  return __dirname.indexOf(process.cwd()) > -1
+  let currentWorkingDir = process.cwd()
+  return __dirname.indexOf(path.join(currentWorkingDir, '../../../../../')) > -1
 }
 
 module.exports = isLocallyInstalled
