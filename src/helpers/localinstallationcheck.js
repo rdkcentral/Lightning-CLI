@@ -20,7 +20,7 @@ const path = require('path')
 
 const isLocallyInstalled = () => {
   let currentWorkingDir = process.cwd()
-  return __dirname.indexOf(path.join(currentWorkingDir, '../../../../../')) > -1
+  return __dirname.indexOf(path.join(currentWorkingDir, '../../../')) > -1
 }
 
 module.exports = isLocallyInstalled

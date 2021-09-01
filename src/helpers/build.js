@@ -28,7 +28,7 @@ const esbuild = require('esbuild')
 const spinner = require('./spinner')
 const isLocallyInstalled = require('./localinstallationcheck')
 const exit = require('./exit')
-const depth = 4
+const depth = 3
 
 const findFile = (parent, filePath, depthCount = 0) => {
   if (depthCount >= depth) throw new Error('File search exceeded')
