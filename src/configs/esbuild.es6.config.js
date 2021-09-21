@@ -70,6 +70,7 @@ module.exports = (folder, globalName) => {
         },
       }),
     ],
+    logLevel: 'silent',
     minifyWhitespace: minify,
     minifyIdentifiers: minify,
     minifySyntax: false,
