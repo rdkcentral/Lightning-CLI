@@ -32,7 +32,6 @@ const buildHelpers = require(path.join(__dirname, '../helpers/build'))
 const dotenv = require('dotenv').config()
 const minify = require('rollup-plugin-terser').terser
 const license = require('rollup-plugin-license')
-const babel = require('@rollup/plugin-babel').babel
 const babelPresetTypescript = require('@babel/preset-typescript')
 const os = require('os')
 const extensions = ['.js', '.ts']
