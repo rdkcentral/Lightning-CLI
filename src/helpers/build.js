@@ -31,7 +31,7 @@ const exit = require('./exit')
 const depth = 3
 
 const findFile = (parent, filePath, depthCount = 0) => {
-  if (depthCount >= depth) throw new Error('File search exceeded')
+  if (depthCount >= depth) throw new Error('Required files not found at the given path')
 
   const fullPath = path.join(parent, filePath)
   if (fs.existsSync(fullPath)) {
@@ -202,9 +202,8 @@ const bundleAppRollup = (folder, metadata, type, options) => {
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
 
-  const rollupPath = findFile(process.cwd(), 'node_modules/.bin/rollup')
   const levelsDown = isLocallyInstalled()
-    ? rollupPath
+    ? findFile(process.cwd(), 'node_modules/.bin/rollup')
     : path.join(__dirname, '../..', 'node_modules/.bin/rollup')
 
   return execa(levelsDown, args)

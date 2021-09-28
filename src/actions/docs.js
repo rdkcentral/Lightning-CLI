@@ -34,10 +34,9 @@ module.exports = () => {
         : 'node_modules/wpe-lightning-sdk/docs'
       const documentsPath = buildHelpers.findFile(process.cwd(), docFolderPath)
       const args = [documentsPath, '-o', '-c-1']
-      const httpServerPath = buildHelpers.findFile(process.cwd(), 'node_modules/.bin/http-server')
 
       const levelsDown = isLocallyInstalled()
-        ? httpServerPath
+        ? buildHelpers.findFile(process.cwd(), 'node_modules/.bin/http-server')
         : path.join(__dirname, '../..', 'node_modules/.bin/http-server')
 
       const subprocess = execa(levelsDown, args)

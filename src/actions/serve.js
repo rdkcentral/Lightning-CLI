@@ -38,9 +38,8 @@ module.exports = () => {
         process.env.LNG_SERVE_PROXY ? '-P' + process.env.LNG_SERVE_PROXY : false,
       ].filter(val => val)
 
-      const httpServerPath = buildHelpers.findFile(process.cwd(), 'node_modules/.bin/http-server')
       const levelsDown = isLocallyInstalled()
-        ? httpServerPath
+        ? buildHelpers.findFile(process.cwd(), 'node_modules/.bin/http-server')
         : path.join(__dirname, '../..', 'node_modules/.bin/http-server')
 
       const subprocess = execa(levelsDown, args)
