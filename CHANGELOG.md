@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.6.0
+
+*20 oct 2021*
+
+- Added support for using `process.env.NODE_ENV` in Apps
+- Added using the minified lightning library file in dist builds
+- Added minification for esbuild bundler
+- Improved error messages and handling
+- Added babel-step to es6 config (for rollup and esbuild) to enable usage of class properties proposal syntax
+
 ## v2.5.1
 
 *29 jun 2021*
