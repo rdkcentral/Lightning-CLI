@@ -187,12 +187,12 @@ const bundleAppRollup = (folder, metadata, type, options) => {
     path.join(folder, type === 'es6' ? 'appBundle.js' : 'appBundle.es5.js'),
     '--name',
     makeSafeAppId(metadata),
-    '--failAfterWarnings',
   ]
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
 
   const levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
+  process.env.ROLLUP_ERR_ON_FAILURE === 'true' ? args.push('--failAfterWarnings') : ''
   return execa(path.join(__dirname, levelsDown, 'node_modules/.bin/rollup'), args)
     .then(() => {
       spinner.succeed()
