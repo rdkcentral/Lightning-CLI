@@ -163,6 +163,8 @@ const buildAppEsBuild = async (folder, metadata, type) => {
   )
   try {
     const getConfig = require(`../configs/esbuild.${type}.config`)
+    process.env.LNG_BUILD_EXIT_ON_FAIL =
+      process.env.LNG_BUILD_EXIT_ON_FAIL === undefined ? 'true' : process.env.LNG_BUILD_EXIT_ON_FAIL
     await esbuild.build(getConfig(folder, makeSafeAppId(metadata)))
     spinner.succeed()
     return metadata
@@ -171,7 +173,7 @@ const buildAppEsBuild = async (folder, metadata, type) => {
     console.log(chalk.red('--------------------------------------------------------------'))
     console.log(chalk.italic(e.message))
     console.log(chalk.red('--------------------------------------------------------------'))
-    process.env.LNG_BUILD_EXIT_ON_FAIL && process.exit(1)
+    process.env.LNG_BUILD_EXIT_ON_FAIL === 'true' && process.exit(1)
   }
 }
 
@@ -192,7 +194,9 @@ const bundleAppRollup = (folder, metadata, type, options) => {
   if (options.sourcemaps === false) args.push('--no-sourcemap')
 
   const levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
-  process.env.ROLLUP_ERR_ON_FAILURE === 'true' ? args.push('--failAfterWarnings') : ''
+  process.env.LNG_BUILD_FAIL_ON_WARNINGS === 'true' ? args.push('--failAfterWarnings') : ''
+  process.env.LNG_BUILD_EXIT_ON_FAIL =
+    process.env.LNG_BUILD_EXIT_ON_FAIL === undefined ? 'true' : process.env.LNG_BUILD_EXIT_ON_FAIL
   return execa(path.join(__dirname, levelsDown, 'node_modules/.bin/rollup'), args)
     .then(() => {
       spinner.succeed()
@@ -203,7 +207,7 @@ const bundleAppRollup = (folder, metadata, type, options) => {
       console.log(chalk.red('--------------------------------------------------------------'))
       console.log(chalk.italic(e.stderr))
       console.log(chalk.red('--------------------------------------------------------------'))
-      process.env.LNG_BUILD_EXIT_ON_FAIL && process.exit(1)
+      process.env.LNG_BUILD_EXIT_ON_FAIL === 'true' && process.exit(1)
     })
 }
 
