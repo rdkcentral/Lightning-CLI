@@ -26,7 +26,7 @@ module.exports = () => {
   return sequence([
     () => buildHelpers.ensureLightningApp(),
     () => {
-      watch(serve, () => {
+      return watch(serve, () => {
         console.log('')
         if (process.env.LNG_LIVE_RELOAD === 'true') {
           console.log('Navigate to web browser to see the changes')
