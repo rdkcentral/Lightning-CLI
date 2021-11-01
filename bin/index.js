@@ -152,12 +152,13 @@ program
       .map(type => input[type] === true && type.toLocaleLowerCase())
       .filter(val => !!val)
 
-    updateCheck().then(() =>
-      distAction({
-        types: selectedTypes.length ? selectedTypes : defaultTypes,
-        isWatchEnabled,
-      })
-    )
+    updateCheck()
+      .then(() =>
+        distAction({
+          types: selectedTypes.length ? selectedTypes : defaultTypes,
+          isWatchEnabled,
+        })
+      )
       .catch(e => {
         console.error(e)
         process.exit(1)
