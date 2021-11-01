@@ -163,8 +163,6 @@ const buildAppEsBuild = async (folder, metadata, type) => {
   )
   try {
     const getConfig = require(`../configs/esbuild.${type}.config`)
-    process.env.LNG_BUILD_EXIT_ON_FAIL =
-      process.env.LNG_BUILD_EXIT_ON_FAIL === undefined ? 'true' : process.env.LNG_BUILD_EXIT_ON_FAIL
     await esbuild.build(getConfig(folder, makeSafeAppId(metadata)))
     spinner.succeed()
     return metadata
@@ -195,8 +193,6 @@ const bundleAppRollup = (folder, metadata, type, options) => {
 
   const levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
   process.env.LNG_BUILD_FAIL_ON_WARNINGS === 'true' ? args.push('--failAfterWarnings') : ''
-  process.env.LNG_BUILD_EXIT_ON_FAIL =
-    process.env.LNG_BUILD_EXIT_ON_FAIL === undefined ? 'true' : process.env.LNG_BUILD_EXIT_ON_FAIL
   return execa(path.join(__dirname, levelsDown, 'node_modules/.bin/rollup'), args)
     .then(() => {
       spinner.succeed()
