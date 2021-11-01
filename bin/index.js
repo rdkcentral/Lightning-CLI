@@ -134,21 +134,31 @@ program
   .command('dist')
   .option('--es5', 'Build standalone ES5 version of the App')
   .option('--es6', 'Build standalone ES6 version of the App')
+  .option(
+    '--watch',
+    'Watch for file changes and automatically update the distributable version of the App'
+  )
   .description(
-    ['🌎', ' '.repeat(3), 'Create a standalone, distributable version of the Lightning App'].join(
-      ''
-    )
+    ['🌎', ' '.repeat(3), 'Create a standalone distributable version of the Lightning App'].join('')
   )
   .action(options => {
     const input = options.opts()
+
     const defaultTypes = ['es6']
+    const isWatchEnabled = input.watch ? input.watch : false
+    delete input.watch
 
     const selectedTypes = Object.keys(input)
       .map(type => input[type] === true && type.toLocaleLowerCase())
       .filter(val => !!val)
 
     updateCheck()
-      .then(() => distAction(selectedTypes.length ? selectedTypes : defaultTypes))
+      .then(() =>
+        distAction({
+          types: selectedTypes.length ? selectedTypes : defaultTypes,
+          isWatchEnabled,
+        })
+      )
       .catch(e => {
         console.error(e)
         process.exit(1)
