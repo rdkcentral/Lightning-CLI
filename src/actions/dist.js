@@ -68,6 +68,6 @@ module.exports = options => {
       .then(function() {
         return dist(type, options)
       })
-      .catch(Promise.reject)
+      .catch(e => Promise.reject(e))
   }, Promise.resolve(null))
 }

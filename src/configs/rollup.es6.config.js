@@ -19,6 +19,8 @@
 
 const path = require('path')
 const process = require('process')
+const babel = require('@rollup/plugin-babel').babel
+const babelPluginClassProperties = require('@babel/plugin-proposal-class-properties')
 const resolve = require('@rollup/plugin-node-resolve').nodeResolve
 const commonjs = require('@rollup/plugin-commonjs')
 const alias = require('@rollup/plugin-alias')
@@ -33,6 +35,11 @@ const license = require('rollup-plugin-license')
 const os = require('os')
 
 module.exports = {
+  onwarn(warning, warn) {
+    if (warning.code !== 'CIRCULAR_DEPENDENCY') {
+      warn(warning)
+    }
+  },
   plugins: [
     json(),
     image(),
@@ -55,6 +62,9 @@ module.exports = {
     }),
     resolve({ mainFields: ['module', 'main', 'browser'] }),
     commonjs({ sourceMap: false }),
+    babel({
+      plugins: [babelPluginClassProperties],
+    }),
     (process.env.LNG_BUILD_MINIFY === 'true' || process.env.NODE_ENV === 'production') &&
       minify({ keep_fnames: true }),
     license({

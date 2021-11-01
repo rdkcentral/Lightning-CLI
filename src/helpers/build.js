@@ -168,8 +168,10 @@ const buildAppEsBuild = async (folder, metadata, type) => {
     return metadata
   } catch (e) {
     spinner.fail(`Error while creating ${type.toUpperCase()} bundle using [esbuild] (see log)`)
-    console.log(e.stderr)
-    throw Error(e)
+    console.log(chalk.red('--------------------------------------------------------------'))
+    console.log(chalk.italic(e.message))
+    console.log(chalk.red('--------------------------------------------------------------'))
+    process.env.LNG_BUILD_EXIT_ON_FAIL === 'true' && process.exit(1)
   }
 }
 
@@ -190,6 +192,7 @@ const bundleAppRollup = (folder, metadata, type, options) => {
   if (options.sourcemaps === false) args.push('--no-sourcemap')
 
   const levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
+  process.env.LNG_BUILD_FAIL_ON_WARNINGS === 'true' ? args.push('--failAfterWarnings') : ''
   return execa(path.join(__dirname, levelsDown, 'node_modules/.bin/rollup'), args)
     .then(() => {
       spinner.succeed()
@@ -197,8 +200,10 @@ const bundleAppRollup = (folder, metadata, type, options) => {
     })
     .catch(e => {
       spinner.fail(`Error while creating ${type.toUpperCase()} bundle (see log)`)
-      console.log(e.stderr)
-      throw Error(e)
+      console.log(chalk.red('--------------------------------------------------------------'))
+      console.log(chalk.italic(e.stderr))
+      console.log(chalk.red('--------------------------------------------------------------'))
+      process.env.LNG_BUILD_EXIT_ON_FAIL === 'true' && process.exit(1)
     })
 }
 

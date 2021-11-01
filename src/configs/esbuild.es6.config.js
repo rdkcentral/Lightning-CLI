@@ -20,8 +20,11 @@
 const buildHelpers = require('../helpers/build')
 const os = require('os')
 const alias = require('../plugins/esbuild-alias')
+const babel = require('../helpers/esbuildbabel')
 const path = require('path')
 const dotenv = require('dotenv')
+const babelPluginClassProperties = require('@babel/plugin-proposal-class-properties')
+const babelPluginInlineJsonImport = require('babel-plugin-inline-json-import')
 
 module.exports = (folder, globalName) => {
   const sourcemap =
@@ -33,30 +36,48 @@ module.exports = (folder, globalName) => {
 
   //Load .env config every time build is triggered
   const dotEnvConfig = dotenv.config()
-  const appVars = buildHelpers.getEnvAppVars(dotEnvConfig.parsed)
+  const appVars = {
+    NODE_ENV: process.env.NODE_ENV,
+    ...buildHelpers.getEnvAppVars(dotEnvConfig.parsed),
+  }
   const keys = Object.keys(appVars)
   const defined = keys.reduce((acc, key) => {
     acc[`process.env.${key}`] = `"${appVars[key]}"`
     return acc
   }, {})
+  defined['process.env.NODE_ENV'] = `"${process.env.NODE_ENV}"`
+  const minify = process.env.LNG_BUILD_MINIFY === 'true' || process.env.NODE_ENV === 'production'
 
   return {
     plugins: [
       alias([
-        { find: '@', filter: /@\//, replace: path.resolve(process.cwd(), 'src/') },
-        { find: '~', filter: /~\//, replace: path.resolve(process.cwd(), 'node_modules/') },
         {
           find: 'wpe-lightning',
           filter: /^wpe-lightning$/,
           replace: path.join(__dirname, '../alias/wpe-lightning.js'),
         },
+        {
+          find: '@lightningjs/core',
+          filter: /^@lightningjs\/core$/,
+          replace: path.join(__dirname, '../alias/lightningjs-core.js'),
+        },
+        { find: '@', filter: /@\//, replace: path.resolve(process.cwd(), 'src/') },
+        { find: '~', filter: /~\//, replace: path.resolve(process.cwd(), 'node_modules/') },
       ]),
+      babel({
+        config: {
+          plugins: [babelPluginClassProperties, babelPluginInlineJsonImport],
+        },
+      }),
     ],
+    logLevel: 'silent',
+    minifyWhitespace: minify,
+    minifyIdentifiers: minify,
+    minifySyntax: false,
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
     outfile: `${folder}/appBundle.js`,
-    mainFields: ['module', 'main', 'browser'],
-    minifyWhitespace: true,
+    mainFields: ['browser', 'module', 'main'],
     sourcemap,
     format: 'iife',
     define: defined,
