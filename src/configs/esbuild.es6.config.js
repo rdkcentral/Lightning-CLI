@@ -83,14 +83,16 @@ module.exports = (folder, globalName) => {
     define: defined,
     target: process.env.LNG_BUNDLER_TARGET || '',
     globalName,
-    banner: [
-      '/*',
-      ` App version: ${buildHelpers.getAppVersion()}`,
-      ` SDK version: ${buildHelpers.getSdkVersion()}`,
-      ` CLI version: ${buildHelpers.getCliVersion()}`,
-      '',
-      ` gmtDate: ${new Date().toGMTString()}`,
-      '*/',
-    ].join(os.EOL),
+    banner: {
+      "js": [
+        '/*',
+        ` App version: ${buildHelpers.getAppVersion()}`,
+        ` SDK version: ${buildHelpers.getSdkVersion()}`,
+        ` CLI version: ${buildHelpers.getCliVersion()}`,
+        '',
+        ` gmtDate: ${new Date().toGMTString()}`,
+        '*/',
+      ].join(os.EOL),
+    }
   }
 }

@@ -22,13 +22,14 @@ const fs = require('fs')
 const sequence = require('../helpers/sequence')
 const buildHelpers = require('../helpers/build')
 const distHelpers = require('../helpers/dist')
+const distWatch = require('../helpers/distWatch')
 
-module.exports = types => {
+module.exports = options => {
   const baseDistDir = path.join(process.cwd(), process.env.LNG_DIST_FOLDER || 'dist')
 
   let metadata
 
-  const dist = type => {
+  const dist = (type, config) => {
     let distDir
     return sequence([
       () => buildHelpers.ensureLightningApp(),
@@ -57,14 +58,15 @@ module.exports = types => {
         type === 'es5' &&
         buildHelpers.bundleEs5App(path.join(distDir, 'js'), metadata, { sourcemaps: false }),
       () => type === 'es5' && buildHelpers.bundlePolyfills(path.join(distDir, 'js')),
+      () => config.isWatchEnabled && distWatch(type),
     ])
   }
 
   // execute the dist function for all types
-  return types.reduce((promise, type) => {
+  return options.types.reduce((promise, type) => {
     return promise
       .then(function() {
-        return dist(type)
+        return dist(type, options)
       })
       .catch(e => Promise.reject(e))
   }, Promise.resolve(null))
