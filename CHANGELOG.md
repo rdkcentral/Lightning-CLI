@@ -5,7 +5,7 @@
 *22 nov 2021*
 
 - Upgraded esbuild to version 0.12
-- Added support for watcher support for `lng dist`
+- Added watcher support for `lng dist`
 - Added `LNG_BUILD_FAIL_ON_WARNINGS` environment variable
 
 ## v2.6.0
