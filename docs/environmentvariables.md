@@ -47,7 +47,7 @@ You can use the following environment variables to customize the behavior of the
 | `LNG_DIST_FOLDER` | dist | Specifies the folder in which the standalone, distributable App (using `lng dist`) will be generated. |
 | `LNG_AUTO_UPDATE` | true | Indicates whether or not the Lightning CLI should automatically update ('auto update'). Possible values: `true`, `false`. **Note**: It is recommended to keep auto updates enabled. |
 | `LNG_BUILD_EXIT_ON_FAIL` | false | Specifies whether or not the build process should hard exit when a build error occurs. Note that the build process is triggered in several commands (`lng build`, `lng dev`, `lng watch` and `lng dist`) |
-
+| `LNG_BUILD_FAIL_ON_WARNINGS` | false | Specifies whether or not to show the warning to the user when a build warning occurs. Note that the build process is triggered in several commands (`lng build`, `lng dev`, `lng watch` and `lng dist`) |
 
 #### `LNG_SETTINGS_ENV`
 Specifies which environment to be used. User need to have `settings.{env}.json` file in the Project home folder with different settings. This will build/dist the application with `settings.{env}.json`.
