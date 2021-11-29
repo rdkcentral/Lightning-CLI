@@ -18,4 +18,4 @@ Perform the following steps to install the Lightning CLI on your system:
 2. Check if the installation was successful by running `lng -V`. This should display the version of the Lightning CLI you have installed.
 3. If the Lightning CLI is installed successfully, you can use  it anywhere on your machine using the `lng` command.
 
-> See [Commands](../../F_CLIRef/Commands/index.md) in the [Lightning CLI Reference Documentation](../../F_CLIRef/index.md) for a description of the available Lightning CLI commands and options.
+> See [Commands](../commands/index.md) in the [Lightning CLI Reference Documentation](../index.md) for a description of the available Lightning CLI commands and options.
