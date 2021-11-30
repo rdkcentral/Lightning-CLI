@@ -2,7 +2,7 @@
   "author": "Michiel van der Geest <m.van.der.geest@metrological.com>",
   "license": "Apache-2",
   "name": "@lightningjs/cli",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "Lightning-CLI: Command Line Interface tool for a seamless Lightning App Development flow",
   "bin": {
     "lightning": "./bin/index.js",
@@ -30,7 +30,7 @@
     "@babel/preset-env": "^7.11.5",
     "@rollup/plugin-alias": "^3.1.1",
     "@rollup/plugin-babel": "^5.2.1",
-    "@rollup/plugin-commonjs": "^15.1.0",
+    "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-image": "^2.0.5",
     "@rollup/plugin-inject": "^4.0.2",
     "@rollup/plugin-json": "^4.1.0",

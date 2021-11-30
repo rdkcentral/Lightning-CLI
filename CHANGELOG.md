@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.7.1
+
+*29 nov 2021*
+
+- Updated rollup commonjs plugin (issue #156)
+- Fixed broken link in documentation
+-
 ## v2.7.0
 
 *22 nov 2021*
