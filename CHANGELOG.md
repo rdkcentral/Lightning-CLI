@@ -1,5 +1,36 @@
 # Changelog
 
+## v2.7.1
+
+*29 nov 2021*
+
+- Updated rollup commonjs plugin (issue #156)
+- Fixed broken link in documentation
+-
+## v2.7.0
+
+*22 nov 2021*
+
+- Upgraded esbuild to version 0.12
+- Added watcher support for `lng dist`
+- Added `LNG_BUILD_FAIL_ON_WARNINGS` environment variable
+
+## v2.6.0
+
+*20 oct 2021*
+
+- Added support for using `process.env.NODE_ENV` in Apps
+- Added using the minified lightning library file in dist builds
+- Added minification for esbuild bundler
+- Improved error messages and handling
+- Added babel-step to es6 config (for rollup and esbuild) to enable usage of class properties proposal syntax
+
+## v2.5.1
+
+*29 jun 2021*
+
+- Fixes dynamic imports in rollup created bundle
+
 ## v2.5.0
 
 *23 apr 2021*

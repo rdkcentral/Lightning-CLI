@@ -39,18 +39,28 @@ module.exports = (folder, globalName) => {
 
   // Load .env config every time build is triggered
   const dotEnvConfig = dotenv.config()
-  const appVars = buildHelpers.getEnvAppVars(dotEnvConfig.parsed)
+  const appVars = {
+    NODE_ENV: process.env.NODE_ENV,
+    ...buildHelpers.getEnvAppVars(dotEnvConfig.parsed),
+  }
   const keys = Object.keys(appVars)
   const defined = keys.reduce((acc, key) => {
     acc[`process.env.${key}`] = `"${appVars[key]}"`
     return acc
   }, {})
+  defined['process.env.NODE_ENV'] = `"${process.env.NODE_ENV}"`
+  const minify = process.env.LNG_BUILD_MINIFY === 'true' || process.env.NODE_ENV === 'production'
 
   return {
     plugins: [
       alias([
         { find: '@', filter: /@\//, replace: path.resolve(process.cwd(), 'src/') },
         { find: '~', filter: /~\//, replace: path.resolve(process.cwd(), 'node_modules/') },
+        {
+          find: '@lightningjs/core',
+          filter: /^@lightningjs\/core$/,
+          replace: path.join(__dirname, '../alias/lightningjs-core.js'),
+        },
         {
           find: 'wpe-lightning',
           filter: /^wpe-lightning$/,
@@ -81,24 +91,29 @@ module.exports = (folder, globalName) => {
         },
       }),
     ],
+    logLevel: 'silent',
+    minifyWhitespace: minify,
+    minifyIdentifiers: minify,
+    minifySyntax: false,
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
     target: 'es5',
     mainFields: ['module', 'main', 'browser'],
     outfile: `${folder}/appBundle.es5.js`,
-    minifyWhitespace: true,
     sourcemap,
     format: 'iife',
     define: defined,
     globalName,
-    banner: [
-      '/*',
-      ` App version: ${buildHelpers.getAppVersion()}`,
-      ` SDK version: ${buildHelpers.getSdkVersion()}`,
-      ` CLI version: ${buildHelpers.getCliVersion()}`,
-      '',
-      ` gmtDate: ${new Date().toGMTString()}`,
-      '*/',
-    ].join(os.EOL),
+    banner: {
+      "js": [
+        '/*',
+        ` App version: ${buildHelpers.getAppVersion()}`,
+        ` SDK version: ${buildHelpers.getSdkVersion()}`,
+        ` CLI version: ${buildHelpers.getCliVersion()}`,
+        '',
+        ` gmtDate: ${new Date().toGMTString()}`,
+        '*/',
+      ].join(os.EOL),
+    }
   }
 }

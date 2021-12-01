@@ -19,15 +19,13 @@
 
 const build = require('./build')
 const watch = require('watch')
-const exit = require('../helpers/exit')
 const WebSocket = require('ws')
 const chalk = require('chalk')
 const buildHelpers = require('../helpers/build')
 
-const settingsFileName = buildHelpers.getSettingsFileName() //Get settings file name
+const settingsFileName = buildHelpers.getSettingsFileName() // Get settings file name
 const regexp = new RegExp(`^(?!src|static|${settingsFileName}|metadata.json)(.+)$`)
 
-let initCallbackProcess
 let wss
 
 const initWebSocketServer = () => {
@@ -50,68 +48,68 @@ const initWebSocketServer = () => {
 
 module.exports = (initCallback, watchCallback) => {
   let busy = false
-  return watch.watchTree(
-    './',
-    {
-      interval: 1,
-      filter(f) {
-        return !!!regexp.test(f)
+  return new Promise((resolve, reject) =>
+    watch.watchTree(
+      './',
+      {
+        interval: 1,
+        filter(f) {
+          return !!!regexp.test(f)
+        },
+        ignoreDirectoryPattern: /node_modules|\.git|dist|build/,
       },
-      ignoreDirectoryPattern: /node_modules|\.git|dist|build/,
-    },
-    (f, curr, prev) => {
-      // prevent initiating another build when already busy
-      if (busy === true) {
-        return
+      (f, curr, prev) => {
+        // prevent initiating another build when already busy
+        if (busy === true) {
+          return
+        }
+        if (typeof f == 'object' && prev === null && curr === null) {
+          build(true)
+            .then(() => {
+              initCallback && initCallback().catch(() => process.exit())
+
+              // if configured start WebSocket Server
+              if (process.env.LNG_LIVE_RELOAD === 'true') {
+                wss = initWebSocketServer()
+              }
+            })
+            .catch(e => {
+              reject(e)
+            })
+        } else {
+          busy = true
+
+          // pass the 'type of change' based on the file that was changes
+          let change
+          if (/^src/g.test(f)) {
+            change = 'src'
+          }
+          if (/^static/g.test(f)) {
+            change = 'static'
+          }
+          if (f === 'metadata.json') {
+            change = 'metadata'
+          }
+          if (f === settingsFileName) {
+            change = 'settings'
+          }
+
+          build(false, change)
+            .then(() => {
+              busy = false
+              watchCallback && watchCallback()
+              // send reload signal over socket
+              if (wss) {
+                wss.clients.forEach(client => {
+                  client.send('reload')
+                })
+              }
+            })
+            .catch(e => {
+              reject(e)
+            })
+        }
       }
-      if (typeof f == 'object' && prev === null && curr === null) {
-        build(true)
-          .then(() => {
-            initCallbackProcess = initCallback && initCallback().catch(() => process.exit())
-
-            // if configured start WebSocket Server
-            if (process.env.LNG_LIVE_RELOAD === 'true') {
-              wss = initWebSocketServer()
-            }
-          })
-          .catch(() => {
-            exit()
-          })
-      } else {
-        busy = true
-
-        // pass the 'type of change' based on the file that was changes
-        let change
-        if (/^src/g.test(f)) {
-          change = 'src'
-        }
-        if (/^static/g.test(f)) {
-          change = 'static'
-        }
-        if (f === 'metadata.json') {
-          change = 'metadata'
-        }
-        if (f === settingsFileName) {
-          change = 'settings'
-        }
-
-        build(false, change)
-          .then(result => {
-            busy = false
-            watchCallback && watchCallback()
-            // send reload signal over socket
-            if (wss) {
-              wss.clients.forEach(client => {
-                client.send('reload')
-              })
-            }
-          })
-          .catch(() => {
-            busy = false
-            // next line would stop the server, but we want to keep it running (may e should be configurable?)
-            // initCallbackProcess && initCallbackProcess.cancel()
-          })
-      }
-    }
+    )
   )
 }

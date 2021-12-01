@@ -38,6 +38,11 @@ const license = require('rollup-plugin-license')
 const os = require('os')
 
 module.exports = {
+  onwarn(warning, warn) {
+    if (warning.code !== 'CIRCULAR_DEPENDENCY') {
+      warn(warning)
+    }
+  },
   plugins: [
     json(),
     image(),
@@ -106,6 +111,7 @@ module.exports = {
   ],
   output: {
     format: 'iife',
+    inlineDynamicImports: true,
     sourcemap: true,
   },
 }

@@ -46,7 +46,12 @@ program
   .command('create')
   .description(['✨', ' '.repeat(3), 'Create a new Lightning App'].join(''))
   .action(() => {
-    updateCheck(true).then(() => createAction())
+    updateCheck(true)
+      .then(() => createAction())
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
@@ -55,7 +60,12 @@ program
     ['👷‍♂️', ' '.repeat(3), 'Build a local development version of the Lightning App'].join('')
   )
   .action(() => {
-    updateCheck().then(() => buildAction(true))
+    updateCheck()
+      .then(() => buildAction(true))
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
@@ -68,7 +78,12 @@ program
     ].join('')
   )
   .action(() => {
-    updateCheck().then(() => serveAction().catch(() => process.exit()))
+    updateCheck()
+      .then(() => serveAction())
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
@@ -77,7 +92,12 @@ program
     ['👀', ' '.repeat(3), 'Watch for file changes and automatically rebuild the App'].join('')
   )
   .action(() => {
-    updateCheck().then(() => watchAction())
+    updateCheck()
+      .then(() => watchAction())
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
@@ -90,34 +110,59 @@ program
     ].join('')
   )
   .action(() => {
-    updateCheck().then(() => devAction())
+    updateCheck()
+      .then(() => devAction())
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
   .command('docs')
   .description(['📖', ' '.repeat(3), 'Open the Lightning-SDK documentation'].join(''))
   .action(() => {
-    updateCheck().then(() => docsAction())
+    updateCheck()
+      .then(() => docsAction())
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
   .command('dist')
   .option('--es5', 'Build standalone ES5 version of the App')
   .option('--es6', 'Build standalone ES6 version of the App')
+  .option(
+    '--watch',
+    'Watch for file changes and automatically update the distributable version of the App'
+  )
   .description(
-    ['🌎', ' '.repeat(3), 'Create a standalone, distributable version of the Lightning App'].join(
-      ''
-    )
+    ['🌎', ' '.repeat(3), 'Create a standalone distributable version of the Lightning App'].join('')
   )
   .action(options => {
     const input = options.opts()
+
     const defaultTypes = ['es6']
+    const isWatchEnabled = input.watch ? input.watch : false
+    delete input.watch
 
     const selectedTypes = Object.keys(input)
       .map(type => input[type] === true && type.toLocaleLowerCase())
       .filter(val => !!val)
 
-    updateCheck().then(() => distAction(selectedTypes.length ? selectedTypes : defaultTypes))
+    updateCheck()
+      .then(() =>
+        distAction({
+          types: selectedTypes.length ? selectedTypes : defaultTypes,
+          isWatchEnabled,
+        })
+      )
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
@@ -130,14 +175,24 @@ program
     ].join('')
   )
   .action(() => {
-    updateCheck(true).then(() => uploadAction())
+    updateCheck(true)
+      .then(() => uploadAction())
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program
   .command('update')
   .description(['🔄', ' '.repeat(3), 'Update the Lightning-CLI to the latest version'].join(''))
   .action(() => {
-    updateCheck(true).then(() => process.exit(1))
+    updateCheck(true)
+      .then(() => process.exit(1))
+      .catch(e => {
+        console.error(e)
+        process.exit(1)
+      })
   })
 
 program.on('command:*', () => {
