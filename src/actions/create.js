@@ -42,7 +42,7 @@ const askAppId = appName =>
     () =>
       ask(
         'What is the App identifier? (reverse-DNS format)',
-        `com.metrological.app.${appName.replace(/ +/g, '')}`
+        `com.metrological.app.${appName.replace(/\s+/g, '')}`
       ),
     appId => validateAppId(appId),
   ])
