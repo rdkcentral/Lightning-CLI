@@ -41,10 +41,13 @@ const askAppName = () =>
     appName => validateAppName(appName),
   ])
 
-const askAppId = () =>
+const askAppId = appName =>
   sequence([
     () =>
-      ask('What is the App identifier? (reverse-DNS format)', 'com.metrological.app.myawesomeapp'),
+      ask(
+        'What is the App identifier? (reverse-DNS format)',
+        `com.metrological.app.${appName.replace(/\s+/g, '')}`
+      ),
     appId => validateAppId(appId),
   ])
 
@@ -148,7 +151,7 @@ const askConfig = async () => {
       }
     },
     () => askAppName().then(appName => (config.appName = appName)),
-    () => askAppId().then(appId => (config.appId = appId)),
+    () => askAppId(config.appName).then(appId => (config.appId = appId)),
     () => askAppFolder(config.appId).then(folder => (config.appFolder = folder)),
     () => {
       if (config.templates) {
