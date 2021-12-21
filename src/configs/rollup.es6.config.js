@@ -21,6 +21,7 @@ const path = require('path')
 const process = require('process')
 const babel = require('@rollup/plugin-babel').babel
 const babelPluginClassProperties = require('@babel/plugin-proposal-class-properties')
+const babelPresetTypescript = require('@babel/preset-typescript')
 const resolve = require('@rollup/plugin-node-resolve').nodeResolve
 const commonjs = require('@rollup/plugin-commonjs')
 const alias = require('@rollup/plugin-alias')
@@ -33,6 +34,7 @@ const dotenv = require('dotenv').config()
 const minify = require('rollup-plugin-terser').terser
 const license = require('rollup-plugin-license')
 const os = require('os')
+const extensions = ['.js', '.ts']
 
 module.exports = {
   onwarn(warning, warn) {
@@ -60,9 +62,12 @@ module.exports = {
         '~': path.resolve(process.cwd(), 'node_modules/'),
       },
     }),
-    resolve({ mainFields: ['module', 'main', 'browser'] }),
+    resolve({ extensions, mainFields: ['module', 'main', 'browser'] }),
     commonjs({ sourceMap: false }),
     babel({
+      presets: [[babelPresetTypescript]],
+      extensions,
+      babelHelpers: 'bundled',
       plugins: [babelPluginClassProperties],
     }),
     (process.env.LNG_BUILD_MINIFY === 'true' || process.env.NODE_ENV === 'production') &&
