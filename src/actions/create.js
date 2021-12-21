@@ -22,12 +22,16 @@ const fs = require('fs-extra')
 const replaceInFile = require('replace-in-file')
 const execa = require('execa')
 const chalk = require('chalk')
+const isOnline = require('is-online')
+const shell = require('shelljs')
 
 const sequence = require('../helpers/sequence')
 const ask = require('../helpers/ask')
 const exit = require('../helpers/exit')
 const spinner = require('../helpers/spinner')
-const { fail } = require('../helpers/spinner')
+const templateHomeDir = path.join(require('os').homedir(), '.lightning-templates')
+//TODO - Update the repo URL
+const templateRepo = 'git@github.com:sandeep-vedam/templates.git'
 
 /******* Questions *******/
 
@@ -37,10 +41,13 @@ const askAppName = () =>
     appName => validateAppName(appName),
   ])
 
-const askAppId = () =>
+const askAppId = appName =>
   sequence([
     () =>
-      ask('What is the App identifier? (reverse-DNS format)', 'com.metrological.app.myawesomeapp'),
+      ask(
+        'What is the App identifier? (reverse-DNS format)',
+        `com.metrological.app.${appName.replace(/\s+/g, '')}`
+      ),
     appId => validateAppId(appId),
   ])
 
@@ -53,6 +60,12 @@ const askAppFolder = appId =>
       ),
     appFolder => validateAppFolder(appFolder),
   ])
+
+const askTemplate = templates => {
+  return ask('Select the list of templates from the below list?', null, 'list', templates).then(
+    val => val
+  )
+}
 
 const askESlint = () =>
   ask('Do you want to enable ESlint?', null, 'list', ['Yes', 'No']).then(
@@ -72,13 +85,89 @@ const askGitInit = () =>
     val => val === 'Yes'
   )
 
-const askConfig = () => {
-  const config = {}
+const askTypescript = () =>
+  ask('Do you want to initialize project with TypeScript?', null, 'list', ['Yes', 'No']).then(
+    // map yes to true and no to false
+    val => val === 'Yes'
+  )
+
+const createLightningTemplatesFolder = () => {
+  return new Promise(resolve => {
+    fs.pathExistsSync(templateHomeDir)
+      ? resolve(templateHomeDir)
+      : resolve(fs.ensureDirSync(templateHomeDir))
+  })
+}
+
+const testConnection = async () => {
+  return await isOnline()
+}
+
+const gitOperations = (folder, templateRepo) => {
+  let localGitRepo = path.join(folder, '.git')
+  if (fs.pathExistsSync(localGitRepo)) {
+    const update = Math.random() < 0.8
+    if (!update) {
+      shell.exec(`cd ${folder} && git pull`)
+    }
+  } else {
+    shell.exec(`git clone ${templateRepo} ${folder}`)
+  }
+}
+
+const templateRepoDownload = async folder => {
+  gitOperations(folder, templateRepo)
+  return readDataFromTemplateIndex(folder)
+}
+
+const readDataFromTemplateIndex = folder => {
+  return new Promise(resolve => {
+    const data = JSON.parse(fs.readFileSync(`${folder}/index.json`, 'utf8'))
+    resolve(data.templates)
+  })
+}
+
+const downloadTemplateRepo = config => {
   return sequence([
+    () =>
+      createLightningTemplatesFolder().then(folder => {
+        return (config.templatesHomeFolder = folder)
+      }),
+    () =>
+      templateRepoDownload(config.templatesHomeFolder).then(templates => {
+        return (config.templates = templates)
+      }),
+  ])
+}
+
+const askConfig = async () => {
+  const config = {}
+  const isOnline = await testConnection()
+  return sequence([
+    () => {
+      if (isOnline) {
+        return downloadTemplateRepo(config)
+      } else if (
+        fs.pathExistsSync(templateHomeDir) &&
+        fs.pathExistsSync(path.join(templateHomeDir, 'index.json'))
+      ) {
+        return readDataFromTemplateIndex(templateHomeDir).then(templates => {
+          return (config.templates = templates)
+        })
+      }
+    },
     () => askAppName().then(appName => (config.appName = appName)),
-    () => askAppId().then(appId => (config.appId = appId)),
+    () => askAppId(config.appName).then(appId => (config.appId = appId)),
     () => askAppFolder(config.appId).then(folder => (config.appFolder = folder)),
+    () => {
+      if (config.templates) {
+        return askTemplate(config.templates).then(selectedTemplate => {
+          config.selectedTemplate = selectedTemplate
+        })
+      }
+    },
     () => askESlint().then(eslint => (config.eslint = eslint)),
+    () => askTypescript().then(ts => (config.typescript = ts)),
     () => config,
   ])
 }
@@ -118,15 +207,35 @@ const validateAppFolder = folder => {
 
 /******* Actions *******/
 
-const copyLightningFixtures = config => {
+const copyLightningFixtures = async config => {
   return new Promise(resolve => {
     const targetDir = path.join(process.cwd(), config.appFolder || '')
     if (config.appFolder && fs.pathExistsSync(targetDir)) {
       exit('The target directory ' + targetDir + ' already exists')
     }
-
-    fs.copySync(path.join(__dirname, '../../fixtures/lightning-app'), targetDir)
-
+    if (config.selectedTemplate) {
+      //Get index of the selected template
+      const index = config.templates.reduce((finalIndex, template, templateIndex) => {
+        if (template.name === config.selectedTemplate) {
+          finalIndex = templateIndex
+        }
+        return finalIndex
+      }, 0)
+      const localRepoSubFolder = path.join(config.templatesHomeFolder, config.templates[index].path)
+      if (config.templates[index].path) {
+        if (config.templates[index].repo) {
+          gitOperations(localRepoSubFolder, config.templates[index].repo)
+          fs.copySync(localRepoSubFolder, targetDir)
+        } else {
+          fs.copySync(localRepoSubFolder, targetDir)
+        }
+      }
+    } else {
+      spinner.warn(
+        'No templates are available to download, hence falling back to the default template'
+      )
+      fs.copySync(path.join(__dirname, '../../fixtures/lightning-app'), targetDir)
+    }
     resolve(targetDir)
   })
 }
@@ -194,6 +303,32 @@ const addESlint = config => {
   return true
 }
 
+const addTypescript = config => {
+  fs.copySync(
+    path.join(__dirname, '../../fixtures/typescript/src'),
+    path.join(config.targetDir, 'src')
+  )
+
+  fs.removeSync(path.join(config.targetDir, 'src/App.js'))
+  fs.removeSync(path.join(config.targetDir, 'src/index.js'))
+
+  fs.writeFileSync(
+    path.join(config.targetDir, 'package.json'),
+    JSON.stringify(
+      {
+        ...JSON.parse(fs.readFileSync(path.join(config.targetDir, 'package.json'))),
+        ...JSON.parse(
+          fs.readFileSync(path.join(__dirname, '../../fixtures/typescript/package.json'))
+        ),
+      },
+      null,
+      2
+    )
+  )
+
+  return true
+}
+
 const createApp = config => {
   spinner.start('Creating Lightning App ' + config.appName)
   return sequence([
@@ -201,6 +336,7 @@ const createApp = config => {
     () => setAppData(config),
     () => setSdkVersion(config),
     () => config.eslint && addESlint(config),
+    () => config.typescript && addTypescript(config),
     () =>
       new Promise(resolve => {
         setTimeout(() => {
@@ -256,7 +392,7 @@ const done = config => {
   console.log('👉  Get started with the following commands:')
   console.log(' ')
   config.appFolder &&
-    console.log('   ' + chalk.grey('$') + chalk.yellow(' cd ' + chalk.underline(config.appFolder)))
+  console.log('   ' + chalk.grey('$') + chalk.yellow(' cd ' + chalk.underline(config.appFolder)))
   console.log('   ' + chalk.grey('$') + chalk.yellow(' lng build'))
   console.log('   ' + chalk.grey('$') + chalk.yellow(' lng serve'))
   console.log(' ')
