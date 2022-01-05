@@ -128,22 +128,19 @@ const readDataFromTemplateIndex = folder => {
 }
 
 const downloadTemplateRepo = config => {
-  return sequence([
-    () =>
-      createLightningTemplatesFolder().then(folder => {
-        return (config.templatesHomeFolder = folder)
-      }),
-    () =>
-      templateRepoDownload(config.templatesHomeFolder).then(templates => {
-        return (config.templates = templates)
-      }),
-  ])
+  templateRepoDownload(config.templatesHomeFolder).then(templates => {
+    return (config.templates = templates)
+  })
 }
 
 const askConfig = async () => {
   const config = {}
   const isOnline = await testConnection()
   return sequence([
+    () =>
+      createLightningTemplatesFolder().then(folder => {
+        return (config.templatesHomeFolder = folder)
+      }),
     () => {
       if (isOnline) {
         return downloadTemplateRepo(config)
@@ -392,7 +389,7 @@ const done = config => {
   console.log('👉  Get started with the following commands:')
   console.log(' ')
   config.appFolder &&
-  console.log('   ' + chalk.grey('$') + chalk.yellow(' cd ' + chalk.underline(config.appFolder)))
+    console.log('   ' + chalk.grey('$') + chalk.yellow(' cd ' + chalk.underline(config.appFolder)))
   console.log('   ' + chalk.grey('$') + chalk.yellow(' lng build'))
   console.log('   ' + chalk.grey('$') + chalk.yellow(' lng serve'))
   console.log(' ')
