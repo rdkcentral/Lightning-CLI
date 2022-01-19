@@ -31,7 +31,7 @@ module.exports = () => {
     () => buildHelpers.ensureLightningApp(),
     () => {
       const args = [
-        './build',
+        process.env.LNG_BUILD_FOLDER ? `./${process.env.LNG_BUILD_FOLDER}` : './build',
         process.env.LNG_SERVE_OPEN === 'false' ? false : '-o',
         process.env.LNG_SERVE_CACHE_TIME ? '-c' + process.env.LNG_SERVE_CACHE_TIME : '-c-1',
         process.env.LNG_SERVE_PORT ? '-p' + process.env.LNG_SERVE_PORT : false,
