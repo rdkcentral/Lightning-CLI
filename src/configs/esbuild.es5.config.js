@@ -31,11 +31,15 @@ const babelPluginInlineJsonImport = require('babel-plugin-inline-json-import')
 
 module.exports = (folder, globalName) => {
   const sourcemap =
-    process.env.LNG_BUILD_SOURCEMAP === 'true'
+    process.env.NODE_ENV === 'production'
+      ? true
+      : process.env.LNG_BUILD_SOURCEMAP === 'true'
       ? true
       : process.env.LNG_BUILD_SOURCEMAP === 'inline'
       ? 'inline'
-      : false
+      : process.env.LNG_BUILD_SOURCEMAP === 'false'
+      ? false
+      : true
 
   // Load .env config every time build is triggered
   const dotEnvConfig = dotenv.config()
@@ -105,7 +109,7 @@ module.exports = (folder, globalName) => {
     define: defined,
     globalName,
     banner: {
-      "js": [
+      js: [
         '/*',
         ` App version: ${buildHelpers.getAppVersion()}`,
         ` SDK version: ${buildHelpers.getSdkVersion()}`,
@@ -114,6 +118,6 @@ module.exports = (folder, globalName) => {
         ` gmtDate: ${new Date().toGMTString()}`,
         '*/',
       ].join(os.EOL),
-    }
+    },
   }
 }
