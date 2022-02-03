@@ -117,13 +117,6 @@ module.exports = {
   output: {
     format: 'iife',
     inlineDynamicImports: true,
-    sourcemap:
-      process.env.NODE_ENV === 'production'
-        ? true
-        : process.env.LNG_BUILD_SOURCEMAP === undefined
-        ? true
-        : process.env.LNG_BUILD_SOURCEMAP === 'false'
-        ? false
-        : process.env.LNG_BUILD_SOURCEMAP,
+    sourcemap: true,
   },
 }
