@@ -25,3 +25,11 @@ by passing `--es5` as an option as shown below:
 ```bash
 lng dist --es5
 ```
+
+If you make a change to the source code of your App, you have to execute *dist* to update the dist folder in the app.
+This can become a cumbersome process and is easily forgotten.
+
+The `lng dist --watch` command performs an automatic updates in the dist folder as per the latest change in the code, by initiating a *watcher* that keeps track of any file changes
+and that triggers a dist for every change.
+
+The command watches the **src** and **static** folders files
