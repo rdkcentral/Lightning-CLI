@@ -18,6 +18,7 @@
  */
 
 const path = require('path')
+const fs = require('fs')
 const sequence = require('../helpers/sequence')
 const buildHelpers = require('../helpers/build')
 const targz = require('targz')
@@ -80,6 +81,9 @@ module.exports = () => {
     metadata => pack(tmpDir, releasesDir, metadata),
     tgzFile => (packageData.tgzFile = tgzFile),
     () => buildHelpers.removeFolder(tmpDir),
-    () => packageData,
+    () => {
+      let packageDataPath = path.join(releasesDir, 'packageData.json')
+      return fs.writeFileSync(packageDataPath, JSON.stringify(packageData, null, 2), 'utf-8')
+    },
   ])
 }

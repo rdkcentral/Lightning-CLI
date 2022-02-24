@@ -29,7 +29,7 @@ const chalk = require('chalk')
 const createAction = require('../src/actions/create')
 const buildAction = require('../src/actions/build')
 const distAction = require('../src/actions/dist')
-const uploadAction = require('../src/actions/upload')
+const releaseAction = require('../src/actions/release')
 const serveAction = require('../src/actions/serve')
 const watchAction = require('../src/actions/watch')
 const devAction = require('../src/actions/dev')
@@ -166,17 +166,11 @@ program
   })
 
 program
-  .command('upload')
-  .description(
-    [
-      '🚀',
-      ' '.repeat(3),
-      'Upload the Lightning App to the Metrological Back Office to be published in an App Store',
-    ].join('')
-  )
+  .command('release')
+  .description(['🚀', ' '.repeat(3), 'Create deployable Lightning App release content'].join(''))
   .action(() => {
     updateCheck(true)
-      .then(() => uploadAction())
+      .then(() => releaseAction())
       .catch(e => {
         console.error(e)
         process.exit(1)
