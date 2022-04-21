@@ -41,6 +41,10 @@ const pluginBabel = (options = {}) => ({
         },
       })
 
+      if(!babelOptions) {
+        return
+      }
+
       if (babelOptions.sourceMaps) {
         const filename = path.relative(process.cwd(), args.path)
 
@@ -57,6 +61,9 @@ const pluginBabel = (options = {}) => ({
     if (transform) return transformContents(transform)
 
     build.onLoad({ filter, namespace }, async args => {
+      if (/util.inspect/.test(args.path)) {
+        args.path += '.js'
+      }
       const contents = await fs.promises.readFile(args.path, 'utf8')
 
       return transformContents({ args, contents })
