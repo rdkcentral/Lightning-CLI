@@ -22,7 +22,7 @@ const os = require('os')
 const isLocallyInstalled = () => {
   let currentWorkingDir = process.cwd()
   const localScriptExecutionPath = path.join(
-    process.cwd(),
+    currentWorkingDir,
     `node_modules/${__dirname.split('node_modules')[1]}`
   )
   if (os.platform() == 'linux') return __dirname.indexOf(currentWorkingDir) > -1
