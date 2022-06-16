@@ -1,12 +1,18 @@
 # Changelog
 
+## v2.7.2
+
+*25 jan 2022*
+
+- Updated http-server NPM dependency fixing the colors.js corruption issue
+
 ## v2.7.1
 
 *29 nov 2021*
 
 - Updated rollup commonjs plugin (issue #156)
 - Fixed broken link in documentation
--
+
 ## v2.7.0
 
 *22 nov 2021*
