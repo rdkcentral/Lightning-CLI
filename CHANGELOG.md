@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.8.0
+
+*21 jun 2022*
+
+- Added mono repo support
+- Added basic Typescript support (in app code)
+- Added Source map support for rollup (es5 config) and esbuild (es5 and es6 configs)
+- Fixed custom build folder issue in `.env` file
+- Updated documentation related to `lng dist --watch` command
+- Fixed the issue to have default value for app identifier matches the app name
+
 ## v2.7.2
 
 *25 jan 2022*

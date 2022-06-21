@@ -1,5 +1,5 @@
-- [Installation](installation.md)
-- [Available commands](availablecommands.md)
+- [Installation](installation/index.md)
+- [Commands](commands/index.md)
   - [Create](commands/create.md)
   - [Build](commands/build.md)
   - [Serve](commands/serve.md)

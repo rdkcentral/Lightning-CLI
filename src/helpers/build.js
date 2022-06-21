@@ -28,6 +28,17 @@ const esbuild = require('esbuild')
 const spinner = require('./spinner')
 const isLocallyInstalled = require('./localinstallationcheck')
 const exit = require('./exit')
+const depth = 3
+
+const findFile = (parent, filePath, depthCount = 0) => {
+  if (depthCount >= depth) throw new Error('Required files not found at the given path')
+
+  const fullPath = path.join(parent, filePath)
+  if (fs.existsSync(fullPath)) {
+    return fullPath
+  }
+  return findFile(path.join(parent, '..'), filePath, ++depthCount)
+}
 
 const removeFolder = folder => {
   spinner.start('Removing "' + folder.split('/').pop() + '" folder')
@@ -44,11 +55,13 @@ const ensureFolderExists = folder => {
 const copySupportFiles = folder => {
   spinner.start('Copying support files to "' + folder.split('/').pop() + '"')
 
-  if (hasNewSDK()) {
-    shell.cp('-r', path.join(process.cwd(), 'node_modules/@lightningjs/sdk/support/*'), folder)
-  } else {
-    shell.cp('-r', path.join(process.cwd(), 'node_modules/wpe-lightning-sdk/support/*'), folder)
-  }
+  const nodeModulesPath = hasNewSDK()
+    ? 'node_modules/@lightningjs/sdk'
+    : 'node_modules/wpe-lightning-sdk'
+
+  const lightningSDKfolder = findFile(process.cwd(), nodeModulesPath)
+
+  shell.cp('-r', path.join(lightningSDKfolder, 'support/*'), folder)
 
   const command = process.argv.pop()
 
@@ -178,11 +191,15 @@ const buildAppEsBuild = async (folder, metadata, type) => {
 const bundleAppRollup = (folder, metadata, type, options) => {
   spinner.start(`Building ${type.toUpperCase()} appBundle and saving to ${folder.split('/').pop()}`)
 
+  const enterFile = fs.existsSync(path.join(process.cwd(), 'src/index.ts'))
+    ? 'src/index.ts'
+    : 'src/index.js'
+
   const args = [
     '-c',
     path.join(__dirname, `../configs/rollup.${type}.config.js`),
     '--input',
-    path.join(process.cwd(), 'src/index.js'),
+    path.join(process.cwd(), enterFile),
     '--file',
     path.join(folder, type === 'es6' ? 'appBundle.js' : 'appBundle.es5.js'),
     '--name',
@@ -191,9 +208,11 @@ const bundleAppRollup = (folder, metadata, type, options) => {
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
 
-  const levelsDown = isLocallyInstalled() ? '../../../../..' : '../..'
+  const levelsDown = isLocallyInstalled()
+    ? findFile(process.cwd(), 'node_modules/.bin/rollup')
+    : path.join(__dirname, '../..', 'node_modules/.bin/rollup')
   process.env.LNG_BUILD_FAIL_ON_WARNINGS === 'true' ? args.push('--failAfterWarnings') : ''
-  return execa(path.join(__dirname, levelsDown, 'node_modules/.bin/rollup'), args)
+  return execa(levelsDown, args)
     .then(() => {
       spinner.succeed()
       return metadata
@@ -323,7 +342,8 @@ const getSdkVersion = () => {
   const packagePath = hasNewSDK()
     ? 'node_modules/@lightningjs/sdk'
     : 'node_modules/wpe-lightning-sdk'
-  return require(path.join(process.cwd(), packagePath, 'package.json')).version
+  const packageJsonPath = findFile(process.cwd(), packagePath)
+  return require(path.join(packageJsonPath, 'package.json')).version
 }
 
 const getCliVersion = () => {
@@ -397,4 +417,5 @@ module.exports = {
   hasNewSDK,
   ensureLightningApp,
   getSettingsFileName,
+  findFile,
 }

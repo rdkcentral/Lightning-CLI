@@ -27,7 +27,6 @@ const sequence = require('../helpers/sequence')
 const ask = require('../helpers/ask')
 const exit = require('../helpers/exit')
 const spinner = require('../helpers/spinner')
-const { fail } = require('../helpers/spinner')
 
 /******* Questions *******/
 
@@ -37,10 +36,13 @@ const askAppName = () =>
     appName => validateAppName(appName),
   ])
 
-const askAppId = () =>
+const askAppId = appName =>
   sequence([
     () =>
-      ask('What is the App identifier? (reverse-DNS format)', 'com.metrological.app.myawesomeapp'),
+      ask(
+        'What is the App identifier? (reverse-DNS format)',
+        `com.metrological.app.${appName.replace(/[^A-Z0-9]/gi, '')}`
+      ),
     appId => validateAppId(appId),
   ])
 
@@ -72,11 +74,11 @@ const askGitInit = () =>
     val => val === 'Yes'
   )
 
-const askConfig = () => {
+const askConfig = async () => {
   const config = {}
   return sequence([
     () => askAppName().then(appName => (config.appName = appName)),
-    () => askAppId().then(appId => (config.appId = appId)),
+    () => askAppId(config.appName).then(appId => (config.appId = appId)),
     () => askAppFolder(config.appId).then(folder => (config.appFolder = folder)),
     () => askESlint().then(eslint => (config.eslint = eslint)),
     () => config,
@@ -124,9 +126,7 @@ const copyLightningFixtures = config => {
     if (config.appFolder && fs.pathExistsSync(targetDir)) {
       exit('The target directory ' + targetDir + ' already exists')
     }
-
     fs.copySync(path.join(__dirname, '../../fixtures/lightning-app'), targetDir)
-
     resolve(targetDir)
   })
 }

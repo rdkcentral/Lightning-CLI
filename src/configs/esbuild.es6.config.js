@@ -21,6 +21,7 @@ const buildHelpers = require('../helpers/build')
 const os = require('os')
 const alias = require('../plugins/esbuild-alias')
 const babel = require('../helpers/esbuildbabel')
+const babelPresetTypescript = require('@babel/preset-typescript')
 const path = require('path')
 const dotenv = require('dotenv')
 const babelPluginClassProperties = require('@babel/plugin-proposal-class-properties')
@@ -66,6 +67,7 @@ module.exports = (folder, globalName) => {
       ]),
       babel({
         config: {
+          presets: [babelPresetTypescript],
           plugins: [babelPluginClassProperties, babelPluginInlineJsonImport],
         },
       }),
@@ -84,7 +86,7 @@ module.exports = (folder, globalName) => {
     target: process.env.LNG_BUNDLER_TARGET || '',
     globalName,
     banner: {
-      "js": [
+      js: [
         '/*',
         ` App version: ${buildHelpers.getAppVersion()}`,
         ` SDK version: ${buildHelpers.getSdkVersion()}`,
@@ -93,6 +95,6 @@ module.exports = (folder, globalName) => {
         ` gmtDate: ${new Date().toGMTString()}`,
         '*/',
       ].join(os.EOL),
-    }
+    },
   }
 }

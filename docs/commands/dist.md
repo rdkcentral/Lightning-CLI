@@ -25,3 +25,8 @@ by passing `--es5` as an option as shown below:
 ```bash
 lng dist --es5
 ```
+
+Each time you make a change to the source code of your App, you have to execute `lng dist` to generate a new dist build of the app.
+This can become a cumbersome process and is easily forgotten.
+
+By adding the `--watch`-flag to the dist command (i.e `lng dist --watch`) this process is automated. A *watcher* keeps track of any file changes in the **src** and **static** folders and triggers a `lng dist` action for every change.

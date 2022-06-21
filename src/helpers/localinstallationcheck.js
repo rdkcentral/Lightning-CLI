@@ -16,9 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const path = require('path')
+const os = require('os')
 
 const isLocallyInstalled = () => {
-  return __dirname.indexOf(process.cwd()) > -1
+  let currentWorkingDir = process.cwd()
+  const localScriptExecutionPath = path.join(
+    currentWorkingDir,
+    `node_modules/${__dirname.split('node_modules')[1]}`
+  )
+  if (os.platform() == 'linux') return __dirname.indexOf(currentWorkingDir) > -1
+  else return __dirname.indexOf(localScriptExecutionPath) > -1
 }
 
 module.exports = isLocallyInstalled

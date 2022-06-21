@@ -20,6 +20,7 @@
 const buildHelpers = require('../helpers/build')
 const alias = require('../plugins/esbuild-alias')
 const babel = require('../helpers/esbuildbabel')
+const babelPresetTypescript = require('@babel/preset-typescript')
 const os = require('os')
 const path = require('path')
 const dotenv = require('dotenv')
@@ -81,6 +82,7 @@ module.exports = (folder, globalName) => {
                 corejs: '^3.6.5',
               },
             ],
+            [babelPresetTypescript],
           ],
           plugins: [
             babelPluginClassProperties,
@@ -105,7 +107,7 @@ module.exports = (folder, globalName) => {
     define: defined,
     globalName,
     banner: {
-      "js": [
+      js: [
         '/*',
         ` App version: ${buildHelpers.getAppVersion()}`,
         ` SDK version: ${buildHelpers.getSdkVersion()}`,
@@ -114,6 +116,6 @@ module.exports = (folder, globalName) => {
         ` gmtDate: ${new Date().toGMTString()}`,
         '*/',
       ].join(os.EOL),
-    }
+    },
   }
 }
