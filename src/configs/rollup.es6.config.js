@@ -22,6 +22,7 @@ const process = require('process')
 const babel = require('@rollup/plugin-babel').babel
 const babelPluginClassProperties = require('@babel/plugin-proposal-class-properties')
 const babelPresetTypescript = require('@babel/preset-typescript')
+const babelPresetEnv = require('@babel/preset-env')
 const resolve = require('@rollup/plugin-node-resolve').nodeResolve
 const commonjs = require('@rollup/plugin-commonjs')
 const alias = require('@rollup/plugin-alias')
@@ -65,7 +66,17 @@ module.exports = {
     resolve({ extensions, mainFields: ['module', 'main', 'browser'] }),
     commonjs({ sourceMap: false }),
     babel({
-      presets: [[babelPresetTypescript]],
+      presets: [
+        [
+          babelPresetEnv,
+          {
+            targets: {
+              safari: '12.0',
+            },
+          },
+        ],
+        [babelPresetTypescript],
+      ],
       extensions,
       babelHelpers: 'bundled',
       plugins: [babelPluginClassProperties],
