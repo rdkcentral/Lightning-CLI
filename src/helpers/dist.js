@@ -24,9 +24,11 @@ const replaceInFile = require('replace-in-file')
 const buildHelpers = require('./build')
 
 const setupDistFolder = (folder, type, metadata) => {
-  const nodeModulesPath = buildHelpers.hasNewSDK()
-    ? path.join(process.cwd(), 'node_modules/@lightningjs/core')
-    : path.join(process.cwd(), 'node_modules/wpe-lightning/')
+  const corePath = buildHelpers.hasNewSDK()
+    ? 'node_modules/@lightningjs/core'
+    : 'node_modules/wpe-lightning/'
+
+  const nodeModulesPath = buildHelpers.findFile(process.cwd(), corePath)
 
   const settingsFileName = buildHelpers.getSettingsFileName()
 
