@@ -49,6 +49,8 @@ You can use the following environment variables to customize the behavior of the
 | `LNG_BUILD_EXIT_ON_FAIL` | false | Specifies whether or not the build process should hard exit when a build error occurs. Note that the build process is triggered in several commands (`lng build`, `lng dev`, `lng watch` and `lng dist`) |
 | `LNG_BUILD_FAIL_ON_WARNINGS` | false | Specifies whether or not to show the warning to the user when a build warning occurs. Note that the build process is triggered in several commands (`lng build`, `lng dev`, `lng watch` and `lng dist`) |
 | `LNG_BUNDLER` | rollup | Specify which bundler the CLI should use to bundle the app.  Possible values: `rollup`, `esbuild`. |
+| `LNG_BROWSER_BUILD` | false | Specify whether or not  browser build is to be generated.  Possible values: `true`, `false`. |
+
 
 #### `LNG_SETTINGS_ENV`
 Specifies which environment to be used. User need to have `settings.{env}.json` file in the Project home folder with different settings. This will build/dist the application with `settings.{env}.json`.
