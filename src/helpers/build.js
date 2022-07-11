@@ -377,6 +377,16 @@ const ensureLightningApp = () => {
   })
 }
 
+/**
+ * Function to get the config for node-resolve plugin
+ * @returns Object
+ */
+const getResolveConfigForBundlers = () => {
+  return process.env.LNG_BROWSER_BUILD === 'true'
+    ? ['module', 'browser', 'main']
+    : ['module', 'main', 'browser']
+}
+
 const getSettingsFileName = () => {
   let settingsFileName = 'settings.json'
   if (process.env.LNG_SETTINGS_ENV) {
@@ -418,4 +428,5 @@ module.exports = {
   ensureLightningApp,
   getSettingsFileName,
   findFile,
+  getResolveConfigForBundlers,
 }

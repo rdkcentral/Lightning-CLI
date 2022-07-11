@@ -63,7 +63,7 @@ module.exports = {
         '~': path.resolve(process.cwd(), 'node_modules/'),
       },
     }),
-    resolve({ extensions, mainFields: ['module', 'main', 'browser'] }),
+    resolve({ extensions, mainFields: buildHelpers.getResolveConfigForBundlers() }),
     commonjs({ sourceMap: false }),
     babel({
       presets: [
