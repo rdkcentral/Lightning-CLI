@@ -100,7 +100,7 @@ module.exports = (folder, globalName) => {
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
     target: 'es5',
-    mainFields: ['module', 'main', 'browser'],
+    mainFields: buildHelpers.getResolveConfigForBundlers(),
     outfile: `${folder}/appBundle.es5.js`,
     sourcemap,
     format: 'iife',

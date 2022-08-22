@@ -2,7 +2,7 @@
   "author": "Michiel van der Geest <m.van.der.geest@metrological.com>",
   "license": "Apache-2",
   "name": "@lightningjs/cli",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "description": "Lightning-CLI: Command Line Interface tool for a seamless Lightning App Development flow",
   "bin": {
     "lightning": "./bin/index.js",

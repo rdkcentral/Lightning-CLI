@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.8.1
+
+*22 aug 2022*
+
+- Added browser build support
+- Fixed issue related to ES5 polyfill path
+- Fixed issue related to Dist with Monorepo setup
+- Added Safari 12.0 as target for es6 configs in both rollup and esbuild bundlers
+
 ## v2.8.0
 
 *21 jun 2022*

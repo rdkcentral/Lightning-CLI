@@ -238,10 +238,12 @@ const bundlePolyfills = folder => {
   spinner.start('Bundling ES5 polyfills and saving to "' + folder.split('/').pop() + '"')
 
   const nodeModulesPath = hasNewSDK()
-    ? path.join(process.cwd(), 'node_modules/@lightningjs/sdk')
-    : path.join(process.cwd(), 'node_modules/wpe-lightning-sdk/')
+    ? 'node_modules/@lightningjs/sdk'
+    : 'node_modules/wpe-lightning-sdk'
 
-  const pathToPolyfills = path.join(nodeModulesPath, 'support/polyfills')
+  const lightningSDKfolder = findFile(process.cwd(), nodeModulesPath)
+
+  const pathToPolyfills = path.join(lightningSDKfolder, 'support/polyfills')
 
   const polyfills = fs.readdirSync(pathToPolyfills).map(file => path.join(pathToPolyfills, file))
 
@@ -377,6 +379,16 @@ const ensureLightningApp = () => {
   })
 }
 
+/**
+ * Function to get the config for node-resolve plugin
+ * @returns Object
+ */
+const getResolveConfigForBundlers = () => {
+  return process.env.LNG_BROWSER_BUILD === 'true'
+    ? ['module', 'browser', 'main']
+    : ['module', 'main', 'browser']
+}
+
 const getSettingsFileName = () => {
   let settingsFileName = 'settings.json'
   if (process.env.LNG_SETTINGS_ENV) {
@@ -418,4 +430,5 @@ module.exports = {
   ensureLightningApp,
   getSettingsFileName,
   findFile,
+  getResolveConfigForBundlers,
 }

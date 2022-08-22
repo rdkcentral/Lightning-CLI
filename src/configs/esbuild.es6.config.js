@@ -22,6 +22,7 @@ const os = require('os')
 const alias = require('../plugins/esbuild-alias')
 const babel = require('../helpers/esbuildbabel')
 const babelPresetTypescript = require('@babel/preset-typescript')
+const babelPresetEnv = require('@babel/preset-env')
 const path = require('path')
 const dotenv = require('dotenv')
 const babelPluginClassProperties = require('@babel/plugin-proposal-class-properties')
@@ -67,7 +68,17 @@ module.exports = (folder, globalName) => {
       ]),
       babel({
         config: {
-          presets: [babelPresetTypescript],
+          presets: [
+            [
+              babelPresetEnv,
+              {
+                targets: {
+                  safari: '12.0',
+                },
+              },
+            ],
+            [babelPresetTypescript],
+          ],
           plugins: [babelPluginClassProperties, babelPluginInlineJsonImport],
         },
       }),
@@ -79,7 +90,7 @@ module.exports = (folder, globalName) => {
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
     outfile: `${folder}/appBundle.js`,
-    mainFields: ['browser', 'module', 'main'],
+    mainFields: buildHelpers.getResolveConfigForBundlers(),
     sourcemap,
     format: 'iife',
     define: defined,
