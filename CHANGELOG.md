@@ -2,7 +2,7 @@
 
 ## v2.8.1
 
-*28 jul 2022*
+*22 aug 2022*
 
 - Added browser build support
 - Fixed issue related to ES5 polyfill path
