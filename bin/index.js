@@ -56,12 +56,21 @@ program
 
 program
   .command('build')
+  .option('--es5', 'Build standalone ES5 version of the App')
+  .option('--es6', 'Build standalone ES6 version of the App')
   .description(
     ['👷‍♂️', ' '.repeat(3), 'Build a local development version of the Lightning App'].join('')
   )
-  .action(() => {
+  .action(options => {
+    const input = options.opts()
+    const defaultTypes = ['default']
+
+    const selectedTypes = Object.keys(input)
+      .map(type => input[type] === true && type.toLocaleLowerCase())
+      .filter(val => !!val)
+
     updateCheck()
-      .then(() => buildAction(true))
+      .then(() => buildAction(true, null, selectedTypes.length ? selectedTypes : defaultTypes))
       .catch(e => {
         console.error(e)
         process.exit(1)
