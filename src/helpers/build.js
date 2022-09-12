@@ -204,6 +204,7 @@ const bundleAppRollup = (folder, metadata, type, options) => {
     path.join(folder, type === 'es6' ? 'appBundle.js' : 'appBundle.es5.js'),
     '--name',
     makeSafeAppId(metadata),
+    '--preserveSymlinks',
   ]
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
