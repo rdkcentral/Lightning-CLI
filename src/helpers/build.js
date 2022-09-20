@@ -76,7 +76,7 @@ const copySupportFiles = folder => {
       <script>
         var socket = new WebSocket('ws://${host}:${port}');
         socket.addEventListener('open', function() {
-          console.log('WebSocket connection succesfully opened - live reload enabled');
+          console.log('WebSocket connection successfully opened - live reload enabled');
         });
         socket.addEventListener('close', function() {
           console.log('WebSocket connection closed - live reload disabled');
