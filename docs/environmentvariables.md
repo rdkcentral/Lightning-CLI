@@ -50,8 +50,9 @@ You can use the following environment variables to customize the behavior of the
 | `LNG_BUILD_FAIL_ON_WARNINGS` | false | Specifies whether or not to show the warning to the user when a build warning occurs. Note that the build process is triggered in several commands (`lng build`, `lng dev`, `lng watch` and `lng dist`) |
 | `LNG_BUNDLER` | rollup | Specify which bundler the CLI should use to bundle the app.  Possible values: `rollup`, `esbuild`. |
 | `LNG_BROWSER_BUILD` | false | Specify whether or not  browser build is to be generated.  Possible values: `true`, `false`. |
-| `LNG_LIVE_RELOAD` | false | Instructs your browser to reload the location when a new app bundle is created (using `lng dev`). When the watcher resolves, `document.location.reload()` is called in the browser (tab) that serves your app. Possible value:  `true`, `false`. |
-| `LNG_LIVE_RELOAD_PORT` | 8888 | Specifies the port Websocket is listening on. Live reload communication is driven by WebSockets.  Possible values: Any numeric value. |
+| `LNG_LIVE_RELOAD` | false | Instructs your browser to reload the location when a new app bundle is created (using `lng dev`). When the watcher resolves, `document.location.reload()` is called in the browser (tab) that serves your app. Live reload communication is driven by WebSockets. Possible value:  `true`, `false`. |
+| `LNG_LIVE_RELOAD_HOST` | localhost | Specifies the Websocket host your application will attempt to connect to listen for livereload events. Possible values: ip or host. |
+| `LNG_LIVE_RELOAD_PORT` | 8991 | Specifies the port Websocket is listening on. Possible values: Any numeric value. |
 
 
 #### `LNG_SETTINGS_ENV`
