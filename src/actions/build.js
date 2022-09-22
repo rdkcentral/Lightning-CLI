@@ -21,12 +21,20 @@ const path = require('path')
 const sequence = require('../helpers/sequence')
 const buildHelpers = require('../helpers/build')
 
-module.exports = (clear = false, change = null) => {
+module.exports = (clear = false, change = null, types = ['default']) => {
   const targetDir = path.join(process.cwd(), process.env.LNG_BUILD_FOLDER || 'build')
 
   let settingsFileName = buildHelpers.getSettingsFileName()
   let metadata
   let settings
+
+  const buildES = (test, esEnv, types) => {
+    return types.includes('default') && esEnv
+      ? (clear || change === 'src') && esEnv === test
+      : types.includes('default')
+      ? test === 'es6'
+      : types.includes(test)
+  }
 
   return sequence([
     () => buildHelpers.ensureLightningApp(),
@@ -43,11 +51,11 @@ module.exports = (clear = false, change = null) => {
     () => buildHelpers.readSettings(settingsFileName).then(result => (settings = result)),
     () =>
       (clear || change === 'src') &&
-      (settings.platformSettings.esEnv || 'es6') === 'es6' &&
+      buildES('es6', settings.platformSettings.esEnv, types) &&
       buildHelpers.bundleEs6App(targetDir, metadata),
     () =>
       (clear || change === 'src') &&
-      settings.platformSettings.esEnv === 'es5' &&
+      buildES('es5', settings.platformSettings.esEnv, types) &&
       buildHelpers.bundleEs5App(targetDir, metadata),
   ])
 }
