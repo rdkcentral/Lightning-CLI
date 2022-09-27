@@ -1,5 +1,7 @@
 # Upload
 
+> This is deprecated. It is no longer part of of Lightning-CLI. This functionality has moved to [Metro-Lightning-Upload](https://github.com/Metrological/metro-lightning-upload)
+
 *Upload the Lightning App to the Metrological Dashboard, so that it can be published to an operator's App Store*
 
 ```bash
