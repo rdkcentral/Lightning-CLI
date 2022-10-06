@@ -30,6 +30,13 @@ export class App
   extends Lightning.Component<AppTemplateSpec>
   implements Lightning.Component.ImplementTemplateSpec<AppTemplateSpec>
 {
+  /*
+   * The following properties exist to make it more convenient to access elements
+   * below in a type-safe way. They are optional.
+   *
+   * See https://lightningjs.io/docs/#/lightning-core-reference/TypeScript/Components/TemplateSpecs?id=using-a-template-spec
+   * for more information.
+   */
   readonly Background = this.getByRef('Background')!
   readonly Logo = this.Background.getByRef('Logo')!
   readonly Text = this.Background.getByRef('Text')!
