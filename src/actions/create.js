@@ -42,7 +42,7 @@ const askAppId = appName =>
     () =>
       ask(
         'What is the App identifier? (reverse-DNS format)',
-        `com.metrological.app.${appName.replace(/[^A-Z0-9]/gi, '')}`
+        `com.domain.app.${appName.replace(/[^A-Z0-9]/gi, '')}`
       ),
     appId => validateAppId(appId),
   ])
@@ -58,7 +58,7 @@ const askAppFolder = appId =>
   ])
 
 const askTypeScript = () =>
-  ask('Do you want to use TypeScript?', null, 'list', ['No', 'Yes']).then(
+  ask('Do you want to write your App in TypeScript?', null, 'list', ['No', 'Yes']).then(
     // map yes to true and no to false
     val => val === 'Yes'
   )
