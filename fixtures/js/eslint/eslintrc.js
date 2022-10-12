@@ -1,3 +1,4 @@
+/* eslint-env node */
 module.exports = {
   root: true,
   env: {
@@ -5,11 +6,7 @@ module.exports = {
     es6: true,
   },
   plugins: ['prettier'],
-  extends: [
-    'eslint:recommended',
-    'plugin:prettier/recommended',
-    'prettier',
-  ],
+  extends: ['eslint:recommended', 'plugin:prettier/recommended', 'prettier'],
   rules: {
     quotes: [2, 'single', 'avoid-escape'],
     semi: [2, 'never'],
@@ -17,14 +14,14 @@ module.exports = {
     'no-unused-vars': [
       1,
       {
-        'ignoreSiblings': true,
-        'argsIgnorePattern': 'res|next|^err'
-      }
+        ignoreRestSiblings: true,
+        argsIgnorePattern: 'res|next|^err',
+      },
     ],
     'prettier/prettier': [
       'error',
       {
-        trailingComma: true,
+        trailingComma: 'all',
         singleQuote: true,
         tabWidth: 2,
         semi: false,

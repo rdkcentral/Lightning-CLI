@@ -1,0 +1,13 @@
+{
+  "name": "{$appId}",
+  "description": "{$appName}",
+  "scripts": {
+    "tsc": "tsc"
+  },
+  "dependencies": {
+    "@lightningjs/sdk": "{$sdkVersion}"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  }
+}
