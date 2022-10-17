@@ -30,25 +30,23 @@ let wss
 
 const initWebSocketServer = () => {
   const port = process.env.LNG_LIVE_RELOAD_PORT || 8991
-
-  const io = new Server(port, {
+  const server = new Server(port, {
     cors: {
       origin: '*',
     },
   })
-
-  io.on('error', e => {
+  server.on('error', e => {
     if (e.code === 'EADDRINUSE') {
       console.log(chalk.red(chalk.underline(`Process already running on port: ${port}`)))
     }
   })
 
   process.on('SIGINT', () => {
-    io.close()
+    server.close()
     process.exit()
   })
 
-  return io
+  return server
 }
 
 module.exports = (initCallback, watchCallback) => {
