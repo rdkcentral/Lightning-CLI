@@ -2,7 +2,7 @@
 
 ## v2.9.0
 
-*18 oct 2022*
+*20 oct 2022*
 
 - Added support for `--es5` and `--es6` options to `build` command. (#200)
 - Added support for Preserving Symbolic Links in the build process for rollup. (#201)
