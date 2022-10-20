@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.9.0
+
+*20 oct 2022*
+
+- Added support for `--es5` and `--es6` options to `build` command. (#200)
+- Added support for Preserving Symbolic Links in the build process for rollup. (#201)
+- Added support for environment variable `LNG_LIVE_RELOAD_HOST` and updated the documentation relevant to it. (#203)
+- Added support for creating a project in typescript. (#195)
+- Replaced 'metrological' with 'domain' in reverse DNS app identifier.
+
 ## v2.8.1
 
 *22 aug 2022*

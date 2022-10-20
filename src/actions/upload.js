@@ -20,6 +20,7 @@
 const axios = require('axios')
 const FormData = require('form-data')
 const fs = require('fs')
+const chalk = require('chalk')
 
 const packageAction = require('./package')
 const sequence = require('../helpers/sequence')
@@ -55,6 +56,7 @@ const login = key => {
 
 const upload = (packageData, user) => {
   spinner.start('Uploading package to Metrological Back Office')
+
   if (!packageData.identifier) {
     exit("Metadata.json doesn't contain an identifier field")
   }
@@ -80,6 +82,24 @@ const upload = (packageData, user) => {
         exit(UPLOAD_ERRORS[data.error] || data.error)
       } else {
         spinner.succeed()
+        console.log()
+        console.log(chalk.yellow('WARNING!!'))
+        console.log()
+        console.log(
+          chalk.yellow(
+            'The `lng upload` command has been deprecated and has moved to a separate package.'
+          )
+        )
+        console.log(
+          chalk.yellow(
+            'Please see https://www.github.com/Metrological/metrological-cli for more info.'
+          )
+        )
+        console.log(
+          chalk.yellow(
+            'The upload command will be completely removed from the Lightnng-CLI in the Jan 2023 release.'
+          )
+        )
       }
     })
     .catch(err => {

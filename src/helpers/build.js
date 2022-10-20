@@ -68,14 +68,15 @@ const copySupportFiles = folder => {
   // if live reload is enabled we write the client WebSocket logic
   // to index.html
   if (process.env.LNG_LIVE_RELOAD === 'true' && command === 'dev') {
+    const host = process.env.LNG_LIVE_RELOAD_HOST || 'localhost'
     const port = process.env.LNG_LIVE_RELOAD_PORT || 8991
     const file = path.join(folder, 'index.html')
     const data = fs.readFileSync(file, { encoding: 'utf8' })
     const wsData = `
       <script>
-        var socket = new WebSocket('ws://localhost:${port}');
+        var socket = new WebSocket('ws://${host}:${port}');
         socket.addEventListener('open', function() {
-          console.log('WebSocket connection succesfully opened - live reload enabled');
+          console.log('WebSocket connection successfully opened - live reload enabled');
         });
         socket.addEventListener('close', function() {
           console.log('WebSocket connection closed - live reload disabled');
@@ -204,6 +205,7 @@ const bundleAppRollup = (folder, metadata, type, options) => {
     path.join(folder, type === 'es6' ? 'appBundle.js' : 'appBundle.es5.js'),
     '--name',
     makeSafeAppId(metadata),
+    '--preserveSymlinks',
   ]
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
