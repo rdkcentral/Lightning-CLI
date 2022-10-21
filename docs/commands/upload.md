@@ -18,5 +18,5 @@ The `lng upload` command takes care of the *entire* uploading process. It prompt
 
 > WARNING!<br /><br />
 > The `lng upload` command has been deprecated and has moved to a separate package.<br />
-> Please see [https://www.github.com/Metrological/metrological-cli] for more info.<br />
+> Please see [https://www.github.com/Metrological/metrological-cli](https://www.github.com/Metrological/metrological-cli) for more info.<br />
 > The upload command will be completely removed from the Lightnng-CLI in the Jan 2023 release<br />
