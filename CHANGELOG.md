@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.9.1
+
+*24 oct 2022*
+
+- Fixed typo
+
 ## v2.9.0
 
 *20 oct 2022*

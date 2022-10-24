@@ -97,7 +97,7 @@ const upload = (packageData, user) => {
         )
         console.log(
           chalk.yellow(
-            'The upload command will be completely removed from the Lightnng-CLI in the Jan 2023 release.'
+            'The upload command will be completely removed from the Lightning-CLI in the Jan 2023 release.'
           )
         )
       }
