@@ -258,7 +258,10 @@ const ensureCorrectGitIgnore = () => {
   return new Promise(resolve => {
     const filename = path.join(process.cwd(), '.gitignore')
     try {
-      const gitIgnoreEntries = fs.readFileSync(filename, 'utf8').split(os.EOL)
+      const gitIgnoreEntries = fs
+        .readFileSync(filename, 'utf8')
+        .replace(/\r/g, '')
+        .split('\n')
       const missingEntries = [
         process.env.LNG_BUILD_FOLDER || 'dist',
         'releases',
