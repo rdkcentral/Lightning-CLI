@@ -87,6 +87,7 @@ module.exports = (folder, globalName) => {
     minifyWhitespace: minify,
     minifyIdentifiers: minify,
     minifySyntax: false,
+    keepNames: minify,
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
     outfile: `${folder}/appBundle.js`,
