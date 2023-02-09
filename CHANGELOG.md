@@ -7,6 +7,8 @@
 - Fixed `.gitignore` is rewritten on each build. ([#209](https://github.com/rdkcentral/Lightning-CLI/issues/209))
 - Removed `lng upload` command.
 - Fixed `_states()` is broken for esbuild bundle when NODE_ENV=production. ([#213](https://github.com/rdkcentral/Lightning-CLI/issues/213))
+- Replaced WebSockets with Socket.io for live reload.
+- Updated environment variable handling so that `process.env` are merged with `dotenv` variables. ([#214](https://github.com/rdkcentral/Lightning-CLI/issues/214))
 
 
 ## v2.9.1
