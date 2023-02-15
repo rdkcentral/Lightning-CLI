@@ -5,8 +5,10 @@
 *15 feb 2023*
 
 - Fixed `.gitignore` is rewritten on each build. ([#209](https://github.com/rdkcentral/Lightning-CLI/issues/209))
-- Removed `lng upload` command.
+- Removed `lng upload` command.  ([PR #216](https://github.com/rdkcentral/Lightning-CLI/pull/216))
 - Fixed `_states()` is broken for esbuild bundle when NODE_ENV=production. ([#213](https://github.com/rdkcentral/Lightning-CLI/issues/213))
+- Replaced WebSockets with Socket.io  ([PR #205](https://github.com/rdkcentral/Lightning-CLI/pull/205))
+- Added support for using a different .env than the one on the root folder with ([PR #217](https://github.com/rdkcentral/Lightning-CLI/pull/217))
 
 
 ## v2.9.1
