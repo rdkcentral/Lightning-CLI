@@ -73,18 +73,18 @@ const copySupportFiles = folder => {
     const file = path.join(folder, 'index.html')
     const data = fs.readFileSync(file, { encoding: 'utf8' })
     const wsData = `
+      <script src='http://${host}:${port}/socket.io/socket.io.js'></script>
       <script>
-        var socket = new WebSocket('ws://${host}:${port}');
-        socket.addEventListener('open', function() {
+        const socket = io('http://${host}:${port}');
+
+        socket.on('connect', function() {
           console.log('WebSocket connection successfully opened - live reload enabled');
         });
-        socket.addEventListener('close', function() {
+        socket.on('disconnect', function() {
           console.log('WebSocket connection closed - live reload disabled');
         });
-        socket.addEventListener('message', function(event) {
-          if(event.data === 'reload'){
-            document.location.reload();
-          }
+        socket.on('reload', function() {
+          document.location.reload();
         });
       </script>
     </body>`
@@ -258,7 +258,10 @@ const ensureCorrectGitIgnore = () => {
   return new Promise(resolve => {
     const filename = path.join(process.cwd(), '.gitignore')
     try {
-      const gitIgnoreEntries = fs.readFileSync(filename, 'utf8').split(os.EOL)
+      const gitIgnoreEntries = fs
+        .readFileSync(filename, 'utf8')
+        .replace(/\r/g, '')
+        .split('\n')
       const missingEntries = [
         process.env.LNG_BUILD_FOLDER || 'dist',
         'releases',

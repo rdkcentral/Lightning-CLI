@@ -23,7 +23,6 @@ const babel = require('../helpers/esbuildbabel')
 const babelPresetTypescript = require('@babel/preset-typescript')
 const os = require('os')
 const path = require('path')
-const dotenv = require('dotenv')
 const babelPresetEnv = require('@babel/preset-env')
 const babelPluginTransFormSpread = require('@babel/plugin-transform-spread')
 const babelPluginTransFormParameters = require('@babel/plugin-transform-parameters')
@@ -39,10 +38,9 @@ module.exports = (folder, globalName) => {
       : false
 
   // Load .env config every time build is triggered
-  const dotEnvConfig = dotenv.config()
   const appVars = {
     NODE_ENV: process.env.NODE_ENV,
-    ...buildHelpers.getEnvAppVars(dotEnvConfig.parsed),
+    ...buildHelpers.getEnvAppVars(process.env),
   }
   const keys = Object.keys(appVars)
   const defined = keys.reduce((acc, key) => {
@@ -97,6 +95,7 @@ module.exports = (folder, globalName) => {
     minifyWhitespace: minify,
     minifyIdentifiers: minify,
     minifySyntax: false,
+    keepNames: minify,
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
     target: 'es5',
