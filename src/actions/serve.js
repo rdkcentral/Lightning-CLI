@@ -62,17 +62,22 @@ module.exports = () => {
           })
         }
 
-        subprocess.stdout.on('data', (data) => {
+        subprocess.stdout.on('data', data => {
           if (/Open:/.test(data)) {
-            const url = data.toString().match(/https?:\/\/(?:[0-9]{1,3}\.){3}[0-9]{1,3}:[0-9]{1,5}(?=\s*$)/)[0];
-            resolve({ process: subprocess, config: {
-              url: url,
-              LNG_BUILD_FOLDER: args[0],
-              LNG_SERVE_OPEN: args[1],
-              LNG_SERVE_CACHE_TIME: args[2],
-              LNG_SERVE_PORT: args[3],
-              LNG_SERVE_PROXY: args[4]
-            } })
+            const url = data
+              .toString()
+              .match(/https?:\/\/(?:[0-9]{1,3}\.){3}[0-9]{1,3}:[0-9]{1,5}(?=\s*$)/)[0]
+            resolve({
+              process: subprocess,
+              config: {
+                url: url,
+                LNG_BUILD_FOLDER: args[0],
+                LNG_SERVE_OPEN: args[1],
+                LNG_SERVE_CACHE_TIME: args[2],
+                LNG_SERVE_PORT: args[3],
+                LNG_SERVE_PROXY: args[4],
+              },
+            })
           }
         })
 
