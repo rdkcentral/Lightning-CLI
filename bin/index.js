@@ -19,12 +19,15 @@
  * limitations under the License.
  */
 
+// load and parse .env.${process.env.NODE_ENV} file and fallback to optional .env
 const path = require('path')
+const fs = require('fs')
 const envFileName = ['', 'env', ...(process.env.NODE_ENV ? [process.env.NODE_ENV] : [])].join('.')
 const envFilePath = path.resolve(process.cwd(), envFileName)
 
-// load and parse (optional) .env file with
-require('dotenv').config({ path: envFilePath })
+require('dotenv').config({
+  ...(fs.existsSync(envFilePath) ? { path: envFilePath } : {}), // only override if file exists
+})
 
 const program = require('commander')
 const didYouMean = require('didyoumean2').default
