@@ -19,10 +19,12 @@
  * limitations under the License.
  */
 
+const path = require('path')
+const envFileName = ['', 'env', ...(process.env.NODE_ENV ? [process.env.NODE_ENV] : [])].join('.')
+const envFilePath = path.resolve(process.cwd(), envFileName)
+
 // load and parse (optional) .env file with
-require('dotenv').config({
-  path: ['', 'env', ...(process.env.NODE_ENV ? [process.env.NODE_ENV] : [])].join('.'),
-})
+require('dotenv').config({ path: envFilePath })
 
 const program = require('commander')
 const didYouMean = require('didyoumean2').default
