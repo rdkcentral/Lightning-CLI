@@ -29,7 +29,6 @@ const chalk = require('chalk')
 const createAction = require('../src/actions/create')
 const buildAction = require('../src/actions/build')
 const distAction = require('../src/actions/dist')
-const uploadAction = require('../src/actions/upload')
 const serveAction = require('../src/actions/serve')
 const watchAction = require('../src/actions/watch')
 const devAction = require('../src/actions/dev')
@@ -56,12 +55,21 @@ program
 
 program
   .command('build')
+  .option('--es5', 'Build standalone ES5 version of the App')
+  .option('--es6', 'Build standalone ES6 version of the App')
   .description(
     ['👷‍♂️', ' '.repeat(3), 'Build a local development version of the Lightning App'].join('')
   )
-  .action(() => {
+  .action(options => {
+    const input = options.opts()
+    const defaultTypes = ['default']
+
+    const selectedTypes = Object.keys(input)
+      .map(type => input[type] === true && type.toLocaleLowerCase())
+      .filter(val => !!val)
+
     updateCheck()
-      .then(() => buildAction(true))
+      .then(() => buildAction(true, null, selectedTypes.length ? selectedTypes : defaultTypes))
       .catch(e => {
         console.error(e)
         process.exit(1)
@@ -166,24 +174,6 @@ program
   })
 
 program
-  .command('upload')
-  .description(
-    [
-      '🚀',
-      ' '.repeat(3),
-      'Upload the Lightning App to the Metrological Back Office to be published in an App Store',
-    ].join('')
-  )
-  .action(() => {
-    updateCheck(true)
-      .then(() => uploadAction())
-      .catch(e => {
-        console.error(e)
-        process.exit(1)
-      })
-  })
-
-program
   .command('update')
   .description(['🔄', ' '.repeat(3), 'Update the Lightning-CLI to the latest version'].join(''))
   .action(() => {
@@ -196,19 +186,34 @@ program
   })
 
 program.on('command:*', () => {
-  const suggestion = didYouMean(
-    program.args[0] || '',
-    program.commands.map(command => command._name)
-  )
+  const command = program.args[0]
+  if (command === 'upload') {
+    console.log()
+    console.log(chalk.yellow('WARNING!!'))
+    console.log()
+    console.log(
+      chalk.yellow(
+        'The `lng upload` command is no longer part of the Lightning-CLI, but has moved to a separate package.'
+      )
+    )
+    console.log(
+      chalk.yellow('Please see https://www.github.com/Metrological/metrological-cli for more info.')
+    )
+  } else {
+    const suggestion = didYouMean(
+      command || '',
+      program.commands.map(command => command._name)
+    )
 
-  console.log("Sorry, that command doesn't seems to exist ...")
-  console.log('')
-  if (suggestion) {
-    console.log('Perhaps you meant: ' + chalk.yellow('lng ' + suggestion) + '?')
+    console.log("Sorry, that command doesn't seems to exist ...")
     console.log('')
+    if (suggestion) {
+      console.log('Perhaps you meant: ' + chalk.yellow('lng ' + suggestion) + '?')
+      console.log('')
+    }
+    console.log('Use ' + chalk.yellow('lng -h') + ' to see a full list of available commands')
+    process.exit(1)
   }
-  console.log('Use ' + chalk.yellow('lng -h') + ' to see a full list of available commands')
-  process.exit(1)
 })
 
 program.parse(process.argv)

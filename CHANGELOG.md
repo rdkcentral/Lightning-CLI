@@ -1,5 +1,32 @@
 # Changelog
 
+## v2.10.0
+
+*15 feb 2023*
+
+- Fixed `.gitignore` is rewritten on each build. ([#209](https://github.com/rdkcentral/Lightning-CLI/issues/209))
+- Removed `lng upload` command.
+- Fixed `_states()` is broken for esbuild bundle when NODE_ENV=production. ([#213](https://github.com/rdkcentral/Lightning-CLI/issues/213))
+- Replaced WebSockets with Socket.io for live reload.
+- Added support for using environment variables set on the `process.env` in addition to variables defined in `.env` files ([#214](https://github.com/rdkcentral/Lightning-CLI/issues/214))
+
+
+## v2.9.1
+
+*24 oct 2022*
+
+- Fixed typo
+
+## v2.9.0
+
+*20 oct 2022*
+
+- Added support for `--es5` and `--es6` options to `build` command. (#200)
+- Added support for Preserving Symbolic Links in the build process for rollup. (#201)
+- Added support for environment variable `LNG_LIVE_RELOAD_HOST` and updated the documentation relevant to it. (#203)
+- Added support for creating a project in typescript. (#195)
+- Replaced 'metrological' with 'domain' in reverse DNS app identifier.
+
 ## v2.8.1
 
 *22 aug 2022*
