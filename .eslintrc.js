@@ -4,6 +4,7 @@ module.exports = {
     browser: true,
     es6: true,
     node: true,
+    'jest/globals': true,
   },
   plugins: ['prettier'],
   extends: ['eslint:recommended', 'plugin:prettier/recommended', 'prettier'],

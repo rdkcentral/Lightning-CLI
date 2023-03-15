@@ -265,11 +265,14 @@ const done = config => {
 }
 
 module.exports = () => {
-  sequence([
-    askConfig,
-    config => createApp(config),
-    config => askInstall(config),
-    config => install(config),
-    config => done(config),
-  ])
+  return new Promise(resolve => {
+    sequence([
+      askConfig,
+      config => createApp(config),
+      config => askInstall(config),
+      config => install(config),
+      config => done(config),
+      config => resolve(config),
+    ])
+  })
 }

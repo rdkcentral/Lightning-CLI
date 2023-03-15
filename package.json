@@ -9,7 +9,7 @@
     "lng": "./bin/index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --runInBand --detectOpenHandles",
     "release": "npm publish --access public"
   },
   "lint-staged": {
@@ -65,12 +65,47 @@
     "ws": "^7.4.2"
   },
   "devDependencies": {
+    "@types/jest": "^29.4.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.10.0",
     "eslint-config-prettier": "^6.12.0",
     "eslint-plugin-prettier": "^3.1.4",
     "husky": "^4.3.0",
+    "jest": "^29.5.0",
+    "jest-html-reporters": "^3.1.4",
+    "jest-image-snapshot": "^6.1.0",
     "lint-staged": "^10.4.0",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "puppeteer": "^19.7.5"
+  },
+  "jest": {
+    "testSequencer": "./tests/runSequence.js",
+    "globalSetup": "./tests/globalSetup.js",
+    "globalTeardown": "./tests/globalTeardown.js",
+    "collectCoverage": false,
+    "coverageDirectory": "./tests_coverage",
+    "coverageReporters": [
+      "html"
+    ],
+    "collectCoverageFrom": [
+      "**/src/**",
+      "!**/fixtures/**"
+    ],
+    "reporters": [
+      "default",
+      [
+        "jest-html-reporters",
+        {
+          "pageTitle": "Lightning-CLI Test",
+          "expand": true,
+          "hideIcon": true,
+          "publicPath": "./tests_report",
+          "filename": "report.html",
+          "inlineSource": true,
+          "openReport": false,
+          "includeConsoleLog": true
+        }
+      ]
+    ]
   }
 }

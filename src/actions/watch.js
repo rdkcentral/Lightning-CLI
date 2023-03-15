@@ -66,6 +66,7 @@ module.exports = (initCallback, watchCallback) => {
         if (typeof f == 'object' && prev === null && curr === null) {
           build(true)
             .then(() => {
+              //TODO have to resolve.
               initCallback && initCallback().catch(() => process.exit())
 
               // if configured start WebSocket Server
