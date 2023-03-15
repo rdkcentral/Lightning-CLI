@@ -1,5 +1,7 @@
 const fs = require('fs-extra')
-const dotenv = require('dotenv')
+const { addMsg } = require('jest-html-reporters/helper')
+
+require('dotenv').config()
 
 const buildApp = require('../src/actions/build')
 const buildHelpers = require('../src/helpers/build')
@@ -33,15 +35,15 @@ describe('lng build', () => {
       appSettings: expect.objectContaining({
         stage: expect.objectContaining({
           clearColor: expect.any(String),
-          useImageWorker: expect.any(Boolean)
+          useImageWorker: expect.any(Boolean),
         }),
-        debug: expect.any(Boolean)
+        debug: expect.any(Boolean),
       }),
       platformSettings: expect.objectContaining({
         path: expect.any(String),
         log: expect.any(Boolean),
-        showVersion: expect.any(Boolean)
-      })
+        showVersion: expect.any(Boolean),
+      }),
     })
   })
 
@@ -55,14 +57,14 @@ describe('lng build', () => {
     // Clean up the test by deleting the app folder
     fs.removeSync(`${global.appConfig.appPath}/build`)
 
-    const log = jest.spyOn(console, "log").mockImplementation(() => {})
-    const warn = jest.spyOn(console, "warn").mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(() => {})
+    jest.spyOn(console, 'warn').mockImplementation(() => {})
     // global.setEnvironmentValue('LNG_BUNDLER', 'esbuild')
     process.env.LNG_BUNDLER = 'esbuild'
     global.changeEsEnv('es5')
 
     const buildResult = await buildApp(true)
-
+    await addMsg({ message: JSON.stringify(buildResult, null, 2) })
     //TODO inconsistent return value -> es5 returns object with metadata.json content, es6 returns Boolean false
 
     //Check if build folder exists
@@ -80,12 +82,13 @@ describe('lng build', () => {
   it('Should build app with esbuild and es6', async () => {
     // Clean up the test by deleting the app folder
     fs.removeSync(`${global.appConfig.appPath}/build`)
-    const log = jest.spyOn(console, "log").mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(() => {})
     // global.setEnvironmentValue('LNG_BUNDLER', 'esbuild')
     process.env.LNG_BUNDLER = 'esbuild'
     global.changeEsEnv('es6')
 
     const buildResult = await buildApp(true)
+    await addMsg({ message: JSON.stringify(buildResult, null, 2) })
 
     //TODO inconsistent return value -> es5 returns object with metadata.json content, es6 returns Boolean false
 
@@ -104,13 +107,13 @@ describe('lng build', () => {
   it('should build app with rollup and es5', async () => {
     // Clean up the test by deleting the app folder
     fs.removeSync(`${global.appConfig.appPath}/build`)
-    const log = jest.spyOn(console, "log").mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(() => {})
     // global.setEnvironmentValue('LNG_BUNDLER', 'rollup')
     process.env.LNG_BUNDLER = 'rollup'
     global.changeEsEnv('es5')
 
     const buildResult = await buildApp(true)
-
+    await addMsg({ message: JSON.stringify(buildResult, null, 2) })
     //TODO inconsistent return value -> es5 returns object with metadata.json content, es6 returns Boolean false
 
     //Check if build folder exists
@@ -128,13 +131,13 @@ describe('lng build', () => {
   it('Should build app with rollup and es6', async () => {
     // Clean up the test by deleting the app folder
     fs.removeSync(`${global.appConfig.appPath}/build`)
-    const log = jest.spyOn(console, "log").mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(() => {})
     // global.setEnvironmentValue('LNG_BUNDLER', 'rollup')
     process.env.LNG_BUNDLER = 'rollup'
     global.changeEsEnv('es6')
 
     const buildResult = await buildApp(true)
-
+    await addMsg({ message: JSON.stringify(buildResult, null, 2) })
     //TODO inconsistent return value -> es5 returns object with metadata.json content, es6 returns Boolean false
 
     //Check if build folder exists
