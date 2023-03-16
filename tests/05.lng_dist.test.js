@@ -1,5 +1,5 @@
 const fs = require('fs-extra')
-const { addAttach } = require("jest-html-reporters/helper")
+const { addMsg } = require('jest-html-reporters/helper')
 const puppeteer = require('puppeteer')
 const { toMatchImageSnapshot } = require('jest-image-snapshot')
 expect.extend({ toMatchImageSnapshot })
@@ -7,35 +7,37 @@ expect.extend({ toMatchImageSnapshot })
 const lngDist = require('../src/actions/dist')
 jest.mock('../src/helpers/spinner')
 describe('lng dist', () => {
+  let browser, page, distFolder
   let originalExit = process.exit
 
   beforeAll(async () => {
     process.exit = jest.fn()
     process.chdir(global.appConfig.appPath)
     distFolder = `${process.cwd()}/dist`
-    browser = await puppeteer.launch({headless: true})
+    browser = await puppeteer.launch({ headless: true })
     page = await browser.newPage()
     // Set screen size
-    await page.setViewport({width: 1920, height: 1080})
+    await page.setViewport({ width: 1920, height: 1080 })
     global.changeShowVersion(false)
   })
 
   afterAll(async () => {
     await browser.close()
-    process.exit = originalExit;
+    process.exit = originalExit
     process.chdir(global.originalCWD)
   })
 
   it('Should create a distributable version with rollup and es5', async () => {
-    const log = jest.spyOn(console, "log").mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(() => {})
     // Clean up the test by deleting the app folder
     fs.removeSync(`${global.appConfig.appPath}/dist`)
 
     process.env.LNG_BUNDLER = 'rollup'
     const distResult = await lngDist({
       types: ['es5'],
-      isWatchEnabled: false
+      isWatchEnabled: false,
     })
+    await addMsg({ message: JSON.stringify(distResult, null, 2) })
 
     //Check if dist folder exists
     expect(fs.pathExistsSync(distFolder)).toBe(true)
@@ -66,8 +68,9 @@ describe('lng dist', () => {
     process.env.LNG_BUNDLER = 'rollup'
     const distResult = await lngDist({
       types: ['es6'],
-      isWatchEnabled: false
+      isWatchEnabled: false,
     })
+    await addMsg({ message: JSON.stringify(distResult, null, 2) })
 
     //Check if dist folder exists
     expect(fs.pathExistsSync(distFolder)).toBe(true)
@@ -84,8 +87,9 @@ describe('lng dist', () => {
     process.env.LNG_BUNDLER = 'rollup'
     const distResult = await lngDist({
       types: ['es5', 'es6'],
-      isWatchEnabled: false
+      isWatchEnabled: false,
     })
+    await addMsg({ message: JSON.stringify(distResult, null, 2) })
 
     //es5
     //Check if dist folder exists
@@ -113,8 +117,9 @@ describe('lng dist', () => {
     process.env.LNG_BUNDLER = 'esbuild'
     const distResult = await lngDist({
       types: ['es5'],
-      isWatchEnabled: false
+      isWatchEnabled: false,
     })
+    await addMsg({ message: JSON.stringify(distResult, null, 2) })
 
     //Check if dist folder exists
     expect(fs.pathExistsSync(distFolder)).toBe(true)
@@ -132,8 +137,9 @@ describe('lng dist', () => {
     process.env.LNG_BUNDLER = 'esbuild'
     const distResult = await lngDist({
       types: ['es6'],
-      isWatchEnabled: false
+      isWatchEnabled: false,
     })
+    await addMsg({ message: JSON.stringify(distResult, null, 2) })
 
     //Check if dist folder exists
     expect(fs.pathExistsSync(distFolder)).toBe(true)
@@ -150,8 +156,9 @@ describe('lng dist', () => {
     process.env.LNG_BUNDLER = 'esbuild'
     const distResult = await lngDist({
       types: ['es5', 'es6'],
-      isWatchEnabled: false
+      isWatchEnabled: false,
     })
+    await addMsg({ message: JSON.stringify(distResult, null, 2) })
 
     //es5
     //Check if dist folder exists

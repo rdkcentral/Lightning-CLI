@@ -1,6 +1,6 @@
 const fs = require('fs-extra')
 
-module.exports = async function(globalConfig, projectConfig) {
+module.exports = async function() {
   global.setEnvironmentValue = (key, value) => {
     //Check if the .env exists if not create it
     if (!fs.existsSync('.env')) fs.writeFileSync('.env', '')

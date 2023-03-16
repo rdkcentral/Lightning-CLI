@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer')
-const { addAttach } = require("jest-html-reporters/helper")
+const { addAttach } = require('jest-html-reporters/helper')
 const { toMatchImageSnapshot } = require('jest-image-snapshot')
 expect.extend({ toMatchImageSnapshot })
 
@@ -15,25 +15,27 @@ describe('lng docs', () => {
   beforeAll(async () => {
     process.exit = jest.fn()
     process.chdir(global.appConfig.appPath)
-    browser = await puppeteer.launch({headless: true})
+    browser = await puppeteer.launch({ headless: true })
     page = await browser.newPage()
     // Set screen size
-    await page.setViewport({width: 1920, height: 1080})
+    await page.setViewport({ width: 1920, height: 1080 })
   })
 
   afterAll(async () => {
     await browser.close()
-    process.exit = originalExit;
+    process.exit = originalExit
     process.chdir(global.originalCWD)
   })
 
   it('Should serve the documentation for Lightning-Cli', async () => {
-    const log = jest.spyOn(console, "log").mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(() => {})
     const docServer = await lngDocs()
 
-    expect(docServer.config.url).toMatch(/https?:\/\/(?:[0-9]{1,3}\.){3}[0-9]{1,3}:[0-9]{1,5}(?=\s*$)/)
+    expect(docServer.config.url).toMatch(
+      /https?:\/\/(?:[0-9]{1,3}\.){3}[0-9]{1,3}:[0-9]{1,5}(?=\s*$)/
+    )
     await page.goto(docServer.config.url, {
-      waitUntil: 'networkidle0'
+      waitUntil: 'networkidle0',
     })
 
     const landingPageImage = await page.screenshot()

@@ -8,21 +8,21 @@ const buildFolder = `${process.cwd()}/build`
 
 describe('lng dev', () => {
   let originalExit = process.exit
-  let browser;
-  let page;
+  let browser
+  let page
 
   beforeAll(async () => {
-    process.exit = jest.fn();
-    process.chdir(global.appConfig.appPath);
-    browser = await puppeteer.launch({headless: true});
-    page = await browser.newPage();
+    process.exit = jest.fn()
+    process.chdir(global.appConfig.appPath)
+    browser = await puppeteer.launch({ headless: true })
+    page = await browser.newPage()
     // Set screen size
-    await page.setViewport({width: 1920, height: 1080});
+    await page.setViewport({ width: 1920, height: 1080 })
   })
 
   afterAll(async () => {
-    await browser.close();
-    process.exit = originalExit;
+    await browser.close()
+    process.exit = originalExit
     process.chdir(global.originalCWD)
   })
   it('Should build app then run dev server with rollup and es5', async () => {
@@ -38,4 +38,4 @@ describe('lng dev', () => {
   it.todo('Should build app then run dev server with rollup and es6')
   it.todo('Should build app then run dev server with esbuild and es5')
   it.todo('Should build app then run dev server with esbuild and es6')
-});
+})

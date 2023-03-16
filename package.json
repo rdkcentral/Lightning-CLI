@@ -93,7 +93,7 @@
       [
         "jest-html-reporters",
         {
-          "pageTitle": "Lightning-CLI Test",
+          "pageTitle": "Lightning-CLI Test Result",
           "expand": true,
           "hideIcon": true,
           "publicPath": "./tests_report",
