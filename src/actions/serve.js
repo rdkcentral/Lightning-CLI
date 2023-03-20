@@ -63,10 +63,10 @@ module.exports = () => {
         }
 
         subprocess.stdout.on('data', data => {
-          if (/Open:/.test(data)) {
+          if (/Hit CTRL-C to stop the server/.test(data)) {
             const url = data
               .toString()
-              .match(/https?:\/\/(?:[0-9]{1,3}\.){3}[0-9]{1,3}:[0-9]{1,5}(?=\s*$)/)[0]
+              .match(/(http|https):\/\/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d+)/)[0]
             resolve({
               process: subprocess,
               config: {

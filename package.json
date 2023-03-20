@@ -43,7 +43,7 @@
     "concat": "^1.0.3",
     "core-js": "^3.6.5",
     "didyoumean2": "^4.1.0",
-    "dotenv": "^8.2.0",
+    "dotenv": "^16.0.3",
     "esbuild": "^0.12.20",
     "execa": "^4.0.3",
     "fs-extra": "^9.0.1",
@@ -76,6 +76,9 @@
     "puppeteer": "^19.7.5"
   },
   "jest": {
+    "setupFiles": [
+      "./tests/globalMocks.js"
+    ],
     "testSequencer": "./tests/runSequence.js",
     "globalSetup": "./tests/globalSetup.js",
     "globalTeardown": "./tests/globalTeardown.js",

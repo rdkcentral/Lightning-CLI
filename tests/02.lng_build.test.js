@@ -11,11 +11,16 @@ jest.mock('is-online', () => jest.fn())
 jest.mock('inquirer', () => ({
   prompt: jest.fn(),
 }))
-jest.mock('../src/helpers/spinner')
+
+const spinner = require('../src/helpers/spinner')
 
 describe('lng build', () => {
   let originalExit = process.exit
-  let buildFolder = null
+  let buildFolder
+
+  beforeEach(() => {
+    spinner.start.mockReset()
+  })
 
   beforeAll(async () => {
     process.chdir(global.appConfig.appPath)
@@ -67,10 +72,11 @@ describe('lng build', () => {
     await addMsg({ message: JSON.stringify(buildResult, null, 2) })
     //TODO inconsistent return value -> es5 returns object with metadata.json content, es6 returns Boolean false
 
+    await addMsg({ message: spinner.start.mock.calls.join('\n') })
+
     //Check if build folder exists
     expect(fs.pathExistsSync(buildFolder)).toBe(true)
     //Check for files and directories
-    expect(fs.existsSync(`${buildFolder}/settings.json`)).toBe(true)
     expect(fs.existsSync(`${buildFolder}/settings.json`)).toBe(true)
     expect(fs.existsSync(`${buildFolder}/metadata.json`)).toBe(true)
     expect(fs.existsSync(`${buildFolder}/startApp.js`)).toBe(true)
@@ -91,6 +97,8 @@ describe('lng build', () => {
     await addMsg({ message: JSON.stringify(buildResult, null, 2) })
 
     //TODO inconsistent return value -> es5 returns object with metadata.json content, es6 returns Boolean false
+
+    await addMsg({ message: spinner.start.mock.calls.join('\n') })
 
     //Check if build folder exists
     expect(fs.pathExistsSync(buildFolder)).toBe(true)
@@ -116,6 +124,8 @@ describe('lng build', () => {
     await addMsg({ message: JSON.stringify(buildResult, null, 2) })
     //TODO inconsistent return value -> es5 returns object with metadata.json content, es6 returns Boolean false
 
+    await addMsg({ message: spinner.start.mock.calls.join('\n') })
+
     //Check if build folder exists
     expect(fs.pathExistsSync(buildFolder)).toBe(true)
     //Check for files and directories
@@ -140,6 +150,9 @@ describe('lng build', () => {
     await addMsg({ message: JSON.stringify(buildResult, null, 2) })
     //TODO inconsistent return value -> es5 returns object with metadata.json content, es6 returns Boolean false
 
+    expect(spinner.start).toHaveBeenCalledWith('Building ES6 appBundle and saving to build')
+    await addMsg({ message: spinner.start.mock.calls.join('\n') })
+
     //Check if build folder exists
     expect(fs.pathExistsSync(buildFolder)).toBe(true)
     //Check for files and directories
@@ -150,5 +163,14 @@ describe('lng build', () => {
     expect(fs.existsSync(`${buildFolder}/index.html`)).toBe(true)
     expect(fs.existsSync(`${buildFolder}/appBundle.js`)).toBe(true)
     expect(fs.existsSync(`${buildFolder}/appBundle.js.map`)).toBe(true)
+
+    //Check file contents
+    const metadataJson = fs.readJsonSync(`${buildFolder}/metadata.json`)
+    expect(metadataJson.identifier).toBe(global.appConfig.id)
+
+    const indexHtml = fs.readFileSync(`${buildFolder}/index.html`, 'utf8')
+    expect(indexHtml).toContain('<script src="./startApp.js"></script>')
+
+    console.log(buildHelpers.getAppVersion())
   })
 })
