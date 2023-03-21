@@ -2,7 +2,6 @@ const fs = require('fs-extra')
 const { addMsg } = require('jest-html-reporters/helper')
 
 const buildApp = require('../src/actions/build')
-const buildHelpers = require('../src/helpers/build')
 const lngDist = require('../src/actions/dist')
 const serveApp = require('../src/actions/serve')
 const dotenv = require('dotenv')

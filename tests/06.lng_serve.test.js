@@ -57,7 +57,7 @@ describe('lng serve', () => {
   it('Start a local webserver and run a built Lightning App in a web browser', async () => {
     const preventstout = jest.spyOn(process.stdout, 'write').mockImplementation(() => {})
 
-    // jest.spyOn(console, 'log').mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(() => {})
     const devServer = await serveApp()
 
     expect(devServer.config.url).toMatch(

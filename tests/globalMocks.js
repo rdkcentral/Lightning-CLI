@@ -7,3 +7,15 @@ global.spinner = jest.mock('../src/helpers/spinner', () => {
     warn: jest.fn(),
   }
 })
+global.cli = (command, options) => {
+  const originalArgv = process.argv.slice()
+  process.argv.length = 2
+  process.argv[2] = command || 'help'
+
+  if (Array.isArray(options))
+    options.forEach(element => {
+      process.argv.push(element)
+    })
+  require('../bin/index')
+  process.argv = originalArgv
+}
