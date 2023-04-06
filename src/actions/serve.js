@@ -30,12 +30,17 @@ module.exports = () => {
   return sequence([
     () => buildHelpers.ensureLightningApp(),
     () => {
+      const cors = (process.env.LNG_SERVE_CORS == null || process.env.LNG_SERVE_CORS === 'false')
+        ? false
+        : (process.env.LNG_SERVE_CORS === 'true' ? '*' : `'${process.env.LNG_SERVE_CORS}'`)
+
       const args = [
         process.env.LNG_BUILD_FOLDER ? `./${process.env.LNG_BUILD_FOLDER}` : './build',
         process.env.LNG_SERVE_OPEN === 'false' ? false : '-o',
         process.env.LNG_SERVE_CACHE_TIME ? '-c' + process.env.LNG_SERVE_CACHE_TIME : '-c-1',
         process.env.LNG_SERVE_PORT ? '-p' + process.env.LNG_SERVE_PORT : false,
         process.env.LNG_SERVE_PROXY ? '-P' + process.env.LNG_SERVE_PROXY : false,
+        cors,
       ].filter(val => val)
 
       const levelsDown = isLocallyInstalled()
