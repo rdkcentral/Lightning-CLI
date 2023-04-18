@@ -103,7 +103,7 @@ module.exports = (folder, globalName) => {
     target: 'es5',
     mainFields: buildHelpers.getResolveConfigForBundlers(),
     outfile: `${folder}/appBundle.es5.js`,
-    sourcemap: sourcemap,
+    sourcemap,
     format: 'iife',
     define: defined,
     globalName,
