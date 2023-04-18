@@ -31,11 +31,13 @@ const babelPluginInlineJsonImport = require('babel-plugin-inline-json-import')
 
 module.exports = (folder, globalName) => {
   const sourcemap =
-    process.env.LNG_BUILD_SOURCEMAP === 'true'
-      ? true
+    process.env.NODE_ENV === 'production'
+      ? 'external'
       : process.env.LNG_BUILD_SOURCEMAP === 'inline'
       ? 'inline'
-      : false
+      : process.env.LNG_BUILD_SOURCEMAP === 'false'
+      ? ''
+      : 'external'
 
   // Load .env config every time build is triggered
   const appVars = {
@@ -101,7 +103,7 @@ module.exports = (folder, globalName) => {
     target: 'es5',
     mainFields: buildHelpers.getResolveConfigForBundlers(),
     outfile: `${folder}/appBundle.es5.js`,
-    sourcemap,
+    sourcemap: sourcemap,
     format: 'iife',
     define: defined,
     globalName,
