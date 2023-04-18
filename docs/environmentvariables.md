@@ -42,7 +42,6 @@ You can use the following environment variables to customize the behavior of the
 | `LNG_SERVE_OPEN` | true | Indicates whether or not the Lightning CLI opens a browser window when running `lng serve` or `lng dev`. Possible values: `true`, `false`. |
 | `LNG_SERVE_PORT` | auto-incrementing, start at '8080' | Specifies on which port the Lightning CLI must serve when running `lng serve` or `lng dev`. Auto-incrementing and starting port (see Default) depend on available ports. |
 | `LNG_SERVE_PROXY` | (N.A.) | Proxies all requests that cannot be resolved locally to the given URL. |
-| `LNG_SERVE_CORS` | false | Enables CORS via the `Access-Control-Allow-Origin` header. Bypasses value to [http-server](https://github.com/http-party/http-server). Possible values: Boolean (`true` is equivalent of `*`) or any string. |
 | `LNG_BUILD_SOURCEMAP` | true | Instructs the Lightning CLI whether or not and if so, *how* to generate sourcemaps. Possible values: `true`, `false`, `inline`. The value `true` generates the sourcemaps in a separate file (**appBundle.js.map**). The value `inline` appends the sourcemaps to the **appBundle.js** itself as a data URI. |
 | `LNG_BUILD_FOLDER` | build | Specifies the folder in which the built App (using `lng build`) will be generated. |
 | `LNG_DIST_FOLDER` | dist | Specifies the folder in which the standalone, distributable App (using `lng dist`) will be generated. |
@@ -51,9 +50,10 @@ You can use the following environment variables to customize the behavior of the
 | `LNG_BUILD_FAIL_ON_WARNINGS` | false | Specifies whether or not to show the warning to the user when a build warning occurs. Note that the build process is triggered in several commands (`lng build`, `lng dev`, `lng watch` and `lng dist`) |
 | `LNG_BUNDLER` | rollup | Specify which bundler the CLI should use to bundle the app.  Possible values: `rollup`, `esbuild`. |
 | `LNG_BROWSER_BUILD` | false | Specify whether or not  browser build is to be generated.  Possible values: `true`, `false`. |
-| `LNG_LIVE_RELOAD` | false | Instructs your browser to reload the location when a new app bundle is created (using `lng dev`). When the watcher resolves, `document.location.reload()` is called in the browser (tab) that serves your app. Possible value:  `true`, `false`. |
-| `LNG_LIVE_RELOAD_PORT` | 8888 | Specifies the port Websocket is listening on. Live reload communication is driven by WebSockets.  Possible values: Any numeric value. |
-
+| `LNG_LIVE_RELOAD` | false | Instructs your browser to reload the location when a new app bundle is created (using `lng dev`). When the watcher resolves, `document.location.reload()` is called in the browser (tab) that serves your app. Live reload communication is driven by WebSockets. Possible value:  `true`, `false`. |
+| `LNG_LIVE_RELOAD_HOST` | localhost | Specifies the Websocket host your application will attempt to connect to listen for livereload events. Possible values: ip or host. |
+| `LNG_LIVE_RELOAD_PORT` | 8991 | Specifies the port Websocket is listening on. Possible values: Any numeric value. |
+| `LNG_SERVE_CORS` | disabled | Enables CORS with the `Access-Control-Allow-Origin` header to `*` and sets the provided value to `Access-Control-Allow-Headers` . Possible values: Any string. For Ex: `--cors='X-Custom-Header'`|
 
 #### `LNG_SETTINGS_ENV`
 Specifies which environment to be used. User need to have `settings.{env}.json` file in the Project home folder with different settings. This will build/dist the application with `settings.{env}.json`.
