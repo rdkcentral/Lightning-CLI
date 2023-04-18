@@ -92,7 +92,7 @@ module.exports = (folder, globalName) => {
     bundle: true,
     outfile: `${folder}/appBundle.js`,
     mainFields: buildHelpers.getResolveConfigForBundlers(),
-    sourcemap,
+    sourcemap: sourcemap,
     format: 'iife',
     define: defined,
     target: process.env.LNG_BUNDLER_TARGET || '',
