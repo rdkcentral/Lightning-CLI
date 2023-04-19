@@ -40,6 +40,18 @@ const findFile = (parent, filePath, depthCount = 0) => {
   return findFile(path.join(parent, '..'), filePath, ++depthCount)
 }
 
+const findBinary = binary => {
+  const binaryPath = path.join(__dirname, '../..', `node_modules/.bin/${binary}`)
+  const npxPath = path.join(__dirname, '../../../..', `.bin/${binary}`)
+  return fs.existsSync(binaryPath)
+    ? binaryPath
+    : fs.existsSync(npxPath)
+    ? npxPath
+    : (() => {
+        throw new Error(`Required binary (${binary}) not found`)
+      })()
+}
+
 const removeFolder = folder => {
   spinner.start('Removing "' + folder.split('/').pop() + '" folder')
   shell.rm('-rf', folder)
@@ -212,7 +224,7 @@ const bundleAppRollup = (folder, metadata, type, options) => {
 
   const levelsDown = isLocallyInstalled()
     ? findFile(process.cwd(), 'node_modules/.bin/rollup')
-    : path.join(__dirname, '../..', 'node_modules/.bin/rollup')
+    : findBinary('rollup')
   process.env.LNG_BUILD_FAIL_ON_WARNINGS === 'true' ? args.push('--failAfterWarnings') : ''
   return execa(levelsDown, args)
     .then(() => {
