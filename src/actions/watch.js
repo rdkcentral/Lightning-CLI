@@ -19,9 +19,9 @@
 
 const build = require('./build')
 const watch = require('watch')
-const WebSocket = require('ws')
 const chalk = require('chalk')
 const buildHelpers = require('../helpers/build')
+const { Server } = require('socket.io')
 
 const settingsFileName = buildHelpers.getSettingsFileName() // Get settings file name
 const regexp = new RegExp(`^(?!src|static|${settingsFileName}|metadata.json)(.+)$`)
@@ -30,8 +30,11 @@ let wss
 
 const initWebSocketServer = () => {
   const port = process.env.LNG_LIVE_RELOAD_PORT || 8991
-  const server = new WebSocket.Server({ port })
-
+  const server = new Server(port, {
+    cors: {
+      origin: '*',
+    },
+  })
   server.on('error', e => {
     if (e.code === 'EADDRINUSE') {
       console.log(chalk.red(chalk.underline(`Process already running on port: ${port}`)))
@@ -100,9 +103,7 @@ module.exports = (initCallback, watchCallback) => {
               watchCallback && watchCallback()
               // send reload signal over socket
               if (wss) {
-                wss.clients.forEach(client => {
-                  client.send('reload')
-                })
+                wss.sockets.emit('reload')
               }
             })
             .catch(e => {

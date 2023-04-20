@@ -40,6 +40,18 @@ const findFile = (parent, filePath, depthCount = 0) => {
   return findFile(path.join(parent, '..'), filePath, ++depthCount)
 }
 
+const findBinary = binary => {
+  const binaryPath = path.join(__dirname, '../..', `node_modules/.bin/${binary}`)
+  const npxPath = path.join(__dirname, '../../../..', `.bin/${binary}`)
+  return fs.existsSync(binaryPath)
+    ? binaryPath
+    : fs.existsSync(npxPath)
+    ? npxPath
+    : (() => {
+        throw new Error(`Required binary (${binary}) not found`)
+      })()
+}
+
 const removeFolder = folder => {
   spinner.start('Removing "' + folder.split('/').pop() + '" folder')
   shell.rm('-rf', folder)
@@ -68,22 +80,23 @@ const copySupportFiles = folder => {
   // if live reload is enabled we write the client WebSocket logic
   // to index.html
   if (process.env.LNG_LIVE_RELOAD === 'true' && command === 'dev') {
+    const host = process.env.LNG_LIVE_RELOAD_HOST || 'localhost'
     const port = process.env.LNG_LIVE_RELOAD_PORT || 8991
     const file = path.join(folder, 'index.html')
     const data = fs.readFileSync(file, { encoding: 'utf8' })
     const wsData = `
+      <script src='http://${host}:${port}/socket.io/socket.io.js'></script>
       <script>
-        var socket = new WebSocket('ws://localhost:${port}');
-        socket.addEventListener('open', function() {
-          console.log('WebSocket connection succesfully opened - live reload enabled');
+        const socket = io('http://${host}:${port}');
+
+        socket.on('connect', function() {
+          console.log('WebSocket connection successfully opened - live reload enabled');
         });
-        socket.addEventListener('close', function() {
+        socket.on('disconnect', function() {
           console.log('WebSocket connection closed - live reload disabled');
         });
-        socket.addEventListener('message', function(event) {
-          if(event.data === 'reload'){
-            document.location.reload();
-          }
+        socket.on('reload', function() {
+          document.location.reload();
         });
       </script>
     </body>`
@@ -204,13 +217,14 @@ const bundleAppRollup = (folder, metadata, type, options) => {
     path.join(folder, type === 'es6' ? 'appBundle.js' : 'appBundle.es5.js'),
     '--name',
     makeSafeAppId(metadata),
+    '--preserveSymlinks',
   ]
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
 
   const levelsDown = isLocallyInstalled()
     ? findFile(process.cwd(), 'node_modules/.bin/rollup')
-    : path.join(__dirname, '../..', 'node_modules/.bin/rollup')
+    : findBinary('rollup')
   process.env.LNG_BUILD_FAIL_ON_WARNINGS === 'true' ? args.push('--failAfterWarnings') : ''
   return execa(levelsDown, args)
     .then(() => {
@@ -256,7 +270,10 @@ const ensureCorrectGitIgnore = () => {
   return new Promise(resolve => {
     const filename = path.join(process.cwd(), '.gitignore')
     try {
-      const gitIgnoreEntries = fs.readFileSync(filename, 'utf8').split(os.EOL)
+      const gitIgnoreEntries = fs
+        .readFileSync(filename, 'utf8')
+        .replace(/\r/g, '')
+        .split('\n')
       const missingEntries = [
         process.env.LNG_BUILD_FOLDER || 'dist',
         'releases',

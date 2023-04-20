@@ -24,23 +24,23 @@ const babel = require('../helpers/esbuildbabel')
 const babelPresetTypescript = require('@babel/preset-typescript')
 const babelPresetEnv = require('@babel/preset-env')
 const path = require('path')
-const dotenv = require('dotenv')
 const babelPluginClassProperties = require('@babel/plugin-proposal-class-properties')
 const babelPluginInlineJsonImport = require('babel-plugin-inline-json-import')
 
 module.exports = (folder, globalName) => {
   const sourcemap =
-    process.env.LNG_BUILD_SOURCEMAP === 'true'
-      ? true
+    process.env.NODE_ENV === 'production'
+      ? 'external'
       : process.env.LNG_BUILD_SOURCEMAP === 'inline'
       ? 'inline'
-      : false
+      : process.env.LNG_BUILD_SOURCEMAP === 'false'
+      ? ''
+      : 'external'
 
   //Load .env config every time build is triggered
-  const dotEnvConfig = dotenv.config()
   const appVars = {
     NODE_ENV: process.env.NODE_ENV,
-    ...buildHelpers.getEnvAppVars(dotEnvConfig.parsed),
+    ...buildHelpers.getEnvAppVars(process.env),
   }
   const keys = Object.keys(appVars)
   const defined = keys.reduce((acc, key) => {
@@ -87,6 +87,7 @@ module.exports = (folder, globalName) => {
     minifyWhitespace: minify,
     minifyIdentifiers: minify,
     minifySyntax: false,
+    keepNames: minify,
     entryPoints: [`${process.cwd()}/src/index.js`],
     bundle: true,
     outfile: `${folder}/appBundle.js`,

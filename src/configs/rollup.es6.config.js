@@ -31,7 +31,6 @@ const virtual = require('@rollup/plugin-virtual')
 const inject = require('@rollup/plugin-inject')
 const image = require('@rollup/plugin-image')
 const buildHelpers = require(path.join(__dirname, '../helpers/build'))
-const dotenv = require('dotenv').config()
 const minify = require('rollup-plugin-terser').terser
 const license = require('rollup-plugin-license')
 const os = require('os')
@@ -52,7 +51,7 @@ module.exports = {
     virtual({
       processEnv: `export default ${JSON.stringify({
         NODE_ENV: process.env.NODE_ENV,
-        ...buildHelpers.getEnvAppVars(dotenv.parsed),
+        ...buildHelpers.getEnvAppVars(process.env),
       })}`,
     }),
     alias({
