@@ -36,8 +36,8 @@ module.exports = () => {
         process.env.LNG_SERVE_CACHE_TIME ? '-c' + process.env.LNG_SERVE_CACHE_TIME : '-c-1',
         process.env.LNG_SERVE_PORT ? '-p' + process.env.LNG_SERVE_PORT : false,
         process.env.LNG_SERVE_PROXY ? '-P' + process.env.LNG_SERVE_PROXY : false,
-        process.env.LNG_SERVE_CORS ? process.env.LNG_SERVE_CORS == 'false' ? ''
-          : '--cors=' + (process.env.LNG_SERVE_CORS == 'true' ? '' : process.env.LNG_SERVE_CORS) : ''
+        process.env.LNG_SERVE_CORS && process.env.LNG_SERVE_CORS !== 'false' ? process.env.LNG_SERVE_CORS === 'true'
+          ? '--cors' : '--cors='+ process.env.LNG_SERVE_CORS : '',
       ].filter(val => val)
 
       const levelsDown = isLocallyInstalled()

@@ -53,7 +53,7 @@ You can use the following environment variables to customize the behavior of the
 | `LNG_LIVE_RELOAD` | false | Instructs your browser to reload the location when a new app bundle is created (using `lng dev`). When the watcher resolves, `document.location.reload()` is called in the browser (tab) that serves your app. Live reload communication is driven by WebSockets. Possible value:  `true`, `false`. |
 | `LNG_LIVE_RELOAD_HOST` | localhost | Specifies the Websocket host your application will attempt to connect to listen for livereload events. Possible values: ip or host. |
 | `LNG_LIVE_RELOAD_PORT` | 8991 | Specifies the port Websocket is listening on. Possible values: Any numeric value. |
-| `LNG_SERVE_CORS` | disabled | Enables CORS with the `Access-Control-Allow-Origin` header to `*` and sets the provided value to `Access-Control-Allow-Headers` . Possible values: `true`, `false`, `Any String` . The value `true` sets the --cors flag to empty i.e `--cors=''`. The value `false` does not set any value to cors flag. Any string can be set to the --cors flag. For Ex: `--cors='X-Custom-Header'` or `--cors='Authorization,X-Debug'`|
+| `LNG_SERVE_CORS` | false | When set to `true`, CORS is enabled by allowing all origins (Access-Control-Allow-Origin: *) and default headers (Origin, X-Requested-With, Content-Type, Accept, Range). To allow additional headers, provide comma-separated header names as the value (e.g. Authorization, X-Debug). This both enables CORS and appends the provided headers to Access-Control-Allow-Headers
 
 #### `LNG_SETTINGS_ENV`
 Specifies which environment to be used. User need to have `settings.{env}.json` file in the Project home folder with different settings. This will build/dist the application with `settings.{env}.json`.
