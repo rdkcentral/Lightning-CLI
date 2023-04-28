@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.11.0
+
+*28 apr 2023*
+
+- Removed license texts from fixtures, so new Apps created with the CLI don't come with unnecessary licenses anymore ([#226](https://github.com/rdkcentral/Lightning-CLI/issues/226))
+- Fixed build issue related to rollup path when using NPX. Solves issue for Metrological CLI. ([#222](https://github.com/rdkcentral/Lightning-CLI/issues/222))
+- Fixed issue where sourcemap files were not generated when using esbuild ([#228](https://github.com/rdkcentral/Lightning-CLI/issues/228))
+- Added support for CORS in `lng serve` via a new environment variable (`LNG_SERVE_CORS`)
+
 ## v2.10.0
 
 *15 feb 2023*
