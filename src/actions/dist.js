@@ -28,6 +28,12 @@ module.exports = options => {
   const baseDistDir = path.join(process.cwd(), process.env.LNG_DIST_FOLDER || 'dist')
 
   let metadata
+  let settingsFileName = buildHelpers.getSettingsFileName()
+  let settings
+
+  const buildES = (type, esEnv) => {
+    return type === esEnv || esEnv === undefined
+  }
 
   const dist = (type, config) => {
     let distDir
@@ -51,11 +57,14 @@ module.exports = options => {
       },
       () => buildHelpers.removeFolder(path.join(distDir, 'static')),
       () => buildHelpers.copyStaticFolder(distDir),
+      () => buildHelpers.readSettings(settingsFileName).then(result => (settings = result)),
       () =>
         type === 'es6' &&
+        buildES('es6', settings.platformSettings.esEnv) &&
         buildHelpers.bundleEs6App(path.join(distDir, 'js'), metadata, { sourcemaps: false }),
       () =>
         type === 'es5' &&
+        buildES('es5', settings.platformSettings.esEnv) &&
         buildHelpers.bundleEs5App(path.join(distDir, 'js'), metadata, { sourcemaps: false }),
       () => type === 'es5' && buildHelpers.bundlePolyfills(path.join(distDir, 'js')),
       () => config.isWatchEnabled && distWatch(type),
