@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-const build = require('./build')
 const watch = require('watch')
+const build = require('./build')
 const chalk = require('chalk')
 const buildHelpers = require('../helpers/build')
 const { Server } = require('socket.io')
@@ -69,13 +69,13 @@ module.exports = (initCallback, watchCallback) => {
         if (typeof f == 'object' && prev === null && curr === null) {
           build(true)
             .then(() => {
-              //TODO have to resolve.
               initCallback && initCallback().catch(() => process.exit())
-
               // if configured start WebSocket Server
               if (process.env.LNG_LIVE_RELOAD === 'true') {
                 wss = initWebSocketServer()
               }
+
+              resolve(watch)
             })
             .catch(e => {
               reject(e)
@@ -101,11 +101,13 @@ module.exports = (initCallback, watchCallback) => {
           build(false, change)
             .then(() => {
               busy = false
+
               watchCallback && watchCallback()
               // send reload signal over socket
               if (wss) {
                 wss.sockets.emit('reload')
               }
+              resolve(watch)
             })
             .catch(e => {
               reject(e)

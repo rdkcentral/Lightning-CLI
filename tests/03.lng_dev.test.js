@@ -1,41 +1,52 @@
-const puppeteer = require('puppeteer')
+const dev = require('../src/actions/dev')
+const watch = require('../src/actions/watch')
+const serve = require('../src/actions/serve')
+const buildHelpers = require('../src/helpers/build')
 
-const devApp = require('../src/actions/dev')
+jest.mock('../src/actions/watch')
+jest.mock('../src/actions/serve')
+jest.mock('../src/helpers/build')
 
-jest.mock('../src/helpers/spinner')
-
-const buildFolder = `${process.cwd()}/build`
-
-describe('lng dev', () => {
-  let originalExit = process.exit
-  let browser
-  let page
-
-  beforeAll(async () => {
-    process.exit = jest.fn()
-    process.chdir(global.appConfig.appPath)
-    browser = await puppeteer.launch({ headless: true })
-    page = await browser.newPage()
-    // Set screen size
-    await page.setViewport({ width: 1920, height: 1080 })
+describe('dev', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
   })
 
-  afterAll(async () => {
-    await browser.close()
-    process.exit = originalExit
-    process.chdir(global.originalCWD)
+  test('should call all necessary functions in the correct order', async () => {
+    const ensureLightningAppMock = jest
+      .spyOn(buildHelpers, 'ensureLightningApp')
+      .mockImplementation(() => {})
+
+    const logMock = jest.spyOn(console, 'log')
+    watch.mockImplementation((serveFn, callback) => {
+      serveFn()
+      callback()
+    })
+
+    await dev()
+
+    expect(ensureLightningAppMock).toHaveBeenCalled()
+    expect(watch).toHaveBeenCalledWith(serve, expect.any(Function))
+    expect(logMock).toHaveBeenCalledWith('')
+    expect(logMock).toHaveBeenCalledWith(expect.any(String))
+    expect(logMock).toHaveBeenCalledWith('')
   })
-  it('Should build app then run dev server with rollup and es5', async () => {
-    //Don't run for now, devApp does not resolve
-    // const devResult = await devApp(true)
-    // console.info('======', devResult)
-    // devResult.process.cancel()
 
-    console.log(global.appConfig)
+  test('should display "Navigate to web browser" when LNG_LIVE_RELOAD is true', async () => {
+    process.env.LNG_LIVE_RELOAD = 'true'
+    const logMock = jest.spyOn(console, 'log')
 
-    expect('Development server does not return resolve').toBe(true)
-  }, 10000)
-  it.todo('Should build app then run dev server with rollup and es6')
-  it.todo('Should build app then run dev server with esbuild and es5')
-  it.todo('Should build app then run dev server with esbuild and es6')
+    await dev()
+
+    expect(logMock).toHaveBeenCalledWith('Navigate to web browser to see the changes')
+  })
+
+  test('should display "Reload your web browser" when LNG_LIVE_RELOAD is not true', async () => {
+    process.env.LNG_LIVE_RELOAD = 'false'
+    const logMock = jest.spyOn(console, 'log')
+
+    await dev()
+
+    expect(logMock).toHaveBeenCalledWith('Reload your web browser to see the changes')
+  })
 })
