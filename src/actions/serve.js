@@ -27,43 +27,67 @@ const buildHelpers = require('../helpers/build')
 const sequence = require('../helpers/sequence')
 
 module.exports = () => {
-  return sequence([
-    () => buildHelpers.ensureLightningApp(),
-    () => {
-      const args = [
-        process.env.LNG_BUILD_FOLDER ? `./${process.env.LNG_BUILD_FOLDER}` : './build',
-        process.env.LNG_SERVE_OPEN === 'false' ? false : '-o',
-        process.env.LNG_SERVE_CACHE_TIME ? '-c' + process.env.LNG_SERVE_CACHE_TIME : '-c-1',
-        process.env.LNG_SERVE_PORT ? '-p' + process.env.LNG_SERVE_PORT : false,
-        process.env.LNG_SERVE_PROXY ? '-P' + process.env.LNG_SERVE_PROXY : false,
-        process.env.LNG_SERVE_CORS && process.env.LNG_SERVE_CORS !== 'false' ? process.env.LNG_SERVE_CORS === 'true'
-          ? '--cors' : '--cors='+ process.env.LNG_SERVE_CORS : '',
-      ].filter(val => val)
+  return new Promise(resolve => {
+    return sequence([
+      () => buildHelpers.ensureLightningApp(),
+      () => {
+        const args = [
+          process.env.LNG_BUILD_FOLDER ? `./${process.env.LNG_BUILD_FOLDER}` : './build',
+          process.env.LNG_SERVE_OPEN === 'false' ? false : '-o',
+          process.env.LNG_SERVE_CACHE_TIME ? '-c' + process.env.LNG_SERVE_CACHE_TIME : '-c-1',
+          process.env.LNG_SERVE_PORT ? '-p' + process.env.LNG_SERVE_PORT : false,
+          process.env.LNG_SERVE_PROXY ? '-P' + process.env.LNG_SERVE_PROXY : false,
+          process.env.LNG_SERVE_CORS && process.env.LNG_SERVE_CORS !== 'false'
+            ? process.env.LNG_SERVE_CORS === 'true'
+              ? '--cors'
+              : '--cors=' + process.env.LNG_SERVE_CORS
+            : '',
+        ].filter(val => val)
 
-      const levelsDown = isLocallyInstalled()
-        ? buildHelpers.findFile(process.cwd(), 'node_modules/.bin/http-server')
-        : path.join(__dirname, '../..', 'node_modules/.bin/http-server')
+        const levelsDown = isLocallyInstalled()
+          ? buildHelpers.findFile(process.cwd(), 'node_modules/.bin/http-server')
+          : path.join(__dirname, '../..', 'node_modules/.bin/http-server')
 
-      const subprocess = execa(levelsDown, args)
+        const subprocess = execa(levelsDown, args)
 
-      subprocess.catch(e => console.log(chalk.red(e.stderr)))
-      subprocess.stdout.pipe(process.stdout)
+        subprocess.catch(e => console.log(chalk.red(e.stderr)))
+        subprocess.stdout.pipe(process.stdout)
 
-      // Hack for windows to prevent leaving orphan processes, resulting in multiple http-server running instances
-      if (os.platform() === 'win32') {
-        process.on('SIGINT', () => {
-          const task = 'taskkill /pid ' + subprocess.pid + ' /t /f'
-          if (process.env.LNG_LIVE_RELOAD) {
-            execSync(task)
-          } else {
-            exec(task, () => {
-              process.exit()
+        // Hack for windows to prevent leaving orphan processes, resulting in multiple http-server running instances
+        if (os.platform() === 'win32') {
+          process.on('SIGINT', () => {
+            const task = 'taskkill /pid ' + subprocess.pid + ' /t /f'
+            if (process.env.LNG_LIVE_RELOAD) {
+              execSync(task)
+            } else {
+              exec(task, () => {
+                process.exit()
+              })
+            }
+          })
+        }
+
+        subprocess.stdout.on('data', data => {
+          if (/Hit CTRL-C to stop the server/.test(data)) {
+            const url = data
+              .toString()
+              .match(/(http|https):\/\/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d+)/)[0]
+            resolve({
+              process: subprocess,
+              config: {
+                url: url,
+                LNG_BUILD_FOLDER: args[0],
+                LNG_SERVE_OPEN: args[1],
+                LNG_SERVE_CACHE_TIME: args[2],
+                LNG_SERVE_PORT: args[3],
+                LNG_SERVE_PROXY: args[4],
+              },
             })
           }
         })
-      }
 
-      return subprocess
-    },
-  ])
+        return subprocess
+      },
+    ])
+  })
 }
