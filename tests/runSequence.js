@@ -16,6 +16,8 @@ class CustomSequencer extends Sequencer {
   /**
    * Sort test to determine order of execution
    * Sorting is applied after sharding
+   * Copyright (c) Meta Platforms, Inc. and affiliates.
+   * Licensed under the MIT license.
    */
   sort(tests) {
     // Test structure information
