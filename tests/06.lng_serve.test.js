@@ -6,9 +6,13 @@ expect.extend({ toMatchImageSnapshot })
 
 const buildApp = require('../src/actions/build')
 const serveApp = require('../src/actions/serve')
+const createApp = require('../src/actions/create')
 
+const inquirer = require('inquirer')
 jest.mock('../src/helpers/spinner')
-
+jest.mock('inquirer', () => ({
+  prompt: jest.fn(),
+}))
 describe('lng serve', () => {
   let buildFolder = null
   let originalExit = process.exit
@@ -17,13 +21,22 @@ describe('lng serve', () => {
 
   beforeAll(async () => {
     process.exit = jest.fn()
+    inquirer.prompt
+      .mockResolvedValueOnce({ q: global.appConfig.name }) //What is the name of your Lightning App?
+      .mockResolvedValueOnce({ q: global.appConfig.id }) //What is the App identifier?
+      .mockResolvedValueOnce({ q: global.appConfig.id }) //In what (relative) folder do you want to create the new App?
+      .mockResolvedValueOnce({ q: 'No' }) //Do you want to write your App in TypeScript?
+      .mockResolvedValueOnce({ q: 'No' }) //Do you want to enable ESlint?
+      .mockResolvedValueOnce({ q: 'Yes' }) //Do you want to install the NPM dependencies now?
+      .mockResolvedValue({ q: 'No' }) //Do you want to initialize an empty GIT repository? (And all questions after this)
+    await createApp()
     process.chdir(global.appConfig.appPath)
     buildFolder = `${process.cwd()}/build`
     browser = await puppeteer.launch({ headless: true })
     page = await browser.newPage()
     // Set screen size
     await page.setViewport({ width: 1920, height: 1080 })
-  })
+  }, 20000)
 
   afterAll(async () => {
     await browser.close()
@@ -45,7 +58,6 @@ describe('lng serve', () => {
     //Check if build folder exists
     expect(fs.pathExistsSync(buildFolder)).toBe(true)
     //Check for files and directories
-    expect(fs.existsSync(`${buildFolder}/settings.json`)).toBe(true)
     expect(fs.existsSync(`${buildFolder}/settings.json`)).toBe(true)
     expect(fs.existsSync(`${buildFolder}/metadata.json`)).toBe(true)
     expect(fs.existsSync(`${buildFolder}/startApp.js`)).toBe(true)
@@ -76,7 +88,7 @@ describe('lng serve', () => {
 
     await addMsg({ message: JSON.stringify(devServer.config, null, 2) })
     //Stop the http server
-    devServer.process.cancel()
+    await devServer.process.cancel()
     preventstout.mockRestore()
   }, 10000)
 })

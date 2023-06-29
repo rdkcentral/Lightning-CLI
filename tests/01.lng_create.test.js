@@ -24,6 +24,7 @@ describe('create app without internet', () => {
   afterAll(async () => {
     process.exit = originalExit
     process.chdir(global.originalCWD)
+    fs.removeSync(`${global.appConfig.appPath}`)
   })
   beforeEach(() => {
     // Reset the mock Inquirer prompt's resolved value between tests
