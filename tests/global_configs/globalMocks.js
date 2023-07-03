@@ -1,4 +1,4 @@
-global.spinner = jest.mock('../src/helpers/spinner', () => {
+global.spinner = jest.mock('./../../src/helpers/spinner', () => {
   return {
     start: jest.fn(),
     stop: jest.fn(),
@@ -16,6 +16,6 @@ global.cli = (command, options) => {
     options.forEach(element => {
       process.argv.push(element)
     })
-  require('../bin/index')
+  require('../../bin/index')
   process.argv = originalArgv
 }

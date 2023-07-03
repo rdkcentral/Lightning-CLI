@@ -1,11 +1,17 @@
+const fs = require('fs-extra')
 const puppeteer = require('puppeteer')
 const { addAttach } = require('jest-html-reporters/helper')
 const { toMatchImageSnapshot } = require('jest-image-snapshot')
 expect.extend({ toMatchImageSnapshot })
+const createApp = require('../src/actions/create')
 
 const lngDocs = require('../src/actions/docs')
 
+const inquirer = require('inquirer')
 jest.mock('../src/helpers/spinner')
+jest.mock('inquirer', () => ({
+  prompt: jest.fn(),
+}))
 
 describe('lng docs', () => {
   let originalExit = process.exit
@@ -14,16 +20,26 @@ describe('lng docs', () => {
 
   beforeAll(async () => {
     process.exit = jest.fn()
+    inquirer.prompt
+      .mockResolvedValueOnce({ q: global.appConfig.name }) //What is the name of your Lightning App?
+      .mockResolvedValueOnce({ q: global.appConfig.id }) //What is the App identifier?
+      .mockResolvedValueOnce({ q: global.appConfig.id }) //In what (relative) folder do you want to create the new App?
+      .mockResolvedValueOnce({ q: 'No' }) //Do you want to write your App in TypeScript?
+      .mockResolvedValueOnce({ q: 'No' }) //Do you want to enable ESlint?
+      .mockResolvedValueOnce({ q: 'Yes' }) //Do you want to install the NPM dependencies now?
+      .mockResolvedValue({ q: 'No' }) //Do you want to initialize an empty GIT repository? (And all questions after this)
+    await createApp()
     process.chdir(global.appConfig.appPath)
     browser = await puppeteer.launch({ headless: true })
     page = await browser.newPage()
     // Set screen size
     await page.setViewport({ width: 1920, height: 1080 })
-  })
+  }, 20000)
 
   afterAll(async () => {
     await browser.close()
     process.exit = originalExit
+    fs.removeSync(`${global.appConfig.appPath}`)
     process.chdir(global.originalCWD)
   })
 
@@ -57,6 +73,6 @@ describe('lng docs', () => {
       attach: changelogPageImage,
       description: 'Documentation Changelog',
     })
-    docServer.process.cancel()
+    await docServer.process.cancel()
   }, 10000)
 })

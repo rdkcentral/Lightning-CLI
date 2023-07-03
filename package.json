@@ -78,11 +78,11 @@
   },
   "jest": {
     "setupFiles": [
-      "./tests/globalMocks.js"
+      "./tests/global_configs/globalMocks.js"
     ],
-    "testSequencer": "./tests/runSequence.js",
-    "globalSetup": "./tests/globalSetup.js",
-    "globalTeardown": "./tests/globalTeardown.js",
+    "testSequencer": "./tests/global_configs/runSequence.js",
+    "globalSetup": "./tests/global_configs/globalSetup.js",
+    "globalTeardown": "./tests/global_configs/globalTeardown.js",
     "collectCoverage": false,
     "coverageDirectory": "./tests_coverage",
     "coverageReporters": [
