@@ -152,7 +152,7 @@ program
   .action(options => {
     const input = options.opts()
 
-    const defaultTypes = ['es6']
+    const defaultTypes = ['defaults']
     const isWatchEnabled = input.watch ? input.watch : false
     delete input.watch
 

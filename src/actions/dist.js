@@ -32,7 +32,7 @@ module.exports = options => {
   let settings
 
   const buildES = (type, esEnv) => {
-    return type === esEnv || esEnv === undefined
+    return !!(type || esEnv)
   }
 
   const dist = (type, config) => {
@@ -42,6 +42,13 @@ module.exports = options => {
       () => distHelpers.moveOldDistFolderToBuildFolder(),
       () => buildHelpers.ensureCorrectGitIgnore(),
       () => buildHelpers.readMetadata().then(result => (metadata = result)),
+      () => buildHelpers.readSettings(settingsFileName).then(result => (settings = result)),
+      () =>
+        (type = !type.includes('defaults')
+          ? type
+          : settings.platformSettings.esEnv
+          ? settings.platformSettings.esEnv
+          : 'es6'),
       () => {
         distDir = path.join(baseDistDir, type)
       },
@@ -57,7 +64,6 @@ module.exports = options => {
       },
       () => buildHelpers.removeFolder(path.join(distDir, 'static')),
       () => buildHelpers.copyStaticFolder(distDir),
-      () => buildHelpers.readSettings(settingsFileName).then(result => (settings = result)),
       () =>
         type === 'es6' &&
         buildES('es6', settings.platformSettings.esEnv) &&
