@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.12.0
+
+*27 jul 2023*
+
+- Fixed issue with rollup typescript project throwing error when accessing process env ([#235](https://github.com/rdkcentral/Lightning-CLI/issues/235))
+- Added "include" config in tsconfig.json for lng create command
+- Added support for getting "esEnv" from settings.json file for lng dist ([#224](https://github.com/rdkcentral/Lightning-CLI/issues/224))
+- Added support for transpiling .mjs files to ES5 with rollup
+- Fixed the issue related to Babel ignore is not possible to use in a babel.config.json ([#177](https://github.com/rdkcentral/Lightning-CLI/issues/177))
+
 ## v2.11.0
 
 *28 apr 2023*
