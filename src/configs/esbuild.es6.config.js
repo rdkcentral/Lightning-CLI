@@ -28,15 +28,6 @@ const babelPluginClassProperties = require('@babel/plugin-proposal-class-propert
 const babelPluginInlineJsonImport = require('babel-plugin-inline-json-import')
 
 module.exports = (folder, globalName) => {
-  const sourcemap =
-    process.env.NODE_ENV === 'production'
-      ? 'external'
-      : process.env.LNG_BUILD_SOURCEMAP === 'inline'
-      ? 'inline'
-      : process.env.LNG_BUILD_SOURCEMAP === 'false'
-      ? ''
-      : 'external'
-
   //Load .env config every time build is triggered
   const appVars = {
     NODE_ENV: process.env.NODE_ENV,
@@ -92,7 +83,14 @@ module.exports = (folder, globalName) => {
     bundle: true,
     outfile: `${folder}/appBundle.js`,
     mainFields: buildHelpers.getResolveConfigForBundlers(),
-    sourcemap,
+    sourcemap:
+      process.env.NODE_ENV === 'production'
+        ? 'external'
+        : process.env.LNG_BUILD_SOURCEMAP === 'inline'
+        ? 'inline'
+        : process.env.LNG_BUILD_SOURCEMAP === 'false'
+        ? ''
+        : 'external',
     format: 'iife',
     define: defined,
     target: process.env.LNG_BUNDLER_TARGET || '',

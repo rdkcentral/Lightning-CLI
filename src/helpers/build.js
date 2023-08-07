@@ -167,7 +167,7 @@ const readJson = fileName => {
 
 const bundleEs6App = (folder, metadata, options = {}) => {
   if (process.env.LNG_BUNDLER === 'esbuild') {
-    return buildAppEsBuild(folder, metadata, 'es6', options)
+    return buildAppEsBuild(folder, metadata, 'es6')
   } else {
     return bundleAppRollup(folder, metadata, 'es6', options)
   }
@@ -175,7 +175,7 @@ const bundleEs6App = (folder, metadata, options = {}) => {
 
 const bundleEs5App = (folder, metadata, options = {}) => {
   if (process.env.LNG_BUNDLER === 'esbuild') {
-    return buildAppEsBuild(folder, metadata, 'es5', options)
+    return buildAppEsBuild(folder, metadata, 'es5')
   } else {
     return bundleAppRollup(folder, metadata, 'es5', options)
   }
