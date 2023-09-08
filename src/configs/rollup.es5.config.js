@@ -38,7 +38,7 @@ const buildHelpers = require(path.join(__dirname, '../helpers/build'))
 const minify = require('rollup-plugin-terser').terser
 const license = require('rollup-plugin-license')
 const os = require('os')
-const extensions = ['.js', '.ts']
+const extensions = ['.js', '.ts', '.mjs']
 
 module.exports = {
   onwarn(warning, warn) {
