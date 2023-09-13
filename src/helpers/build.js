@@ -46,8 +46,8 @@ const findBinary = binary => {
   return fs.existsSync(binaryPath)
     ? binaryPath
     : fs.existsSync(npxPath)
-    ? npxPath
-    : (() => {
+      ? npxPath
+      : (() => {
         throw new Error(`Required binary (${binary}) not found`)
       })()
 }
@@ -181,7 +181,7 @@ const bundleEs5App = (folder, metadata, options = {}) => {
   }
 }
 
-const buildAppEsBuild = async (folder, metadata, type) => {
+const buildAppEsBuild = async (folder, metadata, type, options) => {
   spinner.start(
     `Building ${type.toUpperCase()} appBundle using [esbuild] and saving to ${folder
       .split('/')
@@ -189,7 +189,8 @@ const buildAppEsBuild = async (folder, metadata, type) => {
   )
   try {
     const getConfig = require(`../configs/esbuild.${type}.config`)
-    await esbuild.build(getConfig(folder, makeSafeAppId(metadata)))
+    let defaultOptions = getConfig(folder, makeSafeAppId(metadata))
+    await esbuild.build(Object.assign(defaultOptions, options))
     spinner.succeed()
     return metadata
   } catch (e) {
@@ -199,6 +200,17 @@ const buildAppEsBuild = async (folder, metadata, type) => {
     console.log(chalk.red('--------------------------------------------------------------'))
     process.env.LNG_BUILD_EXIT_ON_FAIL === 'true' && process.exit(1)
   }
+}
+
+const addRollupOptions = (options) => {
+  let optionsList = Object.assign([])
+  Object.keys(options).forEach(key => {
+    optionsList.push('--' + key)
+    if (options[key] !== true) {
+      optionsList.push(options[key])
+    }
+  })
+  return optionsList
 }
 
 const bundleAppRollup = (folder, metadata, type, options) => {
@@ -225,6 +237,9 @@ const bundleAppRollup = (folder, metadata, type, options) => {
   const levelsDown = isLocallyInstalled()
     ? findFile(process.cwd(), 'node_modules/.bin/rollup')
     : findBinary('rollup')
+
+  args.push.apply(args, addRollupOptions(options))
+
   process.env.LNG_BUILD_FAIL_ON_WARNINGS === 'true' ? args.push('--failAfterWarnings') : ''
   return execa(levelsDown, args)
     .then(() => {
@@ -342,8 +357,8 @@ const ensureCorrectSdkDependency = () => {
             console.log(chalk.red('Unable to automatically move the SDK dependency'))
             console.log(
               'Please run ' +
-                chalk.yellow('npm install ' + lockedDependency) +
-                ' manually to continue'
+              chalk.yellow('npm install ' + lockedDependency) +
+              ' manually to continue'
             )
             console.log(' ')
             throw Error(e)
@@ -402,8 +417,8 @@ const ensureLightningApp = () => {
  */
 const getResolveConfigForBundlers = () => {
   return process.env.LNG_BROWSER_BUILD === 'true'
-    ? ['module', 'browser', 'main']
-    : ['module', 'main', 'browser']
+    ? ['browser', 'main']
+    : ['main', 'browser']
 }
 
 const getSettingsFileName = () => {

@@ -21,7 +21,7 @@ const path = require('path')
 const sequence = require('../helpers/sequence')
 const buildHelpers = require('../helpers/build')
 
-module.exports = (clear = false, change = null, types = ['default']) => {
+module.exports = (clear = false, change = null, types = ['default'], options) => {
   const targetDir = path.join(process.cwd(), process.env.LNG_BUILD_FOLDER || 'build')
 
   let settingsFileName = buildHelpers.getSettingsFileName()
@@ -32,8 +32,8 @@ module.exports = (clear = false, change = null, types = ['default']) => {
     return types.includes('default') && esEnv
       ? (clear || change === 'src') && esEnv === test
       : types.includes('default')
-      ? test === 'es6'
-      : types.includes(test)
+        ? test === 'es6'
+        : types.includes(test)
   }
 
   return sequence([
@@ -52,10 +52,10 @@ module.exports = (clear = false, change = null, types = ['default']) => {
     () =>
       (clear || change === 'src') &&
       buildES('es6', settings.platformSettings.esEnv, types) &&
-      buildHelpers.bundleEs6App(targetDir, metadata),
+      buildHelpers.bundleEs6App(targetDir, metadata, options),
     () =>
       (clear || change === 'src') &&
       buildES('es5', settings.platformSettings.esEnv, types) &&
-      buildHelpers.bundleEs5App(targetDir, metadata),
+      buildHelpers.bundleEs5App(targetDir, metadata, options),
   ])
 }

@@ -53,23 +53,49 @@ program
       })
   })
 
+const objectFromArray = (arr) => {
+  var obj = Object.assign({})
+  arr.forEach(element => {
+    if (element.includes('=')) {
+      obj[element.split('=')[0]] = element.split('=')[1] == 'true' ? true :
+        element.split('=')[1] == 'false' ? false : element.split('=')[1]
+    } else {
+      obj[element] = true
+    }
+  })
+  return obj
+}
+
 program
   .command('build')
   .option('--es5', 'Build standalone ES5 version of the App')
   .option('--es6', 'Build standalone ES6 version of the App')
+  .option('--rollup-bundler-options <string...>', 'Specify rollup bundler options')
+  .option('--esbuild-bundler-options <string...>', 'Specify esbuild bundler options')
   .description(
     ['👷‍♂️', ' '.repeat(3), 'Build a local development version of the Lightning App'].join('')
   )
   .action(options => {
     const input = options.opts()
     const defaultTypes = ['default']
-
     const selectedTypes = Object.keys(input)
       .map(type => input[type] === true && type.toLocaleLowerCase())
       .filter(val => !!val)
 
+    const bundlerCmdLineOptions = process.env.LNG_BUNDLER == 'esbuild'
+      ? 'esbuildBundlerOptions' : 'rollupBundlerOptions'
+    const currentBundlerOptionsKey = process.env.LNG_BUNDLER == 'esbuild'
+      ? 'LNG_BUNDLER_ESBUILD_OPTIONS' : 'LNG_BUNDLER_ROLLUP_OPTIONS'
+
+    const cmdObj = input[bundlerCmdLineOptions]
+      ? objectFromArray(input[bundlerCmdLineOptions]) : {}
+    const cmdEnvObj = process.env[currentBundlerOptionsKey]
+      ? objectFromArray(process.env[currentBundlerOptionsKey].split(',')) : {}
+
+    const bundlerConfig = Object.assign(cmdEnvObj, cmdObj)
+
     updateCheck()
-      .then(() => buildAction(true, null, selectedTypes.length ? selectedTypes : defaultTypes))
+      .then(() => buildAction(true, null, selectedTypes.length ? selectedTypes : defaultTypes, bundlerConfig))
       .catch(e => {
         console.error(e)
         process.exit(1)
