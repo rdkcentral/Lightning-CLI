@@ -190,7 +190,7 @@ const buildAppEsBuild = async (folder, metadata, type, options) => {
   try {
     const getConfig = require(`../configs/esbuild.${type}.config`)
     let defaultOptions = getConfig(folder, makeSafeAppId(metadata))
-    await esbuild.build(Object.assign(defaultOptions, options))
+    await esbuild.build(Object.assign(defaultOptions, convertToCamelCaseOrKeepOriginal(options)))
     spinner.succeed()
     return metadata
   } catch (e) {
@@ -200,17 +200,6 @@ const buildAppEsBuild = async (folder, metadata, type, options) => {
     console.log(chalk.red('--------------------------------------------------------------'))
     process.env.LNG_BUILD_EXIT_ON_FAIL === 'true' && process.exit(1)
   }
-}
-
-const addRollupOptions = (options) => {
-  let optionsList = Object.assign([])
-  Object.keys(options).forEach(key => {
-    optionsList.push('--' + key)
-    if (options[key] !== true) {
-      optionsList.push(options[key])
-    }
-  })
-  return optionsList
 }
 
 const bundleAppRollup = (folder, metadata, type, options) => {
@@ -417,8 +406,8 @@ const ensureLightningApp = () => {
  */
 const getResolveConfigForBundlers = () => {
   return process.env.LNG_BROWSER_BUILD === 'true'
-    ? ['browser', 'main']
-    : ['main', 'browser']
+    ? ['module', 'browser', 'main']
+    : ['module', 'main', 'browser']
 }
 
 const getSettingsFileName = () => {
@@ -437,6 +426,57 @@ const getSettingsFileName = () => {
   }
   return settingsFileName
 }
+
+/**
+ * Converts object keys from hyphen-separated format to camelCase, if not returns original keys.
+ */
+function convertToCamelCaseOrKeepOriginal(inputObject) {
+  const resultObject = {}
+
+  Object.keys(inputObject).forEach(originalKey => {
+    if (originalKey.includes('-')) {
+      const words = originalKey.split('-')
+
+      // Capitalize the first letter of each word except the first one
+      for (let i = 1; i < words.length; i++) {
+        words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1)
+      }
+      const camelCaseKey = words.join('')
+      resultObject[camelCaseKey] = inputObject[originalKey]
+    } else {
+      resultObject[originalKey] = inputObject[originalKey]
+    }
+  })
+  return resultObject
+}
+
+
+/**
+ * Converts an options object into an array of command-line arguments for Rollup.
+ */
+const addRollupOptions = (options) => {
+  const optionsList = []
+  Object.keys(options).forEach(key => {
+    const value = options[key]
+
+    if (Array.isArray(value)) {
+      value.forEach((element) => {
+        optionsList.push('--' + key, element)
+      })
+    } else if (typeof value === 'object' && value !== null) {
+      // If the value is an object, add a single argument with key-value pairs
+      const keyValuePairs = Object.entries(value)
+        .map(([innerKey, innerValue]) => `${innerKey}:${innerValue}`)
+        .join(',')
+      optionsList.push('--' + key, keyValuePairs)
+    } else {
+      // If the value is 'true', add only the key without a value or else add a single argument
+      value!==true ? optionsList.push('--' + key, value) : optionsList.push('--' + key)
+    }
+  })
+  return optionsList
+}
+
 
 module.exports = {
   removeFolder,

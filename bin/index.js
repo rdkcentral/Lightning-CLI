@@ -34,6 +34,7 @@ const watchAction = require('../src/actions/watch')
 const devAction = require('../src/actions/dev')
 const docsAction = require('../src/actions/docs')
 const upToDate = require('../src/helpers/uptodate')
+const generateObject = require('../src/helpers/generateObject')
 
 const updateCheck = (force = null) => upToDate(force === null ? Math.random() < 0.8 : !force)
 
@@ -53,19 +54,6 @@ program
       })
   })
 
-const objectFromArray = (arr) => {
-  var obj = Object.assign({})
-  arr.forEach(element => {
-    if (element.includes('=')) {
-      obj[element.split('=')[0]] = element.split('=')[1] == 'true' ? true :
-        element.split('=')[1] == 'false' ? false : element.split('=')[1]
-    } else {
-      obj[element] = true
-    }
-  })
-  return obj
-}
-
 program
   .command('build')
   .option('--es5', 'Build standalone ES5 version of the App')
@@ -82,17 +70,16 @@ program
       .map(type => input[type] === true && type.toLocaleLowerCase())
       .filter(val => !!val)
 
-    const bundlerCmdLineOptions = process.env.LNG_BUNDLER == 'esbuild'
+    const cmdLineBundlerOptionsKey = process.env.LNG_BUNDLER == 'esbuild'
       ? 'esbuildBundlerOptions' : 'rollupBundlerOptions'
-    const currentBundlerOptionsKey = process.env.LNG_BUNDLER == 'esbuild'
+    const envBundlerOptionsKey = process.env.LNG_BUNDLER == 'esbuild'
       ? 'LNG_BUNDLER_ESBUILD_OPTIONS' : 'LNG_BUNDLER_ROLLUP_OPTIONS'
+    const cmdLineObj = input[cmdLineBundlerOptionsKey]
+      ? generateObject(input[cmdLineBundlerOptionsKey]) : {}
+    const cmdEnvObj = process.env[envBundlerOptionsKey]
+      ? generateObject(process.env[envBundlerOptionsKey].split(',')) : {}
 
-    const cmdObj = input[bundlerCmdLineOptions]
-      ? objectFromArray(input[bundlerCmdLineOptions]) : {}
-    const cmdEnvObj = process.env[currentBundlerOptionsKey]
-      ? objectFromArray(process.env[currentBundlerOptionsKey].split(',')) : {}
-
-    const bundlerConfig = Object.assign(cmdEnvObj, cmdObj)
+    const bundlerConfig = Object.assign(cmdEnvObj, cmdLineObj)
 
     updateCheck()
       .then(() => buildAction(true, null, selectedTypes.length ? selectedTypes : defaultTypes, bundlerConfig))
