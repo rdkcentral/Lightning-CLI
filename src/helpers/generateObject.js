@@ -2,7 +2,7 @@
 const windowsFilePathRegex = /^(?:[a-zA-Z]:)?(\\[^\\:*?"<>|]*)*\\?$/
 const urlRegex = /^(https?|ftp?|localhost):(\/\/?|\d{4}).*$/
 
-const generateObject = (arr) => {
+const generateObject = arr => {
   const generatedObject = {}
 
   arr.forEach(element => {
@@ -21,9 +21,17 @@ const generateObject = (arr) => {
         ...generatedObject[objKey],
         [objVal.split('=')[0]]: objVal.split('=')[1],
       }
-    } else {
+    } else if (element.includes('=')) {
       // Check if the value is a number or a boolean, and convert it accordingly
-      generatedObject[key] = isNaN(val) ? (val === 'true' ? true : val === 'false' ? false : val) : parseFloat(val)
+      generatedObject[key] = isNaN(val)
+        ? val === 'true'
+          ? true
+          : val === 'false'
+            ? false
+            : val
+        : parseFloat(val)
+    } else {
+      generatedObject[key] = true
     }
   })
   return generatedObject
