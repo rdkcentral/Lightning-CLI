@@ -190,7 +190,15 @@ const buildAppEsBuild = async (folder, metadata, type, options) => {
   try {
     const getConfig = require(`../configs/esbuild.${type}.config`)
     let defaultOptions = getConfig(folder, makeSafeAppId(metadata))
-    await esbuild.build(Object.assign(defaultOptions, convertToCamelCaseOrKeepOriginal(options)))
+    let finalConfig = Object.assign(
+      defaultOptions,
+      convertToCamelCaseOrKeepOriginal(options)
+    )
+    //As code splitting only supports outdir so removing outfile
+    if (finalConfig.splitting) {
+      delete finalConfig.outfile
+    }
+    await esbuild.build(finalConfig)
     spinner.succeed()
     return metadata
   } catch (e) {
