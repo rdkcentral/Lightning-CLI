@@ -46,8 +46,8 @@ const findBinary = binary => {
   return fs.existsSync(binaryPath)
     ? binaryPath
     : fs.existsSync(npxPath)
-      ? npxPath
-      : (() => {
+    ? npxPath
+    : (() => {
         throw new Error(`Required binary (${binary}) not found`)
       })()
 }
@@ -190,10 +190,7 @@ const buildAppEsBuild = async (folder, metadata, type, options) => {
   try {
     const getConfig = require(`../configs/esbuild.${type}.config`)
     let defaultOptions = getConfig(folder, makeSafeAppId(metadata))
-    let finalConfig = Object.assign(
-      defaultOptions,
-      convertToCamelCaseOrKeepOriginal(options)
-    )
+    let finalConfig = Object.assign(defaultOptions, convertToCamelCaseOrKeepOriginal(options))
     //As code splitting only supports outdir so removing outfile
     if (finalConfig.splitting) {
       delete finalConfig.outfile
@@ -354,8 +351,8 @@ const ensureCorrectSdkDependency = () => {
             console.log(chalk.red('Unable to automatically move the SDK dependency'))
             console.log(
               'Please run ' +
-              chalk.yellow('npm install ' + lockedDependency) +
-              ' manually to continue'
+                chalk.yellow('npm install ' + lockedDependency) +
+                ' manually to continue'
             )
             console.log(' ')
             throw Error(e)
@@ -458,17 +455,16 @@ function convertToCamelCaseOrKeepOriginal(inputObject) {
   return resultObject
 }
 
-
 /**
  * Converts an options object into an array of command-line arguments for Rollup.
  */
-const addRollupOptions = (options) => {
+const addRollupOptions = options => {
   const optionsList = []
   Object.keys(options).forEach(key => {
     const value = options[key]
 
     if (Array.isArray(value)) {
-      value.forEach((element) => {
+      value.forEach(element => {
         optionsList.push('--' + key, element)
       })
     } else if (typeof value === 'object' && value !== null) {
@@ -479,12 +475,11 @@ const addRollupOptions = (options) => {
       optionsList.push('--' + key, keyValuePairs)
     } else {
       // If the value is 'true', add only the key without a value or else add a single argument
-      value!==true ? optionsList.push('--' + key, value) : optionsList.push('--' + key)
+      value !== true ? optionsList.push('--' + key, value) : optionsList.push('--' + key)
     }
   })
   return optionsList
 }
-
 
 module.exports = {
   removeFolder,

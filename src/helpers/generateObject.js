@@ -2,6 +2,9 @@
 const windowsFilePathRegex = /^(?:[a-zA-Z]:)?(\\[^\\:*?"<>|]*)*\\?$/
 const urlRegex = /^(https?|ftp?|localhost):(\/\/?|\d{4}).*$/
 
+/**
+ * This function generates an object from an array of strings in the format "key=value"
+ */
 const generateObject = arr => {
   const generatedObject = {}
 
@@ -27,8 +30,8 @@ const generateObject = arr => {
         ? val === 'true'
           ? true
           : val === 'false'
-            ? false
-            : val
+          ? false
+          : val
         : parseFloat(val)
     } else {
       generatedObject[key] = true

@@ -32,8 +32,8 @@ module.exports = (clear = false, change = null, types = ['default'], bundlerOpti
     return types.includes('default') && esEnv
       ? (clear || change === 'src') && esEnv === test
       : types.includes('default')
-        ? test === 'es6'
-        : types.includes(test)
+      ? test === 'es6'
+      : types.includes(test)
   }
 
   return sequence([
