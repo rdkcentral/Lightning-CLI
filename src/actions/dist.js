@@ -67,11 +67,11 @@ module.exports = options => {
       () =>
         type === 'es6' &&
         buildES('es6', settings.platformSettings.esEnv) &&
-        buildHelpers.bundleEs6App(path.join(distDir, 'js'), metadata, { sourcemaps: false }),
+        buildHelpers.bundleEs6App(path.join(distDir, 'js'), metadata),
       () =>
         type === 'es5' &&
         buildES('es5', settings.platformSettings.esEnv) &&
-        buildHelpers.bundleEs5App(path.join(distDir, 'js'), metadata, { sourcemaps: false }),
+        buildHelpers.bundleEs5App(path.join(distDir, 'js'), metadata),
       () => type === 'es5' && buildHelpers.bundlePolyfills(path.join(distDir, 'js')),
       () => config.isWatchEnabled && distWatch(type),
     ])
