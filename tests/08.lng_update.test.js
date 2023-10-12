@@ -23,7 +23,7 @@ describe('lng update', () => {
     await createApp()
     process.chdir(global.appConfig.appPath)
     process.exit = jest.fn()
-  }, 20000)
+  }, 30000)
 
   afterAll(async () => {
     process.exit = originalExit

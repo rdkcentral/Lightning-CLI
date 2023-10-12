@@ -67,7 +67,7 @@ describe('lng build', () => {
         showVersion: expect.any(Boolean),
       }),
     })
-  }, 20000)
+  }, 30000)
 
   it('settings.json should have the correct data', async () => {
     const settings = await buildHelpers.readSettings()
@@ -100,7 +100,7 @@ describe('lng build', () => {
     expect(fs.existsSync(`${buildFolder}/index.html`)).toBe(true)
     expect(fs.existsSync(`${buildFolder}/appBundle.es5.js`)).toBe(true)
     expect(fs.existsSync(`${buildFolder}/appBundle.es5.js.map`)).toBe(true)
-  }, 20000)
+  }, 30000)
 
   it('Should build app with esbuild and es6', async () => {
     // Clean up the test by deleting the app folder

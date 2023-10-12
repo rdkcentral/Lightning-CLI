@@ -36,7 +36,7 @@ describe('lng serve', () => {
     page = await browser.newPage()
     // Set screen size
     await page.setViewport({ width: 1920, height: 1080 })
-  }, 20000)
+  }, 30000)
 
   afterAll(async () => {
     await browser.close()

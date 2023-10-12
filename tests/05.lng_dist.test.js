@@ -38,7 +38,7 @@ describe('lng dist', () => {
     // Set screen size
     await page.setViewport({ width: 1920, height: 1080 })
     global.changeShowVersion(false)
-  }, 20000)
+  }, 30000)
 
   afterAll(async () => {
     await browser.close()

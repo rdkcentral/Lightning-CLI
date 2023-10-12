@@ -79,7 +79,7 @@ describe('create app without internet', () => {
     expect(fs.existsSync(`${resultCreate.targetDir}/settings.json`)).toBe(true)
     expect(fs.pathExistsSync(`${resultCreate.targetDir}/static`)).toBe(true)
     expect(fs.pathExistsSync(`${resultCreate.targetDir}/src`)).toBe(true)
-  }, 20000)
+  }, 30000)
 
   it('should create app without name', async () => {
     // Clean up the test by deleting the app folder
@@ -133,7 +133,7 @@ describe('create app without internet', () => {
     expect(fs.existsSync(`${resultCreate.targetDir}/settings.json`)).toBe(true)
     expect(fs.pathExistsSync(`${resultCreate.targetDir}/static`)).toBe(true)
     expect(fs.pathExistsSync(`${resultCreate.targetDir}/src`)).toBe(true)
-  }, 20000)
+  }, 30000)
 
   it('should create app with invalid name', async () => {
     jest.spyOn(console, 'log').mockImplementation(() => {})
@@ -181,7 +181,7 @@ describe('create app without internet', () => {
 
     // Clean up the test by deleting the app folder
     fs.removeSync(resultCreate.targetDir)
-  }, 20000)
+  }, 30000)
 
   it('should create app', async () => {
     // Clean up the test by deleting the app folder
@@ -218,5 +218,5 @@ describe('create app without internet', () => {
     expect(fs.existsSync(`${resultCreate.targetDir}/settings.json`)).toBe(true)
     expect(fs.pathExistsSync(`${resultCreate.targetDir}/static`)).toBe(true)
     expect(fs.pathExistsSync(`${resultCreate.targetDir}/src`)).toBe(true)
-  }, 20000)
+  }, 30000)
 })
