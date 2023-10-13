@@ -465,11 +465,13 @@ const addRollupOptions = options => {
         optionsList.push('--' + key, element)
       })
     } else if (typeof value === 'object' && value !== null) {
+      // If the value is an object, add a single argument with key-value pairs
       const keyValuePairs = Object.entries(value)
         .map(([innerKey, innerValue]) => `${innerKey}:${innerValue}`)
         .join(',')
       optionsList.push('--' + key, keyValuePairs)
     } else {
+      // If the value is 'true', add only the key without a value or else add a single argument
       value !== true ? optionsList.push('--' + key, value) : optionsList.push('--' + key)
     }
     return optionsList
