@@ -54,6 +54,8 @@ You can use the following environment variables to customize the behavior of the
 | `LNG_LIVE_RELOAD_HOST` | localhost | Specifies the Websocket host your application will attempt to connect to listen for livereload events. Possible values: ip or host. |
 | `LNG_LIVE_RELOAD_PORT` | 8991 | Specifies the port Websocket is listening on. Possible values: Any numeric value. |
 | `LNG_SERVE_CORS` | false | When set to `true`, CORS is enabled by allowing all origins (Access-Control-Allow-Origin: *) and default headers (Origin, X-Requested-With, Content-Type, Accept, Range). To allow additional headers, provide comma-separated header names as the value (e.g. Authorization, X-Debug). This both enables CORS and appends the provided headers to Access-Control-Allow-Headers
+| `LNG_BUNDLER_ESBUILD_OPTIONS` | false | Specifies the specific bundler options required for esbuild
+| `LNG_BUNDLER_ROLLUP_OPTIONS` | false | Specifies the specific bundler options required for rollup
 
 #### `LNG_SETTINGS_ENV`
 Specifies which environment to be used. User need to have `settings.{env}.json` file in the Project home folder with different settings. This will build/dist the application with `settings.{env}.json`.

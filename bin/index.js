@@ -179,11 +179,27 @@ program
       .map(type => input[type] === true && type.toLocaleLowerCase())
       .filter(val => !!val)
 
+    const cmdLineBundlerOptionsKey =
+      process.env.LNG_BUNDLER == 'esbuild' ? 'esbuildBundlerOptions' : 'rollupBundlerOptions'
+    const envBundlerOptionsKey =
+      process.env.LNG_BUNDLER == 'esbuild'
+        ? 'LNG_BUNDLER_ESBUILD_OPTIONS'
+        : 'LNG_BUNDLER_ROLLUP_OPTIONS'
+    const cmdLineObj = input[cmdLineBundlerOptionsKey]
+      ? generateObject(input[cmdLineBundlerOptionsKey])
+      : {}
+    const cmdEnvObj = process.env[envBundlerOptionsKey]
+      ? generateObject(process.env[envBundlerOptionsKey].split(','))
+      : {}
+
+    const bundlerConfig = Object.assign(cmdEnvObj, cmdLineObj)
+
     updateCheck()
       .then(() =>
         distAction({
           types: selectedTypes.length ? selectedTypes : defaultTypes,
           isWatchEnabled,
+          bundlerConfig,
         })
       )
       .catch(e => {

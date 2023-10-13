@@ -436,9 +436,7 @@ const getSettingsFileName = () => {
  * Converts object keys from hyphen-separated format to camelCase, if not returns original keys.
  */
 function convertToCamelCaseOrKeepOriginal(inputObject) {
-  const resultObject = {}
-
-  Object.keys(inputObject).forEach(originalKey => {
+  return Object.keys(inputObject).reduce((resultObject, originalKey) => {
     if (originalKey.includes('-')) {
       const words = originalKey.split('-')
 
@@ -451,16 +449,15 @@ function convertToCamelCaseOrKeepOriginal(inputObject) {
     } else {
       resultObject[originalKey] = inputObject[originalKey]
     }
-  })
-  return resultObject
+    return resultObject
+  }, {})
 }
 
 /**
  * Converts an options object into an array of command-line arguments for Rollup.
  */
 const addRollupOptions = options => {
-  const optionsList = []
-  Object.keys(options).forEach(key => {
+  return Object.keys(options).reduce((optionsList, key) => {
     const value = options[key]
 
     if (Array.isArray(value)) {
@@ -468,17 +465,15 @@ const addRollupOptions = options => {
         optionsList.push('--' + key, element)
       })
     } else if (typeof value === 'object' && value !== null) {
-      // If the value is an object, add a single argument with key-value pairs
       const keyValuePairs = Object.entries(value)
         .map(([innerKey, innerValue]) => `${innerKey}:${innerValue}`)
         .join(',')
       optionsList.push('--' + key, keyValuePairs)
     } else {
-      // If the value is 'true', add only the key without a value or else add a single argument
       value !== true ? optionsList.push('--' + key, value) : optionsList.push('--' + key)
     }
-  })
-  return optionsList
+    return optionsList
+  }, [])
 }
 
 module.exports = {
