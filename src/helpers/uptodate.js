@@ -80,7 +80,7 @@ const checkForUpdate = () => {
     .then(version => {
       if (version === false) {
         spinner.succeed()
-        return Promise.resolve()
+        return Promise.resolve('a git folder exists, we are probably working of a clone')
       }
       if (
         semver.lt(packageJson.version, version) ||

@@ -1,2 +1,7 @@
 node_modules
 .DS_store
+com.domain.app.MyAwesomeApp
+com.domain.app.invalid41
+tests/__image_snapshots__
+tests_report
+tests_coverage

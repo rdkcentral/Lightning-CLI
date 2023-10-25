@@ -41,7 +41,7 @@ const pluginBabel = (options = {}) => ({
         },
       })
 
-      if(!babelOptions) {
+      if (!babelOptions) {
         return
       }
 
