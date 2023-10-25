@@ -24,7 +24,7 @@ const buildHelpers = require('../helpers/build')
 const distHelpers = require('../helpers/dist')
 const distWatch = require('../helpers/distWatch')
 
-module.exports = options => {
+module.exports = (options, bundlerConfig) => {
   const baseDistDir = path.join(process.cwd(), process.env.LNG_DIST_FOLDER || 'dist')
 
   let metadata
@@ -67,11 +67,11 @@ module.exports = options => {
       () =>
         type === 'es6' &&
         buildES('es6', settings.platformSettings.esEnv) &&
-        buildHelpers.bundleEs6App(path.join(distDir, 'js'), metadata),
+        buildHelpers.bundleEs6App(path.join(distDir, 'js'), metadata, bundlerConfig),
       () =>
         type === 'es5' &&
         buildES('es5', settings.platformSettings.esEnv) &&
-        buildHelpers.bundleEs5App(path.join(distDir, 'js'), metadata),
+        buildHelpers.bundleEs5App(path.join(distDir, 'js'), metadata, bundlerConfig),
       () => type === 'es5' && buildHelpers.bundlePolyfills(path.join(distDir, 'js')),
       () => config.isWatchEnabled && distWatch(type),
     ])
