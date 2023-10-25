@@ -45,7 +45,7 @@
     "core-js": "^3.6.5",
     "didyoumean2": "^4.1.0",
     "dotenv": "^16.0.3",
-    "esbuild": "^0.12.20",
+    "esbuild": "^0.19.3",
     "execa": "^4.0.3",
     "fs-extra": "^9.0.1",
     "http-server": "^14.1.0",
