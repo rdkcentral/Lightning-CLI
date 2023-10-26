@@ -56,6 +56,7 @@ You can use the following environment variables to customize the behavior of the
 | `LNG_SERVE_CORS` | false | When set to `true`, CORS is enabled by allowing all origins (Access-Control-Allow-Origin: *) and default headers (Origin, X-Requested-With, Content-Type, Accept, Range). To allow additional headers, provide comma-separated header names as the value (e.g. Authorization, X-Debug). This both enables CORS and appends the provided headers to Access-Control-Allow-Headers
 | `LNG_BUNDLER_ESBUILD_OPTIONS` | false | Specifies the specific bundler options required for esbuild
 | `LNG_BUNDLER_ROLLUP_OPTIONS` | false | Specifies the specific bundler options required for rollup
+| `LNG_BUILD_MINIFY` | false | When set to `true` minifies the bundle
 
 #### `LNG_SETTINGS_ENV`
 Specifies which environment to be used. User need to have `settings.{env}.json` file in the Project home folder with different settings. This will build/dist the application with `settings.{env}.json`.
