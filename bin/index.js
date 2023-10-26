@@ -63,8 +63,7 @@ program
   .description(
     ['👷‍♂️', ' '.repeat(3), 'Build a local development version of the Lightning App'].join('')
   )
-  .action(() => {
-    const input = program.opts()
+  .action((input) => {
     const defaultTypes = ['default']
     const selectedTypes = Object.keys(input)
       .map(type => input[type] === true && type.toLocaleLowerCase())
@@ -168,9 +167,7 @@ program
   .description(
     ['🌎', ' '.repeat(3), 'Create a standalone distributable version of the Lightning App'].join('')
   )
-  .action(() => {
-    const input = program.opts()
-
+  .action((input) => {
     const defaultTypes = ['defaults']
     const isWatchEnabled = input.watch ? input.watch : false
     delete input.watch
