@@ -34,6 +34,7 @@ const watchAction = require('../src/actions/watch')
 const devAction = require('../src/actions/dev')
 const docsAction = require('../src/actions/docs')
 const upToDate = require('../src/helpers/uptodate')
+const generateObject = require('../src/helpers/generateObject')
 
 const updateCheck = (force = null) => upToDate(force === null ? Math.random() < 0.8 : !force)
 
@@ -57,19 +58,36 @@ program
   .command('build')
   .option('--es5', 'Build standalone ES5 version of the App')
   .option('--es6', 'Build standalone ES6 version of the App')
+  .option('--rollup-bundler-options <string...>', 'Specify rollup bundler options')
+  .option('--esbuild-bundler-options <string...>', 'Specify esbuild bundler options')
   .description(
     ['👷‍♂️', ' '.repeat(3), 'Build a local development version of the Lightning App'].join('')
   )
-  .action(options => {
-    const input = options.opts()
+  .action((input) => {
     const defaultTypes = ['default']
-
     const selectedTypes = Object.keys(input)
       .map(type => input[type] === true && type.toLocaleLowerCase())
       .filter(val => !!val)
 
+    const cmdLineBundlerOptionsKey =
+      process.env.LNG_BUNDLER == 'esbuild' ? 'esbuildBundlerOptions' : 'rollupBundlerOptions'
+    const envBundlerOptionsKey =
+      process.env.LNG_BUNDLER == 'esbuild'
+        ? 'LNG_BUNDLER_ESBUILD_OPTIONS'
+        : 'LNG_BUNDLER_ROLLUP_OPTIONS'
+    const cmdLineObj = input[cmdLineBundlerOptionsKey]
+      ? generateObject(input[cmdLineBundlerOptionsKey])
+      : {}
+    const cmdEnvObj = process.env[envBundlerOptionsKey]
+      ? generateObject(process.env[envBundlerOptionsKey].split(','))
+      : {}
+
+    const bundlerConfig = Object.assign(cmdEnvObj, cmdLineObj)
+
     updateCheck()
-      .then(() => buildAction(true, null, selectedTypes.length ? selectedTypes : defaultTypes))
+      .then(() =>
+        buildAction(true, null, selectedTypes.length ? selectedTypes : defaultTypes, bundlerConfig)
+      )
       .catch(e => {
         console.error(e)
         process.exit(1)
@@ -149,9 +167,7 @@ program
   .description(
     ['🌎', ' '.repeat(3), 'Create a standalone distributable version of the Lightning App'].join('')
   )
-  .action(options => {
-    const input = options.opts()
-
+  .action((input) => {
     const defaultTypes = ['defaults']
     const isWatchEnabled = input.watch ? input.watch : false
     delete input.watch
@@ -160,11 +176,27 @@ program
       .map(type => input[type] === true && type.toLocaleLowerCase())
       .filter(val => !!val)
 
+    const cmdLineBundlerOptionsKey =
+      process.env.LNG_BUNDLER == 'esbuild' ? 'esbuildBundlerOptions' : 'rollupBundlerOptions'
+    const envBundlerOptionsKey =
+      process.env.LNG_BUNDLER == 'esbuild'
+        ? 'LNG_BUNDLER_ESBUILD_OPTIONS'
+        : 'LNG_BUNDLER_ROLLUP_OPTIONS'
+    const cmdLineObj = input[cmdLineBundlerOptionsKey]
+      ? generateObject(input[cmdLineBundlerOptionsKey])
+      : {}
+    const cmdEnvObj = process.env[envBundlerOptionsKey]
+      ? generateObject(process.env[envBundlerOptionsKey].split(','))
+      : {}
+
+    const bundlerConfig = Object.assign(cmdEnvObj, cmdLineObj)
+
     updateCheck()
       .then(() =>
         distAction({
           types: selectedTypes.length ? selectedTypes : defaultTypes,
           isWatchEnabled,
+          bundlerConfig,
         })
       )
       .catch(e => {

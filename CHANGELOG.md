@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.13.0
+
+*26 oct 2023*
+
+- Added unit tests for CLI ([#251](https://github.com/rdkcentral/Lightning-CLI/issues/251))
+- Added support for esbuild and rollup bundler options. ([#249](https://github.com/rdkcentral/Lightning-CLI/issues/249))
+- Updated bundler config files to maintain consistency. ([#242](https://github.com/rdkcentral/Lightning-CLI/issues/242))
+
 ## v2.12.0
 
 *27 jul 2023*
