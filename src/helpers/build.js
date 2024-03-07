@@ -214,17 +214,29 @@ const bundleAppRollup = (folder, metadata, type, options) => {
     ? 'src/index.ts'
     : 'src/index.js'
 
+  const rollupConfig = require(path.join(__dirname, `../configs/rollup.${type}.config.js`))
+
   const args = [
     '-c',
     path.join(__dirname, `../configs/rollup.${type}.config.js`),
-    '--input',
-    path.join(process.cwd(), enterFile),
     '--file',
     path.join(folder, type === 'es6' ? 'appBundle.js' : 'appBundle.es5.js'),
     '--name',
     makeSafeAppId(metadata),
-    '--preserveSymlinks',
   ]
+
+  // Check if 'input' property is not present in the rollupConfig object
+  if (!('input' in rollupConfig)) {
+    //input file path using process.cwd() (current working directory) and the value of enterFile variable,
+    // then push it into the args array
+    args.push(`--input , ${path.join(process.cwd(), enterFile)}`)
+  }
+
+  // Check if 'preserveSymlinks' property is not present in the rollupConfig object
+  if (!('preserveSymlinks' in rollupConfig)) {
+    // If 'preserveSymlinks' property is not present, push '--preserveSymlinks' into the args array
+    args.push('--preserveSymlinks')
+  }
 
   if (options.sourcemaps === false) args.push('--no-sourcemap')
 

@@ -57,6 +57,7 @@ You can use the following environment variables to customize the behavior of the
 | `LNG_BUNDLER_ESBUILD_OPTIONS` | false | Specifies the specific bundler options required for esbuild
 | `LNG_BUNDLER_ROLLUP_OPTIONS` | false | Specifies the specific bundler options required for rollup
 | `LNG_BUILD_MINIFY` | false | When set to `true` minifies the bundle
+| `LNG_CUSTOM_ROLLUP` | false | When set to `true`, uses the custom rollup config file located in the project home directory
 
 #### `LNG_SETTINGS_ENV`
 Specifies which environment to be used. User need to have `settings.{env}.json` file in the Project home folder with different settings. This will build/dist the application with `settings.{env}.json`.
