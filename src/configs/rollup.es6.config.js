@@ -37,8 +37,15 @@ const minify = require('rollup-plugin-terser').terser
 const license = require('rollup-plugin-license')
 const os = require('os')
 const extensions = ['.js', '.ts']
+const deepMerge = require('deepmerge')
 
-module.exports = {
+let customConfig
+
+if (process.env.LNG_CUSTOM_ROLLUP === 'true') {
+  customConfig = require(path.join(process.cwd(), 'rollup.es6.config'))
+}
+
+const defaultConfig = {
   onwarn(warning, warn) {
     if (warning.code !== 'CIRCULAR_DEPENDENCY') {
       warn(warning)
@@ -119,3 +126,6 @@ module.exports = {
         : process.env.LNG_BUILD_SOURCEMAP,
   },
 }
+
+const finalConfig = customConfig ? deepMerge(defaultConfig, customConfig) : defaultConfig
+module.exports = finalConfig
