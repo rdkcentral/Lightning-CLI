@@ -227,7 +227,7 @@ const bundleAppRollup = (folder, metadata, type, options) => {
   // Check if 'input' property is not present in the rollupConfig object
   if (!('input' in rollupConfig)) {
     //if 'input' is not present, push the input option and location of source file to the args
-    args.push(`--input , ${path.join(process.cwd(), enterFile)}`)
+    args.push('--input', path.join(process.cwd(), enterFile))
   }
 
   // Check if 'preserveSymlinks' property is not present in the rollupConfig object
