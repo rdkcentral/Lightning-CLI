@@ -57,3 +57,26 @@ lng build --esbuild-bundler-options banner:js=//javascriptcomment banner:css=/*c
 We can also specify the bundler options in the `.env` file and through commandline as `env variable`. Here the priority will be
 `.env < commandline env variable < commandline options`
 
+### Rollup Custom Config
+
+If you prefer the rollup bundler to use the custom rollup config(user specified), you need to set the env Variable LNG_CUSTOM_ROLLUP to true. Under the hood the custom config will be merged with the default config options to generate the bundle.
+
+Also make sure the following :
+
+| S.No | Info | Description|
+| -------- | -------- |----------
+| 1 | Config Location | Project Home |
+| 2 | Config File Name | `rollup.es6.config.js`(for es6)|
+|   |           | `rollup.es5.config.js`(for es5) |
+|   |           |                                 |
+
+Example custom Config file content:
+
+```javascript
+module.exports = {
+  input: 'src/index.js',
+  output: {
+    format: 'iife',
+    sourcemap: false,
+  },
+}
