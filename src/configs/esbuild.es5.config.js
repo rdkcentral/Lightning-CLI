@@ -33,7 +33,7 @@ const deepMerge = require('deepmerge')
 let customConfig
 
 if (process.env.LNG_CUSTOM_ESBUILD === 'true') {
-  customConfig = require(path.join(process.cwd(), 'esbuild.es6.config'))
+  customConfig = require(path.join(process.cwd(), 'esbuild.es5.config'))
 }
 
 module.exports = (folder, globalName) => {
