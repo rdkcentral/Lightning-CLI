@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.14.0
+
+*03 apr 2024*
+
+- Added support for providing a custom rollup configuration ([#254](https://github.com/rdkcentral/Lightning-CLI/issues/254))
+- Added support for providing a custom esbuild configuration ([#255](https://github.com/rdkcentral/Lightning-CLI/issues/255))
+
+
 ## v2.13.0
 
 *26 oct 2023*

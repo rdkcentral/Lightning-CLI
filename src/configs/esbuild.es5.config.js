@@ -28,6 +28,13 @@ const babelPluginTransFormSpread = require('@babel/plugin-transform-spread')
 const babelPluginTransFormParameters = require('@babel/plugin-transform-parameters')
 const babelPluginClassProperties = require('@babel/plugin-proposal-class-properties')
 const babelPluginInlineJsonImport = require('babel-plugin-inline-json-import')
+const deepMerge = require('deepmerge')
+
+let customConfig
+
+if (process.env.LNG_CUSTOM_ESBUILD === 'true') {
+  customConfig = require(path.join(process.cwd(), 'esbuild.es5.config'))
+}
 
 module.exports = (folder, globalName) => {
   // Load .env config every time build is triggered
@@ -43,7 +50,7 @@ module.exports = (folder, globalName) => {
   defined['process.env.NODE_ENV'] = `"${process.env.NODE_ENV}"`
   const minify = process.env.LNG_BUILD_MINIFY === 'true' || process.env.NODE_ENV === 'production'
 
-  return {
+  let defaultConfig = {
     plugins: [
       alias([
         { find: '@', filter: /@\//, replace: path.resolve(process.cwd(), 'src/') },
@@ -117,4 +124,9 @@ module.exports = (folder, globalName) => {
       ].join(os.EOL),
     },
   }
+  if ('entryPoints' in customConfig) {
+    delete defaultConfig.entryPoints
+  }
+  const finalConfig = customConfig ? deepMerge(defaultConfig, customConfig) : defaultConfig
+  return finalConfig
 }
