@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.14.1
+
+*11 apr 2024*
+
+- Fixed issue with the custom config check when using esbuild ([#257](https://github.com/rdkcentral/Lightning-CLI/issues/257))
+
 ## v2.14.0
 
 *03 apr 2024*
