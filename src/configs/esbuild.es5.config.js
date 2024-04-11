@@ -124,7 +124,7 @@ module.exports = (folder, globalName) => {
       ].join(os.EOL),
     },
   }
-  if ('entryPoints' in customConfig) {
+  if (customConfig && 'entryPoints' in customConfig) {
     delete defaultConfig.entryPoints
   }
   const finalConfig = customConfig ? deepMerge(defaultConfig, customConfig) : defaultConfig
