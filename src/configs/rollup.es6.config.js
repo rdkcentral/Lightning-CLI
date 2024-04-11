@@ -38,11 +38,19 @@ const license = require('rollup-plugin-license')
 const os = require('os')
 const extensions = ['.js', '.ts']
 const deepMerge = require('deepmerge')
+const chalk = require('chalk')
 
 let customConfig
 
 if (process.env.LNG_CUSTOM_ROLLUP === 'true') {
-  customConfig = require(path.join(process.cwd(), 'rollup.es6.config'))
+  const customConfigPath = path.join(process.cwd(), 'rollup.es6.config')
+  if (fs.existsSync(customConfigPath)) {
+    customConfig = require(customConfigPath)
+  } else {
+    console.warn(
+      chalk.yellow('\nCustom rollup config not found while LNG_CUSTOM_ROLLUP is set to true')
+    )
+  }
 }
 
 const defaultConfig = {

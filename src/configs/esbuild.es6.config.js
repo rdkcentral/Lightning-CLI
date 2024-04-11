@@ -27,11 +27,20 @@ const path = require('path')
 const babelPluginClassProperties = require('@babel/plugin-proposal-class-properties')
 const babelPluginInlineJsonImport = require('babel-plugin-inline-json-import')
 const deepMerge = require('deepmerge')
+const fs = require('fs')
+const chalk = require('chalk')
 
 let customConfig
 
 if (process.env.LNG_CUSTOM_ESBUILD === 'true') {
-  customConfig = require(path.join(process.cwd(), 'esbuild.es6.config'))
+  const customConfigPath = path.join(process.cwd(), 'esbuild.es6.config')
+  if (fs.existsSync(customConfigPath)) {
+    customConfig = require(customConfigPath)
+  } else {
+    console.warn(
+      chalk.yellow('\nCustom esbuild config not found while LNG_CUSTOM_ESBUILD is set to true')
+    )
+  }
 }
 
 module.exports = (folder, globalName) => {
