@@ -4,7 +4,7 @@
 
 *11 apr 2024*
 
-- Fixed issue with the custom config check when using esbuild ([#257](https://github.com/rdkcentral/Lightning-CLI/issues/257))
+- Fixed issues related to custom config implementations for both esbuild & rollup ([#257](https://github.com/rdkcentral/Lightning-CLI/issues/257))
 
 ## v2.14.0
 
