@@ -29,11 +29,20 @@ const babelPluginTransFormParameters = require('@babel/plugin-transform-paramete
 const babelPluginClassProperties = require('@babel/plugin-proposal-class-properties')
 const babelPluginInlineJsonImport = require('babel-plugin-inline-json-import')
 const deepMerge = require('deepmerge')
+const fs = require('fs')
+const chalk = require('chalk')
 
 let customConfig
 
 if (process.env.LNG_CUSTOM_ESBUILD === 'true') {
-  customConfig = require(path.join(process.cwd(), 'esbuild.es5.config'))
+  const customConfigPath = path.join(process.cwd(), 'esbuild.es5.config')
+  if (fs.existsSync(customConfigPath)) {
+    customConfig = require(customConfigPath)
+  } else {
+    console.warn(
+      chalk.yellow('\nCustom esbuild config not found while LNG_CUSTOM_ESBUILD is set to true')
+    )
+  }
 }
 
 module.exports = (folder, globalName) => {
@@ -124,7 +133,7 @@ module.exports = (folder, globalName) => {
       ].join(os.EOL),
     },
   }
-  if ('entryPoints' in customConfig) {
+  if (customConfig && 'entryPoints' in customConfig) {
     delete defaultConfig.entryPoints
   }
   const finalConfig = customConfig ? deepMerge(defaultConfig, customConfig) : defaultConfig

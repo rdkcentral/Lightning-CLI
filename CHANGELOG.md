@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.14.1
+
+*11 apr 2024*
+
+- Fixed issues related to custom config implementations for both esbuild & rollup ([#257](https://github.com/rdkcentral/Lightning-CLI/issues/257))
+
 ## v2.14.0
 
 *03 apr 2024*
