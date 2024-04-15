@@ -43,7 +43,7 @@ const chalk = require('chalk')
 let customConfig
 
 if (process.env.LNG_CUSTOM_ROLLUP === 'true') {
-  const customConfigPath = path.join(process.cwd(), 'rollup.es6.config')
+  const customConfigPath = path.join(process.cwd(), 'rollup.es6.config.js')
   if (fs.existsSync(customConfigPath)) {
     customConfig = require(customConfigPath)
   } else {
