@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.14.2
+
+*15 apr 2024*
+
+- Fixed issue related to custom config file extension for both esbuild & rollup.
+
 ## v2.14.1
 
 *11 apr 2024*
