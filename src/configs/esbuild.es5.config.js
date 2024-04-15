@@ -35,7 +35,7 @@ const chalk = require('chalk')
 let customConfig
 
 if (process.env.LNG_CUSTOM_ESBUILD === 'true') {
-  const customConfigPath = path.join(process.cwd(), 'esbuild.es5.config')
+  const customConfigPath = path.join(process.cwd(), 'esbuild.es5.config.js')
   if (fs.existsSync(customConfigPath)) {
     customConfig = require(customConfigPath)
   } else {
